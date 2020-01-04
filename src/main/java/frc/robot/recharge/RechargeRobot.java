@@ -35,13 +35,16 @@ public class RechargeRobot extends BasicRobot
   public void robotInit()
   {
     // Bind buttons to actions (only active in teleop)
+    // Pressing 'A' enables manual wheel control (and stops auto rotation)
     OI.enable_wheel.whenPressed(manual_wheel);
-    OI.autorotate_wheel.whenPressed(rotate_wheel);
+    // Pressing 'B' turns wheel automatically, then re-enables manual control
+    OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
   }
 
   @Override
   public void teleopInit()
   {
     super.teleopInit();
+    manual_wheel.schedule();
   }
 }
