@@ -1,30 +1,48 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Color Area" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="361" y="528"/>
+	</widget>
+	<widget field="Color Idx" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="368" y="557"/>
+		<property name="Editable" value="false"/>
+	</widget>
+	<widget field="Color" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="386" y="496"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.MjpgStreamViewerImpl">
-		<location x="358" y="13"/>
-		<width>669</width>
+		<location x="211" y="1"/>
+		<width>653</width>
 		<height>495</height>
 		<property name="MJPG Server URL" value="http://frcvision.local:1182/stream.mjpg"/>
 	</static-widget>
-	<widget field="Detected Color" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="337" y="587"/>
-	</widget>
 	<widget field="Center S" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="365" y="561"/>
+		<location x="208" y="560"/>
 	</widget>
 	<widget field="Center L" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="366" y="537"/>
+		<location x="208" y="528"/>
 	</widget>
 	<widget field="Center H" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="364" y="513"/>
+		<location x="208" y="496"/>
 	</widget>
 	<widget field="PipelineCPS" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="882" y="539"/>
+		<location x="672" y="528"/>
 	</widget>
 	<widget field="PipelineCalls" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="880" y="513"/>
+		<location x="672" y="496"/>
 	</widget>
 </dashboard>
 <live-window>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="Servo[9]" type="Servo" class="edu.wpi.first.smartdashboard.livewindow.elements.ServoController">
+			<location x="6" y="15"/>
+			<height>45</height>
+			<width>295</width>
+		</widget>
+		<location x="0" y="0"/>
+		<width>307</width>
+		<height>66</height>
+	</widget>
 </live-window>
+	<hidden field="Detected Color"/>
 </xml>
