@@ -8,6 +8,7 @@
 package frc.robot.recharge;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -17,8 +18,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class OI
 {
-    public static final XboxController JOYSTICK = new XboxController(0);
+    public static final XboxController joystick = new XboxController(0);
 
-    public static final JoystickButton DEMO_BUTTON = new JoystickButton(JOYSTICK, XboxController.Button.kA.value);
+    public static final JoystickButton DEMO_BUTTON = new JoystickButton(joystick, XboxController.Button.kA.value);
 
+    /** @return Manual fortune wheel speed */
+    public static double getWheelSpeed()
+    {
+        // Each trigger returns value 0..1
+        // Combine them into -1 .. 1 range
+        double value = - joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
+        // Slow down
+        return value/3;
+    }
 }

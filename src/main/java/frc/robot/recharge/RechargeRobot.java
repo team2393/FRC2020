@@ -7,9 +7,12 @@
 
 package frc.robot.recharge;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.ctrlpanel.ControlWheel;
+import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 
-/** Robot for 'Infinite Recharge'
+/** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
 public class RechargeRobot extends BasicRobot
 {
@@ -22,4 +25,14 @@ public class RechargeRobot extends BasicRobot
   // TODO Vision processing (on pi)
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Lift, grabber, pusher, climber, ...
+
+  private final ControlWheel fortune = new ControlWheel(RobotMap.CONTROL_PANEL_WHEEL);
+  private final Command manual_wheel = new ManualWheelSpeed(fortune);
+
+  @Override
+  public void teleopInit()
+  {
+    super.teleopInit();
+    manual_wheel.schedule();
+  }
 }
