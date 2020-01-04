@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
+import frc.robot.recharge.ctrlpanel.RotateWheel;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
@@ -28,11 +29,19 @@ public class RechargeRobot extends BasicRobot
 
   private final ControlWheel fortune = new ControlWheel(RobotMap.CONTROL_PANEL_WHEEL);
   private final Command manual_wheel = new ManualWheelSpeed(fortune);
+  private final Command rotate_wheel = new RotateWheel(fortune, 3);
+
+  @Override
+  public void robotInit()
+  {
+    // Bind buttons to actions (only active in teleop)
+    OI.enable_wheel.whenPressed(manual_wheel);
+    OI.autorotate_wheel.whenPressed(rotate_wheel);
+  }
 
   @Override
   public void teleopInit()
   {
     super.teleopInit();
-    manual_wheel.schedule();
   }
 }

@@ -20,7 +20,8 @@ public class OI
 {
     public static final XboxController joystick = new XboxController(0);
 
-    public static final JoystickButton DEMO_BUTTON = new JoystickButton(joystick, XboxController.Button.kA.value);
+    public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
+    public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
 
     /** @return Manual fortune wheel speed */
     public static double getWheelSpeed()

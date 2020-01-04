@@ -18,6 +18,7 @@ public class ManualWheelSpeed extends CommandBase
     public ManualWheelSpeed(final ControlWheel wheel)
     {
         this.wheel = wheel;
+        addRequirements(wheel);
     }
 
     @Override

@@ -7,11 +7,14 @@
 package frc.robot.recharge.ctrlpanel;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 /** Control panel wheel */
-public class ControlWheel
+public class ControlWheel extends SubsystemBase
 {
+    public static final String[] COLORS = { "Blue", "Green", "Red", "Yellow" };
+
     final Servo motor;
 
     public ControlWheel(final int motor_port)
