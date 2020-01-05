@@ -46,7 +46,11 @@ Get Robot Code
 
 Open VS Studio.
 
-Invoke menu File, Preferences, Color Theme, Light.
+Suggestions for File, Preferences:
+ * Color Theme 'Light'
+ * Disable the 'minimap'
+ * Disable 'render indent guides'
+ * Tabs: Use 2 spaces, no auto-detection of indentation
 
 Invoke menu View, Command Palette, and type "Git: Clone".
 Enter this URL: https://github.com/Team2393/FRC2020.

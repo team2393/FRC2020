@@ -18,18 +18,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class OI
 {
-    public static final XboxController joystick = new XboxController(0);
+  public static final XboxController joystick = new XboxController(0);
 
-    public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
-    public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
+  public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
+  public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
 
-    /** @return Manual fortune wheel speed */
-    public static double getWheelSpeed()
-    {
-        // Each trigger returns value 0..1
-        // Combine them into -1 .. 1 range
-        double value = - joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
-        // Slow down
-        return value/3;
-    }
+  /** @return Manual fortune wheel speed */
+  public static double getWheelSpeed()
+  {
+    // Each trigger returns value 0..1
+    // Combine them into -1 .. 1 range
+    double value = - joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
+    // Slow down
+    return value/3;
+  }
 }

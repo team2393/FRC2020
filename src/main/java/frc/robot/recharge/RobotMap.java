@@ -12,13 +12,13 @@ package frc.robot.recharge;
  */ 
 public class RobotMap
 {    
-    // Talon CAN IDs =================================
-    // Drivetrain motors
-    public final static int LEFT_MOTOR_SLAVE = 4;
-    public final static int LEFT_MOTOR_MAIN = 2;
-    public final static int RIGHT_MOTOR_SLAVE = 3;
-    public final static int RIGHT_MOTOR_MAIN = 1;
+  // Talon CAN IDs =================================
+  // Drivetrain motors
+  public final static int LEFT_MOTOR_SLAVE = 4;
+  public final static int LEFT_MOTOR_MAIN = 2;
+  public final static int RIGHT_MOTOR_SLAVE = 3;
+  public final static int RIGHT_MOTOR_MAIN = 1;
 
-    // Motor port used for wheel-of-fortune on control panel
-    public final static int CONTROL_PANEL_WHEEL = 9;
+  // Motor port used for wheel-of-fortune on control panel
+  public final static int CONTROL_PANEL_WHEEL = 9;
 }

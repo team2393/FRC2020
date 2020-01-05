@@ -13,21 +13,21 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 /** Control panel wheel */
 public class ControlWheel extends SubsystemBase
 {
-    public static final String[] COLORS = { "Blue", "Green", "Red", "Yellow" };
+  public static final String[] COLORS = { "Blue", "Green", "Red", "Yellow" };
 
-    final Servo motor;
+  final Servo motor;
 
-    public ControlWheel(final int motor_port)
-    {
-        motor = new Servo(motor_port);
-    }
+  public ControlWheel(final int motor_port)
+  {
+    motor = new Servo(motor_port);
+  }
 
-    /** Turn the wheel
-     *  @param speed Speed -1 .. 1
-     */
-    public void spin(final double speed)
-    {
-        // Convert -1..1 range into 0..1 range
-        motor.set((MathUtil.clamp(speed, -1.0, 1.0) + 1.0) / 2.0);
-    }
+  /** Turn the wheel
+   *  @param speed Speed -1 .. 1
+   */
+  public void spin(final double speed)
+  {
+    // Convert -1..1 range into 0..1 range
+    motor.set((MathUtil.clamp(speed, -1.0, 1.0) + 1.0) / 2.0);
+  }
 }

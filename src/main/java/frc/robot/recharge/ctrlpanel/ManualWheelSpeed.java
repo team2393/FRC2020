@@ -13,23 +13,23 @@ import frc.robot.recharge.OI;
 /** Command to turn wheel with joystick */
 public class ManualWheelSpeed extends CommandBase
 {
-    private final ControlWheel wheel;
+  private final ControlWheel wheel;
 
-    public ManualWheelSpeed(final ControlWheel wheel)
-    {
-        this.wheel = wheel;
-        addRequirements(wheel);
-    }
+  public ManualWheelSpeed(final ControlWheel wheel)
+  {
+    this.wheel = wheel;
+    addRequirements(wheel);
+  }
 
-    @Override
-    public void execute()
-    {
-        wheel.spin(OI.getWheelSpeed());
-    }
+  @Override
+  public void execute()
+  {
+    wheel.spin(OI.getWheelSpeed());
+  }
 
-    @Override
-    public void end(final boolean interrupted)
-    {
-        wheel.spin(0);
-    }
+  @Override
+  public void end(final boolean interrupted)
+  {
+    wheel.spin(0);
+  }
 }
