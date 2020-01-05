@@ -16,7 +16,7 @@ public class RotateWheel extends CommandBase
   private final ControlWheel wheel;
   private final int required_sectors;
   /** Slow and fast speed, direction such that colors appear in the expected order */
-  private final double slow = -0.01, fast = -0.04;
+  private final double slow = -0.01, fast = -0.05;
 
   /** Number of color wheel sectors that we need to see go by */
   private int sectors;
