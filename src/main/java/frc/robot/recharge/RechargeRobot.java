@@ -7,8 +7,6 @@
 
 package frc.robot.recharge;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
