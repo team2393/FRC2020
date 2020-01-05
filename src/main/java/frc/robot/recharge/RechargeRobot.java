@@ -7,17 +7,21 @@
 
 package frc.robot.recharge;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
+import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
 public class RechargeRobot extends BasicRobot
-{
+{  
   // TODO Basic Drivetrain class for the motors
+  private final DriveTrain drivetrain = new DriveTrain();
   // TODO Command to drive by joystick
   // TODO Add encoders to DriveTrain
   // TODO Command to drive to distance and heading (PID)

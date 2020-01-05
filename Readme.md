@@ -37,6 +37,9 @@ Install Development Tools
 
  * Git for Windows from https://git-scm.com/downloads (you can skip this on a Mac)
 
+For CAN bus access, install the CTRE Phoenix framework from
+https://github.com/CrossTheRoadElec/Phoenix-Releases/releases/
+
 Computers used as drive stations also need the NI game tools from
 https://www.ni.com/en-il/support/downloads/drivers/download.frc-game-tools.html
 
