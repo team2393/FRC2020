@@ -22,6 +22,7 @@ public class OI
 
   public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
   public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
+  public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
 
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()

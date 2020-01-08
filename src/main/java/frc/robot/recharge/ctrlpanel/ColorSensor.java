@@ -9,6 +9,7 @@ package frc.robot.recharge.ctrlpanel;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 /** REV Robotics color sensor
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj.util.Color;
  *  then invoked View, Command Palette,  WPIlib Manage Vendor Libraries,
  *  Add new library (offline) and select REVColorSensorV3
  */
-public class ColorSensor
+public class ColorSensor implements ColorDetector
 {
   /** Sensor, connected to I2C socket on RIO */
   private final ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
@@ -38,6 +39,7 @@ public class ColorSensor
   /** Read color sensor
    *  @return Detector color index or -1
    */
+  @Override
   public int getColor()
   {
     final Color color = sensor.getColor();
@@ -68,7 +70,8 @@ public class ColorSensor
     final String color_name = best_match == -1 ? "Unknown" : ControlWheel.COLORS[best_match];
 
     final int dist = sensor.getProximity();
-    System.out.println(color_name + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
+    SmartDashboard.putString("ColorSensor",
+                            color_name + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
 
     return best_match;
   }

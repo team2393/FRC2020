@@ -12,6 +12,7 @@ import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
+import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveTrain;
 
@@ -35,6 +36,7 @@ public class RechargeRobot extends BasicRobot
   private final ControlWheel fortune = new ControlWheel(RobotMap.CONTROL_PANEL_WHEEL);
   private final Command manual_wheel = new ManualWheelSpeed(fortune);
   private final Command rotate_wheel = new RotateWheel(fortune, 3);
+  private final Command rotate_to_color = new RotateToColor(fortune);
 
   @Override
   public void robotInit()
@@ -44,6 +46,8 @@ public class RechargeRobot extends BasicRobot
     OI.enable_wheel.whenPressed(manual_wheel);
     // Pressing 'B' turns wheel automatically, then re-enables manual control
     OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
+    // Pressing 'X' turns wheel to the desired color
+    OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
   }
 
   @Override
@@ -56,6 +60,5 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    color_sensor.getColor();
   }
 }

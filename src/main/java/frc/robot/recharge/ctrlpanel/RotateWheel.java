@@ -15,14 +15,10 @@ public class RotateWheel extends CommandBase
 {
   private final ControlWheel wheel;
   private final int required_sectors;
-  /** Slow and fast speed, direction such that colors appear in the expected order */
-  private final double slow = -0.01, fast = -0.05;
 
   /** Number of color wheel sectors that we need to see go by */
   private int sectors;
 
-  /** Last pipeline calls that we saw */
-  private int last_calls = -1;
   private int next_color = -1;
 
   /** @param wheel Control wheel to turn
@@ -40,32 +36,23 @@ public class RotateWheel extends CommandBase
   {
     sectors = required_sectors;
     next_color = -1;
-    wheel.spin(fast);
+    wheel.fast();
   }
 
   @Override
   public void execute()
   {
-    // Do we have new image information?
-    int calls = (int) SmartDashboard.getNumber("PipelineCalls", -1);
-    if (calls == last_calls)
-    {
-      // System.out.println("Stale image info");
-      return;
-    }
-    last_calls = calls;
-
     // Did the camera detect a color?
-    int color = (int) SmartDashboard.getNumber("Color Idx", -1);
+    int color = wheel.getColor();
     if (color < 0)
     {
       // System.out.println("Unknown color");
       // Go slow to improve chance of catching that color
-      wheel.spin(slow);
+      wheel.slow();
       return;
     }
     // Got the color, move on
-    wheel.spin(fast);
+    wheel.fast();
 
     // Is this the first time we see a color?
     if (next_color < 0)
