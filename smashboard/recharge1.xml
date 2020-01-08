@@ -1,5 +1,9 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="ColorSensor" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="192" y="589"/>
+		<width>317</width>
+	</widget>
 	<widget field="Center R" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="208" y="493"/>
 	</widget>
@@ -33,8 +37,21 @@
 	</widget>
 </dashboard>
 <live-window>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="Servo[9]" type="Servo" class="edu.wpi.first.smartdashboard.livewindow.elements.ServoController">
+			<location x="6" y="15"/>
+			<height>45</height>
+			<width>295</width>
+		</widget>
+		<location x="4" y="11"/>
+		<width>307</width>
+		<height>66</height>
+	</widget>
+	<widget field="DriveTrain" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="29" y="3"/>
+	</widget>
+	<widget field="ControlWheel" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="26" y="18"/>
+	</widget>
 </live-window>
-	<hidden field="Center S"/>
-	<hidden field="Center H"/>
-	<hidden field="Center L"/>
 </xml>
