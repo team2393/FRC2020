@@ -7,6 +7,7 @@
 
 package frc.robot.recharge.ctrlpanel;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -14,84 +15,75 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class RotateToColor extends CommandBase
 {
   private final ControlWheel wheel;
-  private final int required_sectors;
-  /** Slow and fast speed, direction such that colors appear in the expected order */
-  private final double slow = -0.01, fast = -0.05;
 
-  /** Number of color wheel sectors that we need to see go by */
-  private int sectors;
-
-  /** Last pipeline calls that we saw */
-  private int last_calls = -1;
-  private int next_color = -1;
-
-  /** @param wheel Control wheel to turn
-   *  @param times How many times should be turn the wheel?
+  /** The color that we should find,
+   *  or -1 if we don't know where to go.
    */
-  public RotateToColor(final ControlWheel wheel, final int times)
+  private int desired_color;
+
+  private boolean is_finished;
+
+  /** @param wheel Control wheel to turn */
+  public RotateToColor(final ControlWheel wheel)
   {
     this.wheel = wheel;
-    required_sectors = times * 8;
     addRequirements(wheel);
   }
 
   @Override
   public void initialize()
   {
-    sectors = required_sectors;
-    next_color = -1;
-    wheel.spin(fast);
+    // Determine which color we should go to
+    desired_color = getDesiredColor();
+    if (desired_color < 0)
+      is_finished = true;
+    else
+    {
+      wheel.fast();
+      is_finished = false;
+    }
+  }
+  
+  private int getDesiredColor()
+  {
+    final String gameData = DriverStation.getInstance().getGameSpecificMessage();
+    if (gameData.length() < 1)
+      return -1;
+    if (gameData.charAt(0) == 'B')
+      return 0;
+    if (gameData.charAt(0) == 'G')
+      return 1;
+    if (gameData.charAt(0) == 'R')
+      return 2;
+    if (gameData.charAt(0) == 'Y')
+      return 3;
+    return -1;
   }
 
   @Override
   public void execute()
   {
-    // Do we have new image information?
-    int calls = (int) SmartDashboard.getNumber("PipelineCalls", -1);
-    if (calls == last_calls)
-    {
-      // System.out.println("Stale image info");
+    if (desired_color < 0)
       return;
-    }
-    last_calls = calls;
 
     // Did the camera detect a color?
-    int color = (int) SmartDashboard.getNumber("Color Idx", -1);
+    int color = wheel.getColor();
     if (color < 0)
     {
       // System.out.println("Unknown color");
       // Go slow to improve chance of catching that color
-      wheel.spin(slow);
-      return;
-    }
-    // Got the color, move on
-    wheel.spin(fast);
-
-    // Is this the first time we see a color?
-    if (next_color < 0)
-    {
-      next_color = (color + 1) % ControlWheel.COLORS.length;
-      System.out.println("Started on " + ControlWheel.COLORS[color] +
-                         ", looking for " + ControlWheel.COLORS[next_color]);
+      wheel.slow();
       return;
     }
 
-    // Have we reached the next expected color?
-    if (color == next_color)
+    // Have we reached the expected color?
+    if (color == desired_color)
     {
-      // One more sector done
-      --sectors;
-      if (isFinished())
-      {
-        System.out.println("Found " + ControlWheel.COLORS[color] +
-                            ", methinks I'm DONE!");
-        return;
-      }
-      next_color = (color + 1) % ControlWheel.COLORS.length;
-      System.out.println("Found " + ControlWheel.COLORS[color] +
-                         ", now looking for " + ControlWheel.COLORS[next_color] +
-                         ", " + sectors + " more sectors");
+      is_finished = true;
+      System.out.println("Found " + ControlWheel.COLORS[color]);
     }
+    else
+      wheel.fast();
   }
 
   @Override
@@ -103,6 +95,6 @@ public class RotateToColor extends CommandBase
   @Override
   public boolean isFinished()
   {
-    return sectors <= 0;
+    return is_finished;
   }
 }

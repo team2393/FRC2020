@@ -9,8 +9,10 @@ package frc.robot.recharge;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.ctrlpanel.ColorSensor;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
+import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveTrain;
 
@@ -29,9 +31,12 @@ public class RechargeRobot extends BasicRobot
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Lift, grabber, pusher, climber, ...
 
+  private final ColorSensor color_sensor = new ColorSensor();
+
   private final ControlWheel fortune = new ControlWheel(RobotMap.CONTROL_PANEL_WHEEL);
   private final Command manual_wheel = new ManualWheelSpeed(fortune);
   private final Command rotate_wheel = new RotateWheel(fortune, 3);
+  private final Command rotate_to_color = new RotateToColor(fortune);
 
   @Override
   public void robotInit()
@@ -41,6 +46,8 @@ public class RechargeRobot extends BasicRobot
     OI.enable_wheel.whenPressed(manual_wheel);
     // Pressing 'B' turns wheel automatically, then re-enables manual control
     OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
+    // Pressing 'X' turns wheel to the desired color
+    OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
   }
 
   @Override
@@ -48,5 +55,10 @@ public class RechargeRobot extends BasicRobot
   {
     super.teleopInit();
     manual_wheel.schedule();
+  }
+
+  @Override
+  public void teleopPeriodic()
+  {
   }
 }
