@@ -47,14 +47,19 @@ https://www.ni.com/en-il/support/downloads/drivers/download.frc-game-tools.html
 Get Robot Code
 --------------
 
-Open VS Studio.
+Open Visual Studio Code.
 
-Suggestions for File, Preferences:
+Invoke menu View, Command Palette, and type "Git: Clone".
+Enter this URL: https://github.com/Team2393/FRC2020.
+Create & browse to a folder `git` in your home directory.
+
+You can use VSCode "as is", or consider these 
+suggestions for File, Preferences:
  * Color Theme 'Light'
  * Disable the 'minimap'
  * Disable 'render indent guides'
  * Tabs: Use 2 spaces, no auto-detection of indentation
 
-Invoke menu View, Command Palette, and type "Git: Clone".
-Enter this URL: https://github.com/Team2393/FRC2020.
-Create & browse to a folder `git` in your home directory.
+For View, Extensions we suggest to search for and then install
+ * Git Graph (mhutchie.git-graph)
+
