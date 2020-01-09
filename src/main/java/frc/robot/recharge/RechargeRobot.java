@@ -65,4 +65,12 @@ public class RechargeRobot extends BasicRobot
   {
     led_strip.rainbow();
   }
+
+  @Override
+  public void autonomousPeriodic()
+  {
+    final double period_ms = 3000.0;
+    final double direction = Math.sin(2.0*Math.PI * System.currentTimeMillis()/period_ms);
+    led_strip.indicateDirection(direction);
+  }
 }
