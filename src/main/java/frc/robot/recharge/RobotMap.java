@@ -21,4 +21,7 @@ public class RobotMap
 
   // Motor port used for wheel-of-fortune on control panel
   public final static int CONTROL_PANEL_WHEEL = 9;
+
+  // PWM port for LED Strip
+  public static final int LED_STRIP = 0;
 }

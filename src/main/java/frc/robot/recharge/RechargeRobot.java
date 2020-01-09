@@ -15,6 +15,7 @@ import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveTrain;
+import frc.robot.recharge.led.LEDStrip;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
@@ -38,6 +39,8 @@ public class RechargeRobot extends BasicRobot
   private final Command rotate_wheel = new RotateWheel(fortune, 3);
   private final Command rotate_to_color = new RotateToColor(fortune);
 
+  private final LEDStrip led_strip = new LEDStrip();
+
   @Override
   public void robotInit()
   {
@@ -60,5 +63,6 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
+    led_strip.rainbow();
   }
 }
