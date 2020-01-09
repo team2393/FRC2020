@@ -23,5 +23,5 @@ public class RobotMap
   public final static int CONTROL_PANEL_WHEEL = 9;
 
   // PWM port for LED Strip
-  public static final int LED_STRIP = 0;
+  public static final int LED_STRIP = 8;
 }

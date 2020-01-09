@@ -54,23 +54,29 @@ public class RechargeRobot extends BasicRobot
   }
 
   @Override
+  public void disabledInit()
+  {
+    super.disabledInit();
+    led_strip.idle();
+  }
+
+  @Override
   public void teleopInit()
   {
     super.teleopInit();
     manual_wheel.schedule();
   }
-
+  
   @Override
-  public void teleopPeriodic()
+  public void autonomousPeriodic()
   {
     led_strip.rainbow();
   }
 
   @Override
-  public void autonomousPeriodic()
+  public void teleopPeriodic()
   {
-    final double period_ms = 3000.0;
-    final double direction = Math.sin(2.0*Math.PI * System.currentTimeMillis()/period_ms);
+    final double direction = OI.getDirection();
     led_strip.indicateDirection(direction);
   }
 }

@@ -12,11 +12,10 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
 
-/**
- * Add your docs here.
- */
+/** Various indicators based on digital LED strip */
 public class LEDStrip
 {
+  // Adafruit 1m (30 LED) 'Neo Pixel'
   private static final int N = 30;
   private final AddressableLED strip = new AddressableLED(RobotMap.LED_STRIP);
   private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(N);
@@ -24,14 +23,27 @@ public class LEDStrip
   public LEDStrip()
   {
     strip.setLength(N);
-    setAll(255, 0, 0);
     strip.start();
+    idle();
   }
-  
+
+  /** Set all LEDs to same color
+   *  @param r
+   *  @param g
+   *  @param b
+   */
   public void setAll(final int r, final int g, final int b)
   {
     for (int i=0; i<N; ++i)
       buffer.setRGB(i, r, g, b);
+    strip.setData(buffer);
+  }
+
+  /** 'Idle' type indicator */
+  public void idle()
+  {
+    // Dark red
+    setAll(50, 0, 0);
     strip.setData(buffer);
   }
 
@@ -58,9 +70,10 @@ public class LEDStrip
 
   /** Number of LEDs used for the 'direction' indicator */
   private static final int pointer_size = 6;
+  /** 'start' LED when indicator is in center */
+  private static final int center_pos = (N - pointer_size) / 2;
 
   /** Indicate direction to a target
-   *
    *  @param direction -1 .. 0 .. 1 for left .. center .. right
    */
   public void indicateDirection(final double direction)
@@ -69,26 +82,33 @@ public class LEDStrip
     // full left, -1          : GGGGGRRRRRRRRRR----------
     // somewhat left, -0.5    : ---GGGGGRRRRRRR----------
 
-    // Usable space for moving central pointer left or right
-    final int usable_space = (N - pointer_size) / 2;
-    final int start = N/2 + usable_space * MathUtil.clamp(direction, -1.0, 1.0);
-    final int start = start + pointer_size;
+    // Compute 'start' of indicator, keeping it in valid range
+    int start = center_pos + (int)Math.round(center_pos * direction);
+    // Keep in valid range in case |direction| > 1 or rounding errors
+    start = MathUtil.clamp(start, 0, N-pointer_size-1);
+    final int end = Math.min(start + pointer_size, N-1);
 
+    // Initial 'background' color
     int i;
-    // Overall 'background' color
-    for (i=0; i<N; ++i)
+    for (i=0; i<start; ++i)
       buffer.setRGB(i, 0, 0, 0);
-
-    // Potential red region from center to start (direction > 0)
-    for (i=N/2; i<start; ++i)
-      buffer.setRGB(i, 255, 0, 0);
-
+      
     // Green start..end section
     for (i=start; i<end; ++i)
       buffer.setRGB(i, 0, 255, 0);
 
-    // Potential red region from right end to center (direction < 0)
-    for (i=end; i<N/2; ++i)
+    // background to end
+    for (i=end; i<N; ++i)
+      buffer.setRGB(i, 0, 0, 0);
+
+    // Potential red region from center to start (direction > 0)
+    for (i=center_pos; i<start; ++i)
       buffer.setRGB(i, 255, 0, 0);
+
+    // Potential red region from right end to center (direction < 0)
+    for (i=end; i<center_pos+pointer_size; ++i)
+       buffer.setRGB(i, 255, 0, 0);
+
+    strip.setData(buffer);
   }
 }
