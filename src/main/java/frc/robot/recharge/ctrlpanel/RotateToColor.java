@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST Team 2393. All Rights Reserved.                   */
+/* Copyright (c) 2020 FIRST Team 2393. All Rights Reserved.                   */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -8,10 +8,9 @@
 package frc.robot.recharge.ctrlpanel;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Command to rotate wheel based on camera info */
+/** Command to rotate wheel to desired color */
 public class RotateToColor extends CommandBase
 {
   private final ControlWheel wheel;
@@ -80,7 +79,7 @@ public class RotateToColor extends CommandBase
     if (color == desired_color)
     {
       is_finished = true;
-      System.out.println("Found " + ControlWheel.COLORS[color]);
+      System.out.println("Found " + ColorDetector.COLORS[color]);
     }
     else
       wheel.fast();

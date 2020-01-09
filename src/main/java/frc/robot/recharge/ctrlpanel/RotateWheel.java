@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST Team 2393. All Rights Reserved.                   */
+/* Copyright (c) 2020 FIRST Team 2393. All Rights Reserved.                   */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,10 +7,9 @@
 
 package frc.robot.recharge.ctrlpanel;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Command to rotate wheel based on camera info */
+/** Command to rotate wheel N times */
 public class RotateWheel extends CommandBase
 {
   private final ControlWheel wheel;
@@ -57,9 +56,9 @@ public class RotateWheel extends CommandBase
     // Is this the first time we see a color?
     if (next_color < 0)
     {
-      next_color = (color + 1) % ControlWheel.COLORS.length;
-      System.out.println("Started on " + ControlWheel.COLORS[color] +
-                         ", looking for " + ControlWheel.COLORS[next_color]);
+      next_color = (color + 1) % ColorDetector.COLORS.length;
+      System.out.println("Started on " + ColorDetector.COLORS[color] +
+                         ", looking for " + ColorDetector.COLORS[next_color]);
       return;
     }
 
@@ -70,13 +69,13 @@ public class RotateWheel extends CommandBase
       --sectors;
       if (isFinished())
       {
-        System.out.println("Found " + ControlWheel.COLORS[color] +
+        System.out.println("Found " + ColorDetector.COLORS[color] +
                             ", methinks I'm DONE!");
         return;
       }
-      next_color = (color + 1) % ControlWheel.COLORS.length;
-      System.out.println("Found " + ControlWheel.COLORS[color] +
-                         ", now looking for " + ControlWheel.COLORS[next_color] +
+      next_color = (color + 1) % ColorDetector.COLORS.length;
+      System.out.println("Found " + ColorDetector.COLORS[color] +
+                         ", now looking for " + ColorDetector.COLORS[next_color] +
                          ", " + sectors + " more sectors");
     }
   }
