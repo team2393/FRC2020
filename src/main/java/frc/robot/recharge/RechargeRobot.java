@@ -7,6 +7,7 @@
 
 package frc.robot.recharge;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
@@ -77,6 +78,7 @@ public class RechargeRobot extends BasicRobot
   public void teleopPeriodic()
   {
     final double direction = OI.getDirection();
+    // final double direction = SmartDashboard.getNumber("Direction", 0) / 60;
     led_strip.indicateDirection(direction);
   }
 }

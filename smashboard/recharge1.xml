@@ -1,27 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Area" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="224" y="605"/>
+	</widget>
+	<widget field="AreaMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="208" y="573"/>
+	</widget>
 	<widget field="ColorSensor" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="192" y="589"/>
+		<location x="451" y="608"/>
 		<width>317</width>
-	</widget>
-	<widget field="Center R" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="208" y="493"/>
-	</widget>
-	<widget field="Center G" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="208" y="525"/>
-	</widget>
-	<widget field="Center B" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="208" y="557"/>
-	</widget>
-	<widget field="Color Area" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="361" y="528"/>
-	</widget>
-	<widget field="Color Idx" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="368" y="557"/>
-		<property name="Editable" value="false"/>
-	</widget>
-	<widget field="Color" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="386" y="496"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.MjpgStreamViewerImpl">
 		<location x="211" y="1"/>
@@ -30,28 +17,39 @@
 		<property name="MJPG Server URL" value="http://frcvision.local:1182/stream.mjpg"/>
 	</static-widget>
 	<widget field="PipelineCPS" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="672" y="528"/>
+		<location x="624" y="544"/>
 	</widget>
 	<widget field="PipelineCalls" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="672" y="496"/>
+		<location x="624" y="509"/>
+	</widget>
+	<widget field="Direction" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="336" y="573"/>
+	</widget>
+	<widget field="LumMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="340" y="541"/>
+	</widget>
+	<widget field="LumMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="343" y="509"/>
+	</widget>
+	<widget field="SatMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="473" y="541"/>
+	</widget>
+	<widget field="SatMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="476" y="509"/>
+	</widget>
+	<widget field="HueMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="208" y="541"/>
+	</widget>
+	<widget field="HueMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="208" y="509"/>
 	</widget>
 </dashboard>
 <live-window>
-	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
-		<widget field="Servo[9]" type="Servo" class="edu.wpi.first.smartdashboard.livewindow.elements.ServoController">
-			<location x="6" y="15"/>
-			<height>45</height>
-			<width>295</width>
-		</widget>
-		<location x="4" y="11"/>
-		<width>307</width>
-		<height>66</height>
-	</widget>
-	<widget field="DriveTrain" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
-		<location x="29" y="3"/>
-	</widget>
-	<widget field="ControlWheel" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
-		<location x="26" y="18"/>
-	</widget>
 </live-window>
+	<hidden field="Center G"/>
+	<hidden field="Color"/>
+	<hidden field="Color Area"/>
+	<hidden field="Center R"/>
+	<hidden field="Center B"/>
+	<hidden field="Color Idx"/>
 </xml>
