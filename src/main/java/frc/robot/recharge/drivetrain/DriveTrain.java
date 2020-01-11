@@ -9,28 +9,33 @@ package frc.robot.recharge.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
 /** Drive train (them wheels) */
 public class DriveTrain extends SubsystemBase
 {
-  // Switch to TalonFX?
-  private final TalonFX left_main = new TalonFX(RobotMap.LEFT_MOTOR_MAIN);
-  // private final TalonFX right_main = new TalonFX(RobotMap.RIGHT_MOTOR_MAIN);
-  // private final TalonFX left_slave = new TalonFX(RobotMap.LEFT_MOTOR_SLAVE);
+  // Motors
+  private final WPI_TalonFX left_main = new WPI_TalonFX(RobotMap.LEFT_MOTOR_MAIN);
+  private final WPI_TalonFX right_main = new WPI_TalonFX(RobotMap.RIGHT_MOTOR_MAIN);
+  private final WPI_TalonFX left_slave = new WPI_TalonFX(RobotMap.LEFT_MOTOR_SLAVE);
+  private final WPI_TalonFX right_slave = new WPI_TalonFX(RobotMap.RIGHT_MOTOR_SLAVE);
 
+  // Combine (main) motors into diff' drive 
+  private final DifferentialDrive differential_drive = new DifferentialDrive(left_main, right_main);
 
   public DriveTrain()
   {
-    // Calling any CTRE CAN bus API will add the Phoenix diagnostics server to the robot
-    // --> Dummy access to CAN bus even if we don't have a motor, yet
-    System.out.println("Left main Talon firmware: " + Integer.toHexString(left_main.getFirmwareVersion()));
+    // Instruct slave motors to follow their respective main
+    left_slave.follow(left_main);
+    right_slave.follow(right_main);
   }
 
-  public void drive(double speed)
+  public void drive(final double speed, final double rotation)
   {
-    left_main.set(ControlMode.PercentOutput, speed);
+    differential_drive.arcadeDrive(speed, rotation);
   }
 }

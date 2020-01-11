@@ -7,6 +7,7 @@
 
 package frc.robot.recharge;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BasicRobot;
@@ -41,6 +42,8 @@ public class RechargeRobot extends BasicRobot
   private final Command rotate_to_color = new RotateToColor(fortune);
 
   private final LEDStrip led_strip = new LEDStrip();
+
+  private final Compressor pcm = new Compressor();
 
   @Override
   public void robotInit()
@@ -80,6 +83,8 @@ public class RechargeRobot extends BasicRobot
     //final double direction = OI.getDirection();
    final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     led_strip.indicateDirection(direction);
-    drivetrain.drive(OI.getSpeed());
+    drivetrain.drive(OI.getSpeed(), OI.getDirection());
+    
+    // pcm.clearAllPCMStickyFaults();
   }
 }

@@ -14,14 +14,18 @@ public class RobotMap
 {    
   // Talon CAN IDs =================================
   // Drivetrain motors
-  public final static int LEFT_MOTOR_SLAVE = 4;
   public final static int LEFT_MOTOR_MAIN = 1;
-  public final static int RIGHT_MOTOR_SLAVE = 3;
   public final static int RIGHT_MOTOR_MAIN = 2;
+  public final static int LEFT_MOTOR_SLAVE = 3;
+  public final static int RIGHT_MOTOR_SLAVE = 4;
 
   // Motor port used for wheel-of-fortune on control panel
   public final static int CONTROL_PANEL_WHEEL = 9;
 
   // PWM port for LED Strip
   public static final int LED_STRIP = 8;
+
+  // PCM port used to solenoids
+  public static final int GEAR_SOLENOID = 7;
+
 }

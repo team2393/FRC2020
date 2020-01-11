@@ -24,16 +24,18 @@ public class OI
   public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
   public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
 
+  /** @return Speed (1=full ahead) */
+  public static double getSpeed()
+  {
+    return -joystick.getY(Hand.kRight);
+  }
+
   /** @return Left/right steering */
   public static double getDirection()
   {
     return joystick.getX(Hand.kRight);
   }
 
-  public static double getSpeed()
-  {
-    return joystick.getY(Hand.kRight);
-  }
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()
   {
