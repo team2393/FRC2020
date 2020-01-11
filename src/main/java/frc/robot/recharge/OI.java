@@ -30,6 +30,10 @@ public class OI
     return joystick.getX(Hand.kRight);
   }
 
+  public static double getSpeed()
+  {
+    return joystick.getY(Hand.kRight);
+  }
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()
   {

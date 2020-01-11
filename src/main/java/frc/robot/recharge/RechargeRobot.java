@@ -77,8 +77,9 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    final double direction = OI.getDirection();
-    // final double direction = SmartDashboard.getNumber("Direction", 0) / 60;
+    //final double direction = OI.getDirection();
+   final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     led_strip.indicateDirection(direction);
+    drivetrain.drive(OI.getSpeed());
   }
 }
