@@ -10,6 +10,7 @@ package frc.robot.recharge;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * Operator Interface Definitions
@@ -23,17 +24,30 @@ public class OI
   public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
   public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
   public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
+  
+  
+  public static final Trigger shift_low = new Trigger(() -> joystick.getTriggerAxis(Hand.kRight) > .5);
+  public static final JoystickButton shift_high = new JoystickButton(joystick, XboxController.Button.kBumperRight.value);
+  
+  private static double getSpeedFactor()
+  {
+    if (joystick.getTriggerAxis(Hand.kRight) > 0.6)
+      return 0.5;
+    else
+      return 1;
+  }
 
   /** @return Speed (1=full ahead) */
   public static double getSpeed()
   {
-    return -joystick.getY(Hand.kRight);
+    return getSpeedFactor() * -joystick.getY(Hand.kLeft);
+
   }
 
   /** @return Left/right steering */
   public static double getDirection()
   {
-    return joystick.getX(Hand.kRight);
+    return getSpeedFactor() * joystick.getX(Hand.kRight);
   }
 
   /** @return Manual fortune wheel speed */

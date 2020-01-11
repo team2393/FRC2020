@@ -9,20 +9,16 @@ package frc.robot.recharge.ctrlpanel;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.recharge.RobotMap;
 
 /** Control panel wheel */
 public class ControlWheel extends SubsystemBase implements ColorDetector
 {
-  final Servo motor;
+  private final Servo motor = new Servo(RobotMap.CONTROL_PANEL_WHEEL);
 
   final ColorDetector 
   detector = new ColorSensor();
                                  // new ColorDetectingCamera();
-
-  public ControlWheel(final int motor_port)
-  {
-    motor = new Servo(motor_port);
-  }
 
   /** Turn the wheel
    *  @param speed Speed -1 .. 1

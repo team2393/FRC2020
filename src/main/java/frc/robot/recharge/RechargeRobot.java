@@ -10,6 +10,7 @@ package frc.robot.recharge;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
@@ -17,6 +18,7 @@ import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveTrain;
+import frc.robot.recharge.drivetrain.ToggleGearShift;
 import frc.robot.recharge.led.LEDStrip;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -24,7 +26,10 @@ import frc.robot.recharge.led.LEDStrip;
 public class RechargeRobot extends BasicRobot
 {  
   // TODO Basic Drivetrain class for the motors
-  private final DriveTrain drivetrain = new DriveTrain();
+  private final DriveTrain drive_train = new DriveTrain();
+  private final Command shift_low = new InstantCommand(() -> drive_train.setGear(false));
+  private final Command shift_high = new InstantCommand(() -> drive_train.setGear(true));
+
   // TODO Command to drive by joystick
   // TODO Add encoders to DriveTrain
   // TODO Command to drive to distance and heading (PID)
@@ -36,7 +41,7 @@ public class RechargeRobot extends BasicRobot
 
   private final ColorSensor color_sensor = new ColorSensor();
 
-  private final ControlWheel fortune = new ControlWheel(RobotMap.CONTROL_PANEL_WHEEL);
+  private final ControlWheel fortune = new ControlWheel();
   private final Command manual_wheel = new ManualWheelSpeed(fortune);
   private final Command rotate_wheel = new RotateWheel(fortune, 3);
   private final Command rotate_to_color = new RotateToColor(fortune);
@@ -55,6 +60,9 @@ public class RechargeRobot extends BasicRobot
     OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
     // Pressing 'X' turns wheel to the desired color
     OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
+
+    OI.shift_low.whenActive(shift_low);
+    OI.shift_high.whenPressed(shift_high);
   }
 
   @Override
@@ -83,8 +91,11 @@ public class RechargeRobot extends BasicRobot
     //final double direction = OI.getDirection();
    final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     led_strip.indicateDirection(direction);
-    drivetrain.drive(OI.getSpeed(), OI.getDirection());
+    drive_train.drive(OI.getSpeed(), OI.getDirection());
     
     // pcm.clearAllPCMStickyFaults();
+
+    if (Math.abs(OI.getSpeed()) < 0.1)
+      shift_low.schedule();
   }
 }
