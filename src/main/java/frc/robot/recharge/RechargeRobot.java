@@ -7,7 +7,6 @@
 
 package frc.robot.recharge;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,14 +17,12 @@ import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveTrain;
-import frc.robot.recharge.drivetrain.ToggleGearShift;
 import frc.robot.recharge.led.LEDStrip;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
 public class RechargeRobot extends BasicRobot
 {  
-  // TODO Basic Drivetrain class for the motors
   private final DriveTrain drive_train = new DriveTrain();
   private final Command shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final Command shift_high = new InstantCommand(() -> drive_train.setGear(true));
@@ -33,11 +30,13 @@ public class RechargeRobot extends BasicRobot
   // TODO Command to drive by joystick
   // TODO Add encoders to DriveTrain
   // TODO Command to drive to distance and heading (PID)
-  // TODO Trajectory: Create, follow
-  // TODO Camera (on pi)
-  // TODO Vision processing (on pi)
+  // TODO Trajectory: Create
+  // TODO Use simple position and heading PID to follow trajectory
+  // TODO Kinematics to track current 'pose',  https://docs.wpilib.org/en/latest/docs/software/kinematics-and-odometry/differential-drive-odometry.html
+  // TODO RamseteCommand to follow trajectory
+
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
-  // TODO Lift, grabber, pusher, climber, ...
+  // TODO Grabber, shooter, ...
 
   private final ColorSensor color_sensor = new ColorSensor();
 
@@ -47,8 +46,6 @@ public class RechargeRobot extends BasicRobot
   private final Command rotate_to_color = new RotateToColor(fortune);
 
   private final LEDStrip led_strip = new LEDStrip();
-
-  private final Compressor pcm = new Compressor();
 
   @Override
   public void robotInit()

@@ -27,6 +27,8 @@ public class FalconTestRobot extends BasicRobot
   private final XboxController joystick = new XboxController(0);
   private final WPI_TalonFX motor = new WPI_TalonFX(1);
 
+  private static final int steps_per_rev = 2048;
+
   private double desired_position = 0;
 
   /** Controller which computes error, correction etc.
@@ -54,6 +56,12 @@ public class FalconTestRobot extends BasicRobot
     motor.setNeutralMode(NeutralMode.Brake);
     motor.configOpenloopRamp(2.0);
 
+    // 1/8 of a rev or better is consideted 'at desired position'
+    position_pid.setTolerance(steps_per_rev / 8);
+
+    // When using I gain, consider setting this:
+    // position_pid.setIntegratorRange(minimumIntegral, maximumIntegral);
+
     // Allow setting PID parameters on dashboard
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.setDefaultNumber("Turns", 4);
@@ -77,7 +85,6 @@ public class FalconTestRobot extends BasicRobot
   public void autonomousPeriodic()
   {
     // Toggle between two desired positions every 2 seconds
-    final int steps_per_rev = 2048;
     desired_position = ((System.currentTimeMillis() / 2000) % 2) * steps_per_rev * SmartDashboard.getNumber("Turns", 1);
     SmartDashboard.putNumber("Position Error", position_pid.getPositionError());
     SmartDashboard.putBoolean("At Position", position_pid.atSetpoint());
