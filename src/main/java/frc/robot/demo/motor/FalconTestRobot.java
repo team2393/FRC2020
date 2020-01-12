@@ -29,7 +29,10 @@ public class FalconTestRobot extends BasicRobot
 
   private double desired_position = 0;
 
-  /** Controller which computes error, correction etc. */
+  /** Controller which computes error, correction etc.
+   *  Manual:               0.0005, 0, 0.0001
+   *  frc-characterization: 0.02,   0, 0.008 ?!
+   */
   private final PIDController position_pid = new PIDController(0.0005, 0, 0.0001);
   
   /** Command that reads current position,
@@ -53,6 +56,7 @@ public class FalconTestRobot extends BasicRobot
 
     // Allow setting PID parameters on dashboard
     SmartDashboard.putData("Position PID", position_pid);
+    SmartDashboard.setDefaultNumber("Turns", 4);
   }
 
   @Override
@@ -74,7 +78,7 @@ public class FalconTestRobot extends BasicRobot
   {
     // Toggle between two desired positions every 2 seconds
     final int steps_per_rev = 2048;
-    desired_position = ((System.currentTimeMillis() / 2000) % 2) * steps_per_rev * 1.0;
+    desired_position = ((System.currentTimeMillis() / 2000) % 2) * steps_per_rev * SmartDashboard.getNumber("Turns", 1);
     SmartDashboard.putNumber("Position Error", position_pid.getPositionError());
     SmartDashboard.putBoolean("At Position", position_pid.atSetpoint());
   }
