@@ -17,6 +17,7 @@ import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
+import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.led.LEDStrip;
 
@@ -27,6 +28,7 @@ public class RechargeRobot extends BasicRobot
   private final DriveTrain drive_train = new DriveTrain();
   
   private final Command drive_by_joystick = new DriveByJoystick(drive_train);
+  private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
   private final Command shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final Command shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
@@ -94,8 +96,19 @@ public class RechargeRobot extends BasicRobot
   }
   
   @Override
+  public void autonomousInit()
+  {
+    super.autonomousInit();
+    drive_to_position.schedule();
+  }
+  @Override
   public void autonomousPeriodic()
   {
     led_strip.rainbow();
+  
+    // Every 3 seconds, toggle between "0" and "test_pos"
+    double test_pos_meters = 0.5;
+    double test= (System.currentTimeMillis() / 3000) % 2  * test_pos_meters;
+    drive_to_position.setDesiredPosition(test);
   }
 }

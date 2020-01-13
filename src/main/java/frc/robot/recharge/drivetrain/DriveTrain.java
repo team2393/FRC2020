@@ -10,13 +10,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
 /** Drive train (them wheels) */
 public class DriveTrain extends SubsystemBase
 {
+  private static final double TICKS_PER_METER = 1.0;
+
   // Motors
   private final WPI_TalonFX left_main = new WPI_TalonFX(RobotMap.LEFT_MOTOR_MAIN);
   private final WPI_TalonFX right_main = new WPI_TalonFX(RobotMap.RIGHT_MOTOR_MAIN);
@@ -27,6 +31,8 @@ public class DriveTrain extends SubsystemBase
   private final DifferentialDrive differential_drive = new DifferentialDrive(left_main, right_main);
 
   private final Solenoid shifter = new Solenoid(RobotMap.GEAR_SOLENOID);
+
+  private final PIDController position_pid = new PIDController(0.0, 0.0, 0.0);
 
   public DriveTrain()
   {
@@ -49,6 +55,7 @@ public class DriveTrain extends SubsystemBase
     // Initially, set low gear
     setGear(false);
 
+    SmartDashboard.putData("Position PID", position_pid);
   }
 
   /** @param motor Motor to configure with common settings */
@@ -78,5 +85,32 @@ public class DriveTrain extends SubsystemBase
   {
     return left_main.getSelectedSensorVelocity() == 0  &&
            right_main.getSelectedSensorVelocity() == 0;
+  }
+
+  public PIDController getPositionPID()
+  {
+    return position_pid;
+  }
+
+  public double getPositionMeters()
+  {
+    final int avg_ticks = (left_main.getSelectedSensorPosition() +
+                           right_main.getSelectedSensorPosition()) / 2;
+    return avg_ticks / TICKS_PER_METER;
+  }
+
+  public double getSpeedMetersPerSecond()
+  {
+    // TODO "sensor per 100ms .. see phoenix documentation how to interprete"
+    final int avg_tickspeed = (left_main.getSelectedSensorVelocity() +
+                               right_main.getSelectedSensorVelocity()) / 2;
+    return avg_tickspeed / TICKS_PER_METER;
+  }
+
+  @Override
+  public void periodic()
+  {
+    SmartDashboard.putNumber("Position", getPositionMeters());
+    SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
   }
 }
