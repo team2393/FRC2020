@@ -16,6 +16,7 @@ import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
+import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.led.LEDStrip;
 
@@ -24,10 +25,11 @@ import frc.robot.recharge.led.LEDStrip;
 public class RechargeRobot extends BasicRobot
 {  
   private final DriveTrain drive_train = new DriveTrain();
+  
+  private final Command drive_by_joystick = new DriveByJoystick(drive_train);
   private final Command shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final Command shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
-  // TODO Command to drive by joystick
   // TODO Add encoders to DriveTrain
   // TODO Command to drive to distance and heading (PID)
   // TODO Trajectory: Create
@@ -44,12 +46,14 @@ public class RechargeRobot extends BasicRobot
   private final Command manual_wheel = new ManualWheelSpeed(fortune);
   private final Command rotate_wheel = new RotateWheel(fortune, 3);
   private final Command rotate_to_color = new RotateToColor(fortune);
-
+  
   private final LEDStrip led_strip = new LEDStrip();
-
+  
   @Override
   public void robotInit()
   {
+    // pcm.clearAllPCMStickyFaults();
+    
     // Bind buttons to actions (only active in teleop)
     // Pressing 'A' enables manual wheel control (and stops auto rotation)
     OI.enable_wheel.whenPressed(manual_wheel);
@@ -58,10 +62,14 @@ public class RechargeRobot extends BasicRobot
     // Pressing 'X' turns wheel to the desired color
     OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
 
+    // Manual shifting
+    // Note that DriveByJoystick will automatically shift,
+    // so while we can invoke 'shift_high' via button,
+    // we would automatically shift back low when standing still.
     OI.shift_low.whenActive(shift_low);
     OI.shift_high.whenPressed(shift_high);
   }
-
+  
   @Override
   public void disabledInit()
   {
@@ -74,25 +82,20 @@ public class RechargeRobot extends BasicRobot
   {
     super.teleopInit();
     manual_wheel.schedule();
+    drive_by_joystick.schedule();
+  }
+  
+  @Override
+  public void teleopPeriodic()
+  {
+    //final double direction = OI.getDirection();
+    final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
+    led_strip.indicateDirection(direction);    
   }
   
   @Override
   public void autonomousPeriodic()
   {
     led_strip.rainbow();
-  }
-
-  @Override
-  public void teleopPeriodic()
-  {
-    //final double direction = OI.getDirection();
-   final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
-    led_strip.indicateDirection(direction);
-    drive_train.drive(OI.getSpeed(), OI.getDirection());
-    
-    // pcm.clearAllPCMStickyFaults();
-
-    if (Math.abs(OI.getSpeed()) < 0.1)
-      shift_low.schedule();
   }
 }
