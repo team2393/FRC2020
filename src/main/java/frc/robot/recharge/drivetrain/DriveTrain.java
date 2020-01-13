@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -17,13 +18,14 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
 /** Drive train (them wheels) */
 public class DriveTrain extends SubsystemBase
 {
-  private static final double TICKS_PER_METER = 1.0;
+  private static final double TICKS_PER_METER = 512651 / Units.inchesToMeters(288);
 
   // Motors
   private final WPI_TalonFX left_main = new WPI_TalonFX(RobotMap.LEFT_MOTOR_MAIN);
@@ -41,16 +43,15 @@ public class DriveTrain extends SubsystemBase
   // When attached to talon, we need that talon, which is outside of the drivetrain...
   // PigeonIMU gyro = new PigeonIMU(new TalonSRX(1));
   // For now use the other gyro since it's easy to install and access
-  private final Gyro gyro = new ADXRS450_Gyro();
+  // private final Gyro gyro = new ADXRS450_Gyro();
 
   // PID
-  private final PIDController position_pid = new PIDController(0.0, 0.0, 0.0);
+  private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
   private final PIDController heading_pid = new PIDController(0.0, 0.0, 0.0);
 
 
   public DriveTrain()
   {
-    
     commonSettings(left_main);
     commonSettings(right_main);
     commonSettings(left_slave);
@@ -70,8 +71,8 @@ public class DriveTrain extends SubsystemBase
     // Initially, set low gear
     setGear(false);
     
-    gyro.calibrate();
-    gyro.reset();
+    // gyro.calibrate();
+    // gyro.reset();
     // TODO  heading_pid.enableContinuousInput(-180.0, 180.0);
 
     SmartDashboard.putData("Position PID", position_pid);
@@ -82,8 +83,10 @@ public class DriveTrain extends SubsystemBase
   private void commonSettings(final WPI_TalonFX motor)
   {
     motor.configFactoryDefault();
+    motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
+    motor.configOpenloopRamp(1.0);
   }
 
   public void drive(final double speed, final double rotation)
@@ -114,30 +117,31 @@ public class DriveTrain extends SubsystemBase
 
   public double getPositionMeters()
   {
-    final int avg_ticks = (left_main.getSelectedSensorPosition() +
-                           right_main.getSelectedSensorPosition()) / 2;
+    final long avg_ticks = ((long)left_main.getSelectedSensorPosition() -
+                                  right_main.getSelectedSensorPosition()) / 2;
     return avg_ticks / TICKS_PER_METER;
   }
 
   public double getSpeedMetersPerSecond()
   {
     // TODO "sensor per 100ms .. see phoenix documentation how to interprete"
-    final int avg_tickspeed = (left_main.getSelectedSensorVelocity() +
+    final int avg_tickspeed = (left_main.getSelectedSensorVelocity() -
                                right_main.getSelectedSensorVelocity()) / 2;
-    return avg_tickspeed / TICKS_PER_METER;
+    return avg_tickspeed * 10 / TICKS_PER_METER;
   }
 
   /** Reset all encoders to 0 */
   public void reset()
   {
-    gyro.reset();
+    // gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
   }
 
   public double getHeadingDegrees()
   {
-    return gyro.getAngle();
+    return -42.0;
+    // return gyro.getAngle();
   }
 
   public PIDController getHeadingPID()

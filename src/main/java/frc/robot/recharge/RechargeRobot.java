@@ -31,7 +31,7 @@ public class RechargeRobot extends BasicRobot
   
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
-  private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
+  // private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
   private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset);
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
@@ -46,14 +46,14 @@ public class RechargeRobot extends BasicRobot
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Grabber, shooter, ...
 
-  private final ColorSensor color_sensor = new ColorSensor();
+  // private final ColorSensor color_sensor = new ColorSensor();
 
-  private final ControlWheel fortune = new ControlWheel();
-  private final Command manual_wheel = new ManualWheelSpeed(fortune);
-  private final Command rotate_wheel = new RotateWheel(fortune, 3);
-  private final Command rotate_to_color = new RotateToColor(fortune);
+  // private final ControlWheel fortune = new ControlWheel();
+  // private final Command manual_wheel = new ManualWheelSpeed(fortune);
+  // private final Command rotate_wheel = new RotateWheel(fortune, 3);
+  // private final Command rotate_to_color = new RotateToColor(fortune);
   
-  private final LEDStrip led_strip = new LEDStrip();
+  // private final LEDStrip led_strip = new LEDStrip();
   
   @Override
   public void robotInit()
@@ -62,11 +62,11 @@ public class RechargeRobot extends BasicRobot
     
     // Bind buttons to actions (only active in teleop)
     // Pressing 'A' enables manual wheel control (and stops auto rotation)
-    OI.enable_wheel.whenPressed(manual_wheel);
-    // Pressing 'B' turns wheel automatically, then re-enables manual control
-    OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
-    // Pressing 'X' turns wheel to the desired color
-    OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
+    // OI.enable_wheel.whenPressed(manual_wheel);
+    // // Pressing 'B' turns wheel automatically, then re-enables manual control
+    // OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
+    // // Pressing 'X' turns wheel to the desired color
+    // OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
 
     // Manual shifting
     // Note that DriveByJoystick will automatically shift,
@@ -83,14 +83,14 @@ public class RechargeRobot extends BasicRobot
   public void disabledInit()
   {
     super.disabledInit();
-    led_strip.idle();
+    // led_strip.idle();
   }
 
   @Override
   public void teleopInit()
   {
     super.teleopInit();
-    manual_wheel.schedule();
+    // manual_wheel.schedule();
     drive_by_joystick.schedule();
   }
   
@@ -99,24 +99,24 @@ public class RechargeRobot extends BasicRobot
   {
     //final double direction = OI.getDirection();
     final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
-    led_strip.indicateDirection(direction);    
+    // led_strip.indicateDirection(direction);    
   }
   
   @Override
   public void autonomousInit()
   {
     super.autonomousInit();
-    drive_to_position.schedule();
+     drive_to_position.schedule();
     // turn_to_heading.schedule();
   }
   @Override
   public void autonomousPeriodic()
   {
-    led_strip.rainbow();
+    // led_strip.rainbow();
   
     // Every 3 seconds, toggle between two positions
     long test_index = (System.currentTimeMillis() / 3000) % 2;
-    double test_pos_meters = 0.5;
+    double test_pos_meters = 2;
     drive_to_position.setDesiredPosition(test_index * test_pos_meters);
 
     // double test_degrees = 45;

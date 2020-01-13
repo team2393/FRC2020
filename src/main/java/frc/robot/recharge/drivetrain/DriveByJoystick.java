@@ -7,14 +7,14 @@
 
 package frc.robot.recharge.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.recharge.OI;
 
 /** Manually control speed and rotation via joystick
  * 
  *  Automatically shifts gear
  */
-public class DriveByJoystick extends InstantCommand 
+public class DriveByJoystick extends CommandBase 
 {
   private final DriveTrain drive_train;
 
@@ -22,11 +22,6 @@ public class DriveByJoystick extends InstantCommand
   {
     this.drive_train = drive_train;
     addRequirements(drive_train);
-  }
-
-  @Override
-  public void initialize() 
-  {
   }
 
   @Override
@@ -38,15 +33,15 @@ public class DriveByJoystick extends InstantCommand
     if (Math.abs(OI.getSpeed()) < 0.1)
       drive_train.setGear(false);
 
-    // TODO Automatically shift into fast gear
+    // Automatically shift into fast gear
     // if we are in low gear,
     // joystick pedal to the metal
     // and encoder indicates we reached the max. speed
     // that we can get in low gear
-    // if (!drive_train.isHighSpeed() &&
-    //     Math.abs(OI.getSpeed()) > 0.85 &&
-    //     drive_train.getSpeed() > xxx m/sec)
-    //     drive_train.setGear(true);
+    if (!drive_train.isHighSpeed() &&
+        Math.abs(OI.getSpeed()) > 0.9 &&
+        drive_train.getSpeedMetersPerSecond() > 2.5)
+        drive_train.setGear(true);
   }
 
   @Override
