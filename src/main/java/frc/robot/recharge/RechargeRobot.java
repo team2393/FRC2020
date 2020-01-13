@@ -9,6 +9,7 @@ package frc.robot.recharge;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
@@ -19,6 +20,7 @@ import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
+import frc.robot.recharge.drivetrain.TurnToHeading;
 import frc.robot.recharge.led.LEDStrip;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -27,10 +29,12 @@ public class RechargeRobot extends BasicRobot
 {  
   private final DriveTrain drive_train = new DriveTrain();
   
-  private final Command drive_by_joystick = new DriveByJoystick(drive_train);
+  private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
-  private final Command shift_low = new InstantCommand(() -> drive_train.setGear(false));
-  private final Command shift_high = new InstantCommand(() -> drive_train.setGear(true));
+  private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
+  private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset);
+  private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
+  private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
   // TODO Add encoders to DriveTrain
   // TODO Command to drive to distance and heading (PID)
@@ -70,6 +74,9 @@ public class RechargeRobot extends BasicRobot
     // we would automatically shift back low when standing still.
     OI.shift_low.whenActive(shift_low);
     OI.shift_high.whenPressed(shift_high);
+
+    // Place some commands on dashboard
+    SmartDashboard.putData("Reset Drive", reset_drivetrain);
   }
   
   @Override
@@ -100,15 +107,19 @@ public class RechargeRobot extends BasicRobot
   {
     super.autonomousInit();
     drive_to_position.schedule();
+    // turn_to_heading.schedule();
   }
   @Override
   public void autonomousPeriodic()
   {
     led_strip.rainbow();
   
-    // Every 3 seconds, toggle between "0" and "test_pos"
+    // Every 3 seconds, toggle between two positions
+    long test_index = (System.currentTimeMillis() / 3000) % 2;
     double test_pos_meters = 0.5;
-    double test= (System.currentTimeMillis() / 3000) % 2  * test_pos_meters;
-    drive_to_position.setDesiredPosition(test);
+    drive_to_position.setDesiredPosition(test_index * test_pos_meters);
+
+    // double test_degrees = 45;
+    // turn_to_heading.setDesiredHeading(test_index * test_degrees);
   }
 }

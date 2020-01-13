@@ -26,9 +26,9 @@ public class DriveToPosition extends PIDCommand
     this.drive_train = drive_train;
   }
 
-  public void setDesiredPosition(final double position)
+  public void setDesiredPosition(final double meters)
   {
-    desired_position = position;
+    desired_position = meters;
   }
 
   public double getDesired_position()
