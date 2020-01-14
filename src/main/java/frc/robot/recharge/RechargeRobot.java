@@ -39,11 +39,10 @@ public class RechargeRobot extends BasicRobot
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
   // TODO Command to drive to heading (PID)
+  // TODO Odometry: Install, check
   // TODO Trajectory: Create
   // TODO Use simple position and heading PID to follow trajectory
-  // TODO Kinematics to track current 'pose',  https://docs.wpilib.org/en/latest/docs/software/kinematics-and-odometry/differential-drive-odometry.html
   // TODO RamseteCommand to follow trajectory
-
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Grabber, shooter, ...
 
