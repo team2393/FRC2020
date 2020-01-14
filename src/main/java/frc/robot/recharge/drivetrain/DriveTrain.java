@@ -46,11 +46,11 @@ public class DriveTrain extends SubsystemBase
   // When attached to talon, we need that talon, which is outside of the drivetrain...
   // PigeonIMU gyro = new PigeonIMU(new TalonSRX(1));
   // For now use the other gyro since it's easy to install and access
-  // private final Gyro gyro = new ADXRS450_Gyro();
+  private final Gyro gyro = new ADXRS450_Gyro();
 
   // PID
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
-  private final PIDController heading_pid = new PIDController(0.0, 0.0, 0.0);
+  private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.025);
 
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
@@ -64,8 +64,8 @@ public class DriveTrain extends SubsystemBase
     // Instruct slave motors to follow their respective main
     left_slave.follow(left_main);
     right_slave.follow(right_main);
-    left_slave.setSafetyEnabled(false);
-    right_slave.setSafetyEnabled(false);
+    // left_slave.setSafetyEnabled(false);
+    // right_slave.setSafetyEnabled(false);
     
     // No deadband on differential drive to allow
     // even small PID-driven moves.
@@ -75,11 +75,12 @@ public class DriveTrain extends SubsystemBase
     // Initially, set low gear
     setGear(false);
     
-    // gyro.calibrate();
-    // gyro.reset();
-    // TODO  heading_pid.enableContinuousInput(-180.0, 180.0);
     position_pid.setTolerance(0.01, 0.01);
+    gyro.calibrate();
+    gyro.reset();
+    // heading_pid.enableContinuousInput(-180.0, 180.0);
     heading_pid.setTolerance(0.1, 0.1);
+   
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
@@ -141,7 +142,7 @@ public class DriveTrain extends SubsystemBase
   /** Reset all encoders to 0 */
   public void reset()
   {
-    // TODO gyro.reset();
+    gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
     odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
@@ -149,8 +150,7 @@ public class DriveTrain extends SubsystemBase
 
   public double getHeadingDegrees()
   {
-    return -42.0;
-    // return gyro.getAngle();
+    return gyro.getAngle();
   }
 
   public PIDController getHeadingPID()

@@ -78,6 +78,7 @@ public class RechargeRobot extends BasicRobot
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
+    SmartDashboard.putData("Heading PID Enabled", turn_to_heading);
   }
   
   @Override
@@ -108,8 +109,8 @@ public class RechargeRobot extends BasicRobot
   public void autonomousInit()
   {
     super.autonomousInit();
-     drive_to_position.schedule();
-    // turn_to_heading.schedule();
+    // drive_to_position.schedule();
+    turn_to_heading.schedule();
   }
 
   @Override
@@ -119,15 +120,15 @@ public class RechargeRobot extends BasicRobot
   
     // Every 3 seconds, toggle between two positions
     long test_index = (System.currentTimeMillis() / 3000) % 2;
-    double test_pos_meters = 2;
-    drive_to_position.setDesiredPosition(test_index * test_pos_meters);
+    // double test_pos_meters = 2;
+    // drive_to_position.setDesiredPosition(test_index * test_pos_meters);
 
-    // double test_degrees = 45;
+    double test_degrees = 10;
     // turn_to_heading.setDesiredHeading(test_index * test_degrees);
-    // if (turn_to_heading.isFinished())
-    // {
-    //   System.out.println("At heading");
-    //   turn_to_heading.schedule();
-    // }
+    if (turn_to_heading.isFinished())
+    {
+      System.out.println("At heading");
+      turn_to_heading.schedule();
+    }
   }
 }
