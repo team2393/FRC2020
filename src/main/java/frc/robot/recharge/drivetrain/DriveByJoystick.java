@@ -40,7 +40,7 @@ public class DriveByJoystick extends CommandBase
     // that we can get in low gear
     if (!drive_train.isHighSpeed() &&
         Math.abs(OI.getSpeed()) > 0.9 &&
-        drive_train.getSpeedMetersPerSecond() > 2.5)
+        Math.abs(drive_train.getSpeedMetersPerSecond()) > 2.5)
         drive_train.setGear(true);
   }
 
