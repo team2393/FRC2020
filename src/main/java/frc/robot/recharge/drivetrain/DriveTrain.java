@@ -16,7 +16,10 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,6 +52,7 @@ public class DriveTrain extends SubsystemBase
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
   private final PIDController heading_pid = new PIDController(0.0, 0.0, 0.0);
 
+  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
   public DriveTrain()
   {
@@ -137,9 +141,10 @@ public class DriveTrain extends SubsystemBase
   /** Reset all encoders to 0 */
   public void reset()
   {
-    // gyro.reset();
+    // TODO gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
+    odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
   }
 
   public double getHeadingDegrees()
@@ -156,6 +161,8 @@ public class DriveTrain extends SubsystemBase
   @Override
   public void periodic()
   {
+    // TODO odometry.update(..)
+    // TODO Publish odometry X, Y, Angle
     SmartDashboard.putNumber("Position", getPositionMeters());
     SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
     SmartDashboard.putNumber("Heading", getHeadingDegrees());
