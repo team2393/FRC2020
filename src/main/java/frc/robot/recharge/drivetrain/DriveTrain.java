@@ -161,10 +161,18 @@ public class DriveTrain extends SubsystemBase
   @Override
   public void periodic()
   {
-    // TODO odometry.update(..)
-    // TODO Publish odometry X, Y, Angle
+    odometry.update(Rotation2d.fromDegrees(-getHeadingDegrees()),
+                    left_main.getSelectedSensorPosition() / TICKS_PER_METER,
+                    - right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
+                    
     SmartDashboard.putNumber("Position", getPositionMeters());
     SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
     SmartDashboard.putNumber("Heading", getHeadingDegrees());
+    
+    // Publish odometry X, Y, Angle
+    Pose2d pose = odometry.getPoseMeters();
+    SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());
+    SmartDashboard.putNumber("Y Position:", pose.getTranslation().getY());
+    SmartDashboard.putNumber("Angle: ", pose.getRotation().getDegrees());
   }
 }
