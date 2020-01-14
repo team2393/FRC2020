@@ -17,6 +17,7 @@ import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
+import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
@@ -30,14 +31,14 @@ public class RechargeRobot extends BasicRobot
   private final DriveTrain drive_train = new DriveTrain();
   
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
+  private final CommandBase auto_shift = new AutoShift(drive_train);
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
-  // private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
+  private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
   private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset);
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
-  // TODO Add encoders to DriveTrain
-  // TODO Command to drive to distance and heading (PID)
+  // TODO Command to drive to heading (PID)
   // TODO Trajectory: Create
   // TODO Use simple position and heading PID to follow trajectory
   // TODO Kinematics to track current 'pose',  https://docs.wpilib.org/en/latest/docs/software/kinematics-and-odometry/differential-drive-odometry.html
@@ -77,6 +78,7 @@ public class RechargeRobot extends BasicRobot
 
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
+    SmartDashboard.putData("Auto Shift", auto_shift);
   }
   
   @Override
@@ -92,6 +94,7 @@ public class RechargeRobot extends BasicRobot
     super.teleopInit();
     // manual_wheel.schedule();
     drive_by_joystick.schedule();
+    auto_shift.schedule();
   }
   
   @Override
@@ -109,6 +112,7 @@ public class RechargeRobot extends BasicRobot
      drive_to_position.schedule();
     // turn_to_heading.schedule();
   }
+
   @Override
   public void autonomousPeriodic()
   {
@@ -121,5 +125,10 @@ public class RechargeRobot extends BasicRobot
 
     // double test_degrees = 45;
     // turn_to_heading.setDesiredHeading(test_index * test_degrees);
+    // if (turn_to_heading.isFinished())
+    // {
+    //   System.out.println("At heading");
+    //   turn_to_heading.schedule();
+    // }
   }
 }

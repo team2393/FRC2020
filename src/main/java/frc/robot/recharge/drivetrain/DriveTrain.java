@@ -74,6 +74,8 @@ public class DriveTrain extends SubsystemBase
     // gyro.calibrate();
     // gyro.reset();
     // TODO  heading_pid.enableContinuousInput(-180.0, 180.0);
+    position_pid.setTolerance(0.01, 0.01);
+    heading_pid.setTolerance(0.1, 0.1);
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
@@ -117,6 +119,7 @@ public class DriveTrain extends SubsystemBase
 
   public double getPositionMeters()
   {
+    // Right  encoder counts down, so '-' to add both
     final long avg_ticks = ((long)left_main.getSelectedSensorPosition() -
                                   right_main.getSelectedSensorPosition()) / 2;
     return avg_ticks / TICKS_PER_METER;
@@ -124,9 +127,10 @@ public class DriveTrain extends SubsystemBase
 
   public double getSpeedMetersPerSecond()
   {
-    // TODO "sensor per 100ms .. see phoenix documentation how to interprete"
-    final int avg_tickspeed = (left_main.getSelectedSensorVelocity() -
-                               right_main.getSelectedSensorVelocity()) / 2;
+    // Right  encoder counts down, so '-' to add both
+    final long avg_tickspeed = ((long)left_main.getSelectedSensorVelocity() -
+                                      right_main.getSelectedSensorVelocity()) / 2;
+    // "sensor per 100ms"
     return avg_tickspeed * 10 / TICKS_PER_METER;
   }
 

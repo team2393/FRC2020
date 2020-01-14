@@ -7,30 +7,45 @@
 
 package frc.robot.recharge.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Control heading via PID */
-public class TurnToHeading extends PIDCommand 
+public class TurnToHeading extends CommandBase 
 {
-  private double desired_heading = 0.0;
+  private final DriveTrain drive_train;
 
   public TurnToHeading(final DriveTrain drive_train) 
   {
-    super(drive_train.getHeadingPID(),
-          drive_train::getHeadingDegrees,
-          0,
-          output -> drive_train.drive(0, output),
-          drive_train);
-    this.m_measurement = this::getDesiredHeading;
+    this.drive_train = drive_train;
   }
 
   public void setDesiredHeading(final double degrees)
   {
-    desired_heading = degrees;
+    drive_train.getHeadingPID().setSetpoint(degrees);
   }
 
-  public double getDesiredHeading()
+  @Override
+  public void initialize()
   {
-    return desired_heading;
+    drive_train.getHeadingPID().reset();
+  }
+
+  @Override
+  public void execute()
+  {
+    final double rotation = drive_train.getHeadingPID().calculate(drive_train.getHeadingDegrees());
+    drive_train.drive(0, rotation);
+  }
+
+  @Override
+  public boolean isFinished()
+  {
+    return drive_train.getHeadingPID().atSetpoint();
+  }
+  
+  @Override
+  public void end(boolean interrupted)
+  {
+    drive_train.drive(0, 0);
   }
 }
