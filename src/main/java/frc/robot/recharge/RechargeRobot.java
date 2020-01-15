@@ -21,6 +21,7 @@ import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
+import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.TurnToHeading;
 import frc.robot.recharge.led.LEDStrip;
 
@@ -34,6 +35,7 @@ public class RechargeRobot extends BasicRobot
   private final CommandBase auto_shift = new AutoShift(drive_train);
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
   private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
+  private final HeadingHold heading_hold = new HeadingHold(drive_train);
   private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset);
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
@@ -91,10 +93,12 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void teleopInit()
   {
+    // TODO add toggle between modes
     super.teleopInit();
     // manual_wheel.schedule();
-    drive_by_joystick.schedule();
-    auto_shift.schedule();
+    // drive_by_joystick.schedule();
+    // auto_shift.schedule();
+    heading_hold.schedule();
   }
   
   @Override
