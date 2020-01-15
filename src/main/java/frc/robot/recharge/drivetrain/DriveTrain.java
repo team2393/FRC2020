@@ -101,6 +101,12 @@ public class DriveTrain extends SubsystemBase
     differential_drive.arcadeDrive(speed, rotation);
   }
 
+  public void driveVoltage(final double left, final double right)
+  {
+    left_main.setVoltage(left);
+    right_main.setVoltage(right);
+  }
+
   public boolean isHighSpeed()
   {
     return shifter.get();
@@ -168,6 +174,9 @@ public class DriveTrain extends SubsystemBase
     SmartDashboard.putNumber("Position", getPositionMeters());
     SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
     SmartDashboard.putNumber("Heading", getHeadingDegrees());
+
+    SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());
+
     
     // Publish odometry X, Y, Angle
     Pose2d pose = odometry.getPoseMeters();

@@ -37,7 +37,7 @@ public class HeadingHold extends CommandBase
   @Override
   public void initialize()
   {
-    drive_train.getHeadingPID().reset();
+    setDesiredHeading(drive_train.getHeadingDegrees());
   }
 
   /** 'delay' used to not resume heading hold until we took the finger off the steering stick for some time */

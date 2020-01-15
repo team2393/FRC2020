@@ -81,6 +81,8 @@ public class RechargeRobot extends BasicRobot
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
     SmartDashboard.putData("Heading PID Enabled", turn_to_heading);
+    SmartDashboard.putData("Heading Hold", heading_hold);
+    SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
   }
   
   @Override

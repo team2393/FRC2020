@@ -42,22 +42,32 @@ public class TrajectoryTestRobot extends BasicRobot
     //  |
     // Start ----------> X
     // Units are meters.
+    TrajectoryConfig config = new TrajectoryConfig(1.0, 1.0);
+
     // Could use Units.feetToMeters() to convert
     final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
     Translation2d pos = start.getTranslation();
     
     final List<Translation2d> waypoints = new ArrayList<>();
     pos = pos.plus(new Translation2d(0, 5));
-    waypoints.add(pos);
+    // waypoints.add(pos);
     
     pos = pos.plus(new Translation2d(5, 5));
-    waypoints.add(pos);
+    // waypoints.add(pos);
     
     pos = pos.plus(new Translation2d(0, 5));
     final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(90.0));
-    
-    TrajectoryConfig config = new TrajectoryConfig(1.0, 1.0);
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+
+    // final List<Pose2d> waypoints = new ArrayList<>();
+    // final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
+    // waypoints.add(start);
+
+
+    // final Pose2d end = new Pose2d(15.0, 5.0, Rotation2d.fromDegrees(90.0));
+    // waypoints.add(end);
+
+    // Trajectory trajectory = TrajectoryGenerator.generateTrajectory(waypoints, config);
     
     final double total_time = trajectory.getTotalTimeSeconds();
     System.out.println("************* Trajectory ******************");
