@@ -18,6 +18,7 @@ public class DriveToPosition extends CommandBase
   public DriveToPosition(final DriveTrain drive_train) 
   {
     this.drive_train = drive_train;
+    addRequirements(drive_train);
   }
 
   public void setDesiredPosition(final double meters)

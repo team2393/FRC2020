@@ -78,9 +78,11 @@ public class DriveTrain extends SubsystemBase
     position_pid.setTolerance(0.01, 0.01);
     gyro.calibrate();
     gyro.reset();
-    // heading_pid.enableContinuousInput(-180.0, 180.0);
+    // Not using continuous,
+    // heading_pid.enableContinuousInput(-180.0, 180.0),
+    // because 360 degrees is not the same as 0 degrees.
+    // To us, 360 means "turn one full rotation".
     heading_pid.setTolerance(0.1, 0.1);
-   
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);

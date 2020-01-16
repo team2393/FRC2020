@@ -7,8 +7,6 @@
 
 package frc.robot.recharge.drivetrain;
 
-import org.opencv.core.Mat;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
@@ -20,6 +18,7 @@ public class TurnToHeading extends CommandBase
   public TurnToHeading(final DriveTrain drive_train) 
   {
     this.drive_train = drive_train;
+    addRequirements(drive_train);
   }
 
   public void setDesiredHeading(final double degrees)
@@ -38,7 +37,7 @@ public class TurnToHeading extends CommandBase
   {
     final double rotation = drive_train.getHeadingPID().calculate(drive_train.getHeadingDegrees());
     // Avoid 'jittering' in place
-    if(Math.abs(rotation) < 0.05)
+    if (Math.abs(rotation) < 0.05)
       drive_train.drive(0, 0);
     else
       drive_train.drive(0, MathUtil.clamp(rotation, -0.5, 0.5)); 

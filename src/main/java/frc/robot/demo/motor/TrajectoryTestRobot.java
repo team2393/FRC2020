@@ -18,14 +18,9 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import frc.robot.BasicRobot;
 
-/** Example of PID control for position
- * 
- *  Uses the Falcon's encoder
- *  with PID control performed in the RoboRIO
- */
+/** Trajectory demo */
 public class TrajectoryTestRobot extends BasicRobot
 {
-    
   @Override
   public void robotInit()
   {
@@ -37,36 +32,38 @@ public class TrajectoryTestRobot extends BasicRobot
     // /|\           End
     //  |
     //  |            P2
+    //  P1
     //  |
-    //  | P1
-    //  |
-    // Start ----------> X
+    // Start ------------> X
+    
+    // Max speed: 1m/s, max acceleration 1m/s/s
+    final TrajectoryConfig config = new TrajectoryConfig(1.0, 1.0);
+    
     // Units are meters.
-    TrajectoryConfig config = new TrajectoryConfig(1.0, 1.0);
-
     // Could use Units.feetToMeters() to convert
     final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
     Translation2d pos = start.getTranslation();
     
     final List<Translation2d> waypoints = new ArrayList<>();
     pos = pos.plus(new Translation2d(0, 5));
-    // waypoints.add(pos);
+    waypoints.add(pos);
     
     pos = pos.plus(new Translation2d(5, 5));
-    // waypoints.add(pos);
+    waypoints.add(pos);
     
     pos = pos.plus(new Translation2d(0, 5));
     final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(90.0));
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+    // Probably most convenient is this method that takes
+    // complete start/end pose and optional waypoints
+    final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
 
+    // There is also an alternative where every point is a complete pose
     // final List<Pose2d> waypoints = new ArrayList<>();
     // final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
     // waypoints.add(start);
-
-
-    // final Pose2d end = new Pose2d(15.0, 5.0, Rotation2d.fromDegrees(90.0));
+    // .. add more intermediate waypoints...
+    // final Pose2d end = new Pose2d(5.0, 15.0, Rotation2d.fromDegrees(90.0));
     // waypoints.add(end);
-
     // Trajectory trajectory = TrajectoryGenerator.generateTrajectory(waypoints, config);
     
     final double total_time = trajectory.getTotalTimeSeconds();
@@ -86,16 +83,5 @@ public class TrajectoryTestRobot extends BasicRobot
                       state.poseMeters.getTranslation().getY(),
                       state.poseMeters.getRotation().getDegrees()
                       );
-  }
-
-  @Override
-  public void autonomousInit()
-  {
-    super.autonomousInit();
-  }
-  
-  @Override
-  public void autonomousPeriodic()
-  {
   }
 }
