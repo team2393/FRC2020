@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -95,6 +96,7 @@ public class DriveTrain extends SubsystemBase
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
+    // TODO Do this only for the main motors, follower will, well, follow?
     motor.configOpenloopRamp(1.0);
   }
 
@@ -103,8 +105,22 @@ public class DriveTrain extends SubsystemBase
     differential_drive.arcadeDrive(speed, rotation);
   }
 
+  private long last_voltage_ms;
+
   public void driveVoltage(final double left, final double right)
   {
+    // TODO Debug if/why not called frequently enough
+    final long now = System.currentTimeMillis();
+    final long ms_passed = now - last_voltage_ms;
+    if (ms_passed > 2*1000/20)
+      System.out.println("Slow 'driveVoltage' call, last was " + ms_passed + " ms ago");
+    last_voltage_ms = now;
+
+    // Compare setVoltage(): Only get battery voltage once?
+    // final double battery = RobotController.getBatteryVoltage();
+    // left_main.set(left / battery);
+    // right_main.set(right / battery);
+
     left_main.setVoltage(left);
     right_main.setVoltage(right);
   }
