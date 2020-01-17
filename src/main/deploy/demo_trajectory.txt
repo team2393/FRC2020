@@ -1,0 +1,15 @@
+# Demo trajectory
+# Start position is X 0, Y 0, Heading 90,
+# i.e. "looking up the Y axis"
+
+# Point on the way, absolute X, Y
+Point 0.5 1
+
+# Just "P" can also be used for "Point"
+P 0.5 1.1
+
+# Relative point on the way, X, Y relative to last point
+RPPoint -1 1
+
+# End position X Y Heading
+End 1 3 0
