@@ -9,7 +9,7 @@ Point 0.5 1
 P 0.5 1.1
 
 # Relative point on the way, X, Y relative to last point
-RPPoint -1 1
+RPoint -1 1
 
 # End position X Y Heading
 End 1 3 0

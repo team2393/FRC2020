@@ -66,7 +66,8 @@ public class AutonomousBuilder
     {
       System.out.println("*** Auto: " + auto.getName());
       auto.initialize();
-      // TODO As long as demo only contains PrintCommand, we can execute it!
+      // TODO As long as demo only contains PrintCommand, we can execute it on the laptop!
+      // Once we add actual RamseteCommands, that won't be possible
       auto.execute();
     }
   }
