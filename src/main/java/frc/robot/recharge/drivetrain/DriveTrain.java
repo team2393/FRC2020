@@ -24,7 +24,14 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
-/** Drive train (them wheels) */
+/** Drive train (them wheels)
+ * 
+ *  Geometry:
+ *  Initial position is X=0, Y=0, angle=0, pointing toward the alliance station.
+ *  Moving forward means moving along the X axis.
+ *  Angle increases when turning left.
+ *  Angle of 90 degrees means moving along the Y axis.
+ */
 public class DriveTrain extends SubsystemBase
 {
   private static final double TICKS_PER_METER = 512651 / Units.inchesToMeters(288);
@@ -190,14 +197,16 @@ public class DriveTrain extends SubsystemBase
   public void reset()
   {
     gyro.reset();
+    heading_pid.setSetpoint(0);
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
     odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
   }
 
+  /**@return Angle in degrees. 0 degrees is along X axis. 90 degrees is along Y axis. */
   public double getHeadingDegrees()
   {
-    return gyro.getAngle();
+    return -gyro.getAngle();
   }
 
   public PIDController getHeadingPID()
@@ -209,9 +218,9 @@ public class DriveTrain extends SubsystemBase
   public void periodic()
   {
     // Update position tracker
-    odometry.update(Rotation2d.fromDegrees(-getHeadingDegrees()),
-                    left_main.getSelectedSensorPosition() / TICKS_PER_METER,
-                    - right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
+    odometry.update(Rotation2d.fromDegrees(getHeadingDegrees()),
+                     left_main.getSelectedSensorPosition() / TICKS_PER_METER,
+                    -right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
     // Publish odometry X, Y, Angle
     Pose2d pose = odometry.getPoseMeters();
     SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());

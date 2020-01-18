@@ -44,7 +44,6 @@ public class RechargeRobot extends BasicRobot
   // TODO Trajectory: Create, follow
   // TODO Use simple position and heading PID to follow trajectory
   // TODO RamseteCommand to follow trajectory
-  // TODO Camera, update LED indicator for detected target marker direction
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Control motor w/ encoder for lowering/raising intake
   // TODO Control motors for intake, conveyor belt, shooter
@@ -86,7 +85,6 @@ public class RechargeRobot extends BasicRobot
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
-    SmartDashboard.putData("Heading PID Enabled", turn_to_heading);
     SmartDashboard.putData("Heading Hold", heading_hold);
     SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
   }
@@ -112,6 +110,7 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
+    // TODO Indicate direction to target on LED
     //final double direction = OI.getDirection();
     final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     // led_strip.indicateDirection(direction);    
@@ -128,7 +127,7 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void autonomousPeriodic()
   {
-    // led_strip.rainbow();
+    // TODO led_strip.rainbow();? Also indicate direction to target to debug what the robot sees?
   
     // Every 3 seconds, toggle between two positions
     long test_index = (System.currentTimeMillis() / 3000) % 2;

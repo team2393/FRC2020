@@ -69,7 +69,7 @@ public class HeadingHold extends CommandBase
       // Not moving stick, and waited until 'resume_heading_hold'
       // ==> Use PID to hold heading
       final double rotation = drive_train.getHeadingPID().calculate(drive_train.getHeadingDegrees());
-      drive_train.drive(OI.getSpeed(), rotation);
+      drive_train.drive(OI.getSpeed(), -rotation);
     }
   }
   
