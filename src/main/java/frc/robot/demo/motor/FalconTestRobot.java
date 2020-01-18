@@ -13,8 +13,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.BasicRobot;
 
 /** Example of PID control for position
@@ -35,7 +38,9 @@ public class FalconTestRobot extends BasicRobot
    *  Manual:               0.0005, 0, 0.0001
    *  frc-characterization: 0.02,   0, 0.008 ?!
    */
-  private final PIDController position_pid = new PIDController(0.0005, 0, 0.0001);
+  private final PIDController position_pid = new PIDController(0.0005, 0, 0.00015);
+  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(10.0*steps_per_rev, 20*steps_per_rev);
+  private final ProfiledPIDController prop_position_pid = new ProfiledPIDController(0.0003, 0, 0.0003, constraints);
   
   /** Command that reads current position,
    *  invokes PIDController to get output value,
@@ -46,6 +51,16 @@ public class FalconTestRobot extends BasicRobot
     () -> motor.getSelectedSensorPosition(),
     () -> desired_position,
     output -> motor.set(ControlMode.PercentOutput, output));
+
+  private final ProfiledPIDCommand hold_position2 = new ProfiledPIDCommand(
+    prop_position_pid,
+    () ->motor.getSelectedSensorPosition(),
+    () -> new TrapezoidProfile.State(desired_position, 0),
+    (output, state) ->
+    {
+      motor.set(ControlMode.PercentOutput, output);
+      System.out.println("Position setpoint: " + state.position);
+    });
     
   @Override
   public void robotInit()
@@ -64,6 +79,7 @@ public class FalconTestRobot extends BasicRobot
 
     // Allow setting PID parameters on dashboard
     SmartDashboard.putData("Position PID", position_pid);
+    SmartDashboard.putData("Profiled PID", prop_position_pid);
     SmartDashboard.setDefaultNumber("Turns", 4);
   }
 
