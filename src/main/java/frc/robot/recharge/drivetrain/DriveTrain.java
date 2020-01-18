@@ -60,7 +60,7 @@ public class DriveTrain extends SubsystemBase
   // 4.4      1             4.31
   // 1.86     0.41          4.32
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.09, 4.3);
-  private final PIDController speed_pid = new PIDController(0, 0, 0);
+  private final PIDController speed_pid = new PIDController(2, 0, 0);
 
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
@@ -88,7 +88,6 @@ public class DriveTrain extends SubsystemBase
     
     position_pid.setTolerance(0.01, 0.01);
     gyro.calibrate();
-    gyro.reset();
     // Not using continuous,
     // heading_pid.enableContinuousInput(-180.0, 180.0),
     // because 360 degrees is not the same as 0 degrees.
@@ -98,6 +97,8 @@ public class DriveTrain extends SubsystemBase
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
     SmartDashboard.putData("Speed PID", speed_pid);
+
+    reset();
   }
 
   /** @param motor Motor to configure with common settings */
@@ -169,13 +170,13 @@ public class DriveTrain extends SubsystemBase
   public double getLeftSpeedMetersPerSecond()
   {
     // "sensor per 100ms"
-    return left_main.getSelectedSensorVelocity() * 10 / TICKS_PER_METER;
+    return left_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
   public double getRightSpeedMetersPerSecond()
   {
     // "sensor per 100ms"
-    return right_main.getSelectedSensorVelocity() * 10 / TICKS_PER_METER;
+    return right_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
   public double getSpeedMetersPerSecond()
@@ -188,7 +189,6 @@ public class DriveTrain extends SubsystemBase
   /** Reset all encoders to 0 */
   public void reset()
   {
-    // TODO Reset to 90 degrees instead of 0?
     gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
