@@ -40,14 +40,19 @@ public class RechargeRobot extends BasicRobot
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
 
-  // TODO Command to drive to heading (PID)
-  // TODO Odometry: Install, check
-  // TODO Trajectory: Create
+  // TODO Tune PIDs for drive-to-position, turn-to-heading with actual robot
+  // TODO Trajectory: Create, follow
   // TODO Use simple position and heading PID to follow trajectory
   // TODO RamseteCommand to follow trajectory
+  // TODO Camera, update LED indicator for detected target marker direction
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
-  // TODO Grabber, shooter, ...
-
+  // TODO Control motor w/ encoder for lowering/raising intake
+  // TODO Control motors for intake, conveyor belt, shooter
+  // TODO IR detector to check if there are any balls in hopper?
+  // TODO Connect control wheel commands to buttons
+  // TODO Climb: Raise/lower telescope via motor that pulls/gives rope
+  // TODO Climb: Pull climbin rope _in_ (cannot feed out because of ratchet)
+  
   // private final ColorSensor color_sensor = new ColorSensor();
 
   // private final ControlWheel fortune = new ControlWheel();
