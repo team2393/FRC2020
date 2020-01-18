@@ -60,6 +60,7 @@ public class RechargeRobot extends BasicRobot
   @Override
   public void robotInit()
   {
+    super.robotInit();
     // pcm.clearAllPCMStickyFaults();
     
     // Bind buttons to actions (only active in teleop)
@@ -98,9 +99,9 @@ public class RechargeRobot extends BasicRobot
     // TODO add toggle between modes
     super.teleopInit();
     // manual_wheel.schedule();
-    // drive_by_joystick.schedule();
+    drive_by_joystick.schedule();
     // auto_shift.schedule();
-    heading_hold.schedule();
+    // heading_hold.schedule();
   }
   
   @Override

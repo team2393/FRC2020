@@ -8,14 +8,12 @@ package frc.robot.recharge.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -53,6 +51,18 @@ public class DriveTrain extends SubsystemBase
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
   private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.025);
 
+  // Results of basic drive test:
+  // Minimum voltage to move: 0.09 V
+  //
+  // SimpleMotorFeedforward:   Voltage = Vmin + K * Speed
+  // Voltage  Speed [m/s]   K
+  // 2.15     0.5           4.12
+  // 4.4      1             4.31
+  // 1.86     0.41          4.32
+  private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.09, 4.3);
+  private final PIDController speed_pid = new PIDController(0, 0, 0);
+
+  // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
   public DriveTrain()
@@ -87,6 +97,7 @@ public class DriveTrain extends SubsystemBase
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
+    SmartDashboard.putData("Speed PID", speed_pid);
   }
 
   /** @param motor Motor to configure with common settings */
@@ -105,24 +116,25 @@ public class DriveTrain extends SubsystemBase
     differential_drive.arcadeDrive(speed, rotation);
   }
 
-  private long last_voltage_ms;
+  public void driveSpeed(final double left_speed, final double right_speed)
+  {
+    // Predict necessary voltage, add the PID correction
+    final double left_volt  = feed_forward.calculate(left_speed)
+                            + speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
+    final double right_volt = feed_forward.calculate(right_speed)
+                            + speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
+    driveVoltage(left_volt, right_volt);
+  }
 
   public void driveVoltage(final double left, final double right)
   {
-    // TODO Debug if/why not called frequently enough
-    final long now = System.currentTimeMillis();
-    final long ms_passed = now - last_voltage_ms;
-    if (ms_passed > 2*1000/20)
-      System.out.println("Slow 'driveVoltage' call, last was " + ms_passed + " ms ago");
-    last_voltage_ms = now;
-
-    // Compare setVoltage(): Only get battery voltage once?
-    // final double battery = RobotController.getBatteryVoltage();
-    // left_main.set(left / battery);
-    // right_main.set(right / battery);
-
     left_main.setVoltage(left);
     right_main.setVoltage(right);
+    // When directly setting the motor voltage,
+    // the differential_drive will trigger the motor safety
+    // because it's not called frquently enough.
+    // -> Pretend we called the differential_drive
+    differential_drive.feed();
   }
 
   public boolean isHighSpeed()
@@ -154,18 +166,29 @@ public class DriveTrain extends SubsystemBase
     return avg_ticks / TICKS_PER_METER;
   }
 
+  public double getLeftSpeedMetersPerSecond()
+  {
+    // "sensor per 100ms"
+    return left_main.getSelectedSensorVelocity() * 10 / TICKS_PER_METER;
+  }
+
+  public double getRightSpeedMetersPerSecond()
+  {
+    // "sensor per 100ms"
+    return right_main.getSelectedSensorVelocity() * 10 / TICKS_PER_METER;
+  }
+
   public double getSpeedMetersPerSecond()
   {
     // Right  encoder counts down, so '-' to add both
-    final long avg_tickspeed = ((long)left_main.getSelectedSensorVelocity() -
-                                      right_main.getSelectedSensorVelocity()) / 2;
-    // "sensor per 100ms"
-    return avg_tickspeed * 10 / TICKS_PER_METER;
+    return (getLeftSpeedMetersPerSecond() -
+            getRightSpeedMetersPerSecond()) / 2;
   }
 
   /** Reset all encoders to 0 */
   public void reset()
   {
+    // TODO Reset to 90 degrees instead of 0?
     gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
@@ -185,21 +208,20 @@ public class DriveTrain extends SubsystemBase
   @Override
   public void periodic()
   {
+    // Update position tracker
     odometry.update(Rotation2d.fromDegrees(-getHeadingDegrees()),
                     left_main.getSelectedSensorPosition() / TICKS_PER_METER,
                     - right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
+    // Publish odometry X, Y, Angle
+    Pose2d pose = odometry.getPoseMeters();
+    SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());
+    SmartDashboard.putNumber("Y Position:", pose.getTranslation().getY());
+    SmartDashboard.putNumber("Angle: ", pose.getRotation().getDegrees());
                     
     SmartDashboard.putNumber("Position", getPositionMeters());
     SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
     SmartDashboard.putNumber("Heading", getHeadingDegrees());
 
     SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());
-
-    
-    // Publish odometry X, Y, Angle
-    Pose2d pose = odometry.getPoseMeters();
-    SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());
-    SmartDashboard.putNumber("Y Position:", pose.getTranslation().getY());
-    SmartDashboard.putNumber("Angle: ", pose.getRotation().getDegrees());
   }
 }
