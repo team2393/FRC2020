@@ -36,7 +36,7 @@ public class TrajectoryReader
   public static Trajectory read(final BufferedReader file) throws Exception
   {
     // Initial position and heading
-    final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
+    final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
 
     // Intermediate points (no heading)
     final List<Translation2d> waypoints = new ArrayList<>();
@@ -90,6 +90,6 @@ public class TrajectoryReader
     final Trajectory trajectory = TrajectoryReader.read(file);
 
     // Show it
-    new TrajectoryViewer(trajectory);
+    new TrajectoryViewer(trajectory, 0.1);
   }
 }

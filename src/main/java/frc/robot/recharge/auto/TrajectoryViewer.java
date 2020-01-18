@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 public class TrajectoryViewer
 {
   private final Trajectory trajectory;
+  private final double time_step;
 
   private class TrajectoryPlot extends JPanel
   {
@@ -59,11 +60,11 @@ public class TrajectoryViewer
       final double scale = plot_size / traj_size;
 
       final double total_time = trajectory.getTotalTimeSeconds();
-      for (double time=0; time < total_time+1;  time += 0.5)
+      for (double time=0; time < total_time+1;  time += time_step)
       {
         final State state = trajectory.sample(time);
-        final int x = 10 + (int) Math.round((state.poseMeters.getTranslation().getX() - xmin) * scale);
-        final int y = 10 + (int) Math.round((traj_height - (state.poseMeters.getTranslation().getY() - ymin)) * scale);
+        final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY()) * scale);
+        final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
         if (time == 0)
           g.setColor(Color.GREEN); // Start
         else if (time >= total_time)
@@ -73,8 +74,8 @@ public class TrajectoryViewer
         g.fillOval(x-5, y-5, 10, 10);
 
         final double speed = state.velocityMetersPerSecond * 20 / speedmax;
-        final int x1 = x + (int) Math.round(state.poseMeters.getRotation().getCos() * speed);
-        final int y1 = y - (int) Math.round(state.poseMeters.getRotation().getSin() * speed);
+        final int x1 = x - (int) Math.round(state.poseMeters.getRotation().getSin() * speed);
+        final int y1 = y - (int) Math.round(state.poseMeters.getRotation().getCos() * speed);
         g.drawLine(x, y, x1, y1);
       }
     }
@@ -82,7 +83,13 @@ public class TrajectoryViewer
 
   public TrajectoryViewer(final Trajectory trajectory)
   {
+    this(trajectory, 0.5);
+  }
+
+  public TrajectoryViewer(final Trajectory trajectory, final double time_step)
+  {
     this.trajectory = trajectory;
+    this.time_step = time_step;
     SwingUtilities.invokeLater(this::createAndShowPlot);
   }
 
@@ -108,18 +115,18 @@ public class TrajectoryViewer
   {
     // Create demo trajectory
     final TrajectoryConfig config = new TrajectoryConfig(1.0, 0.3);
-    final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
+    final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
     Translation2d pos = start.getTranslation();
     
     final List<Translation2d> waypoints = new ArrayList<>();
-    pos = pos.plus(new Translation2d(0, 5));
+    pos = pos.plus(new Translation2d(1, 0));
     waypoints.add(pos);
     
-    pos = pos.plus(new Translation2d(5, 5));
+    pos = pos.plus(new Translation2d(1, 1));
     waypoints.add(pos);
     
-    pos = pos.plus(new Translation2d(0, 5));
-    final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(90.0));
+    pos = pos.plus(new Translation2d(1, 0));
+    final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(0.0));
     final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
 
     // Show it
