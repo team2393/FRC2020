@@ -7,11 +7,17 @@
 
 package frc.robot.recharge;
 
+import java.io.File;
+
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.auto.AutonomousBuilder;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
@@ -60,6 +66,8 @@ public class RechargeRobot extends BasicRobot
   // private final Command rotate_to_color = new RotateToColor(fortune);
   
   // private final LEDStrip led_strip = new LEDStrip();
+
+  private final SendableChooser<Command> auto_commands = new SendableChooser<>();
   
   @Override
   public void robotInit()
@@ -87,6 +95,25 @@ public class RechargeRobot extends BasicRobot
     SmartDashboard.putData("Auto Shift", auto_shift);
     SmartDashboard.putData("Heading Hold", heading_hold);
     SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
+
+    // Auto options: Start with fixed options
+    auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
+    auto_commands.addOption("Another", new PrintCommand("Another option"));
+    // Add moves from auto.txt
+    try
+    {
+      // Read commands from auto file.
+      // Drivebase turns trajectories into ramsete commands.
+      final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
+      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train::createRamsete))
+        auto_commands.addOption(moves.getName(), moves);
+    }
+    catch (Exception ex)
+    {
+      System.err.println("Error in auto.txt:");
+      ex.printStackTrace();
+    }
+    SmartDashboard.putData("Autonomous", auto_commands);
   }
   
   @Override
@@ -120,8 +147,11 @@ public class RechargeRobot extends BasicRobot
   public void autonomousInit()
   {
     super.autonomousInit();
+
+    auto_commands.getSelected().schedule();
+
     // drive_to_position.schedule();
-    turn_to_heading.schedule();
+    // turn_to_heading.schedule();
   }
 
   @Override
@@ -130,16 +160,16 @@ public class RechargeRobot extends BasicRobot
     // TODO led_strip.rainbow();? Also indicate direction to target to debug what the robot sees?
   
     // Every 3 seconds, toggle between two positions
-    long test_index = (System.currentTimeMillis() / 3000) % 2;
-    // double test_pos_meters = 2;
-    // drive_to_position.setDesiredPosition(test_index * test_pos_meters);
+    // long test_index = (System.currentTimeMillis() / 3000) % 2;
+    // // double test_pos_meters = 2;
+    // // drive_to_position.setDesiredPosition(test_index * test_pos_meters);
 
-    double test_degrees = 10;
-    // turn_to_heading.setDesiredHeading(test_index * test_degrees);
-    if (turn_to_heading.isFinished())
-    {
-      System.out.println("At heading");
-      turn_to_heading.schedule();
-    }
+    // double test_degrees = 10;
+    // // turn_to_heading.setDesiredHeading(test_index * test_degrees);
+    // if (turn_to_heading.isFinished())
+    // {
+    //   System.out.println("At heading");
+    //   turn_to_heading.schedule();
+    // }
   }
 }

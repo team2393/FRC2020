@@ -7,22 +7,28 @@
 package frc.robot.recharge.auto;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** Build auto commands from a file */
 public class AutonomousBuilder
 {
   /** @param filename File to read
+   *  @param trajectory_command Function that turns trajectory into command
    *  @throws Exception on error
    */
-  public static List<SequentialCommandGroup> read(final String filename) throws Exception
+  public static List<SequentialCommandGroup> read(final File filename,
+                                                  final Function<Trajectory, CommandBase> trajectory_command) throws Exception
   {
     final BufferedReader file = new BufferedReader(new FileReader(filename));
     final List<SequentialCommandGroup> autos = new ArrayList<>();
@@ -46,11 +52,10 @@ public class AutonomousBuilder
       }
       else if (command.startsWith("T"))
       { // Trajectory:
-        // Read trajectory info, add command that follows it
+        // Read trajectory info
         final Trajectory trajectory = TrajectoryReader.read(file);
-        final String info = "Trajectory to " + TrajectoryHelper.getEndInfo(trajectory);
-        // TODO: Should add RamseteCommand(trajectory, ..., )
-        current_auto.addCommands(new PrintCommand(info));
+        // Turn into command, which may be a 'print' or a 'ramsete' that follows it
+        current_auto.addCommands(trajectory_command.apply(trajectory));
       }
       scanner.close();
     }
@@ -61,7 +66,10 @@ public class AutonomousBuilder
   public static void main(String[] args) throws Exception
   {
     // Open demo file
-    final List<SequentialCommandGroup> autos = AutonomousBuilder.read("src/main/deploy/auto.txt");
+    final List<SequentialCommandGroup> autos =
+     AutonomousBuilder.read(new File("src/main/deploy/auto.txt"),
+                            trajectory -> new PrintCommand("Trajectory to " + TrajectoryHelper.getEndInfo(trajectory)));
+
     for (SequentialCommandGroup auto : autos)
     {
       System.out.println("*** Auto: " + auto.getName());
