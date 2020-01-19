@@ -40,7 +40,7 @@ public class TrajectoryViewer
     protected void paintComponent(final Graphics g)
     {
       // Determine bounding box of trajectory
-      double xmin = 0, xmax = 0, ymin=0, ymax = 0, speedmax = 0;
+      double xmin = 0, xmax = 1, ymin=0, ymax = 1, speedmax = 0;
       for (State state : trajectory.getStates())
       {
         final double x = state.poseMeters.getTranslation().getX(),
@@ -63,7 +63,7 @@ public class TrajectoryViewer
       for (double time=0; time < total_time+1;  time += time_step)
       {
         final State state = trajectory.sample(time);
-        final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY()) * scale);
+        final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY() + ymin) * scale);
         final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
         if (time == 0)
           g.setColor(Color.GREEN); // Start
@@ -78,7 +78,13 @@ public class TrajectoryViewer
         final int y1 = y - (int) Math.round(state.poseMeters.getRotation().getCos() * speed);
         g.drawLine(x, y, x1, y1);
       }
-    }
+      // Start point tends to get overdrawn by initial waypoints, so draw again on top
+      final State state = trajectory.sample(0);
+      final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY() + ymin) * scale);
+      final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
+      g.setColor(Color.GREEN); // Start
+      g.fillOval(x-5, y-5, 10, 10);
+  }
   }
 
   public TrajectoryViewer(final Trajectory trajectory)
