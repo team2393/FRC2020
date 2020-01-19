@@ -133,6 +133,11 @@ public class DriveTrain extends SubsystemBase
     differential_drive.arcadeDrive(speed, rotation);
   }
 
+  public void tankDrive(final double left, final double right)
+  {
+    differential_drive.tankDrive(left, right, false);
+  }
+
   public void driveSpeed(final double left_speed, final double right_speed)
   {
     // Predict necessary voltage, add the PID correction
@@ -175,12 +180,20 @@ public class DriveTrain extends SubsystemBase
     return position_pid;
   }
 
+  public double getLeftPositionMeters()
+  {
+    return left_main.getSelectedSensorPosition() / TICKS_PER_METER;
+  }
+
+  public double getRightPositionMeters()
+  {
+    return right_main.getSelectedSensorPosition() / TICKS_PER_METER;
+  }
+
   public double getPositionMeters()
   {
-    // Right  encoder counts down, so '-' to add both
-    final long avg_ticks = ((long)left_main.getSelectedSensorPosition() -
-                                  right_main.getSelectedSensorPosition()) / 2;
-    return avg_ticks / TICKS_PER_METER;
+    // Right encoder counts down, so '-' to add both
+    return (getLeftPositionMeters() - getRightPositionMeters()) / 2;
   }
 
   public double getLeftSpeedMetersPerSecond()
@@ -212,7 +225,11 @@ public class DriveTrain extends SubsystemBase
     odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
   }
 
-  /**@return Angle in degrees. 0 degrees is along X axis. 90 degrees is along Y axis. */
+  /** Fetch gyro angle in the 'normal' math coordinate system.
+   *  0 degrees is along X axis. 90 degrees is along Y axis.
+   *  Incrementing counter-clockwise when viewing robot from above.
+   *  @return Angle in degrees.
+   */
   public double getHeadingDegrees()
   {
     return -gyro.getAngle();
