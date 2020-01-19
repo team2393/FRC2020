@@ -37,14 +37,18 @@ public class RechargeRobot extends BasicRobot
 {  
   private final DriveTrain drive_train = new DriveTrain();
   
+  // Commands that require the drive train, i.e. starting any of these commands
+  // will cancel whatever else was running and required the drive train
+  private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset, drive_train);
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
-  private final CommandBase auto_shift = new AutoShift(drive_train);
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
   private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
   private final HeadingHold heading_hold = new HeadingHold(drive_train);
-  private final CommandBase reset_drivetrain = new InstantCommand(drive_train::reset);
+  
+  // Shift commands can run concurrently with other commands that require the drive train
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
+  private final CommandBase auto_shift = new AutoShift(drive_train);
 
   // TODO Tune PIDs for drive-to-position, turn-to-heading with actual robot
   // TODO Trajectory: Create, follow
