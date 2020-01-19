@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,12 +33,14 @@ import frc.robot.recharge.RobotMap;
  * 
  *  Geometry:
  *  Initial position is X=0, Y=0, angle=0, pointing toward the alliance station.
- *  Moving forward means moving along the X axis.
+ *  Moving forward at 0 degree heading means moving along the X axis.
  *  Angle increases when turning left.
  *  Angle of 90 degrees means moving along the Y axis.
  */
 public class DriveTrain extends SubsystemBase
 {
+  // Encoder ticks per meter,
+  // based on driving some distance and reading raw ticks
   private static final double TICKS_PER_METER = 512651 / Units.inchesToMeters(288);
 
   // Motors
@@ -78,11 +79,12 @@ public class DriveTrain extends SubsystemBase
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
-  // TODO Measure distance between left & ritgh wheels
+  // TODO Measure distance between left & right wheels
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(1.0);
 
   public DriveTrain()
   {
+    // Reset & configure motors
     commonSettings(left_main);
     commonSettings(right_main);
     commonSettings(left_slave);
@@ -128,101 +130,73 @@ public class DriveTrain extends SubsystemBase
     motor.configOpenloopRamp(1.0);
   }
 
-  public void drive(final double speed, final double rotation)
+  /** Reset all encoders to 0 */
+  public void reset()
   {
-    differential_drive.arcadeDrive(speed, rotation);
+    gyro.reset();
+    left_main.setSelectedSensorPosition(0);
+    right_main.setSelectedSensorPosition(0);
+    odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
   }
 
-  public void tankDrive(final double left, final double right)
-  {
-    differential_drive.tankDrive(left, right, false);
-  }
-
-  public void driveSpeed(final double left_speed, final double right_speed)
-  {
-    // Predict necessary voltage, add the PID correction
-    final double left_volt  = feed_forward.calculate(left_speed)
-                            + speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
-    final double right_volt = feed_forward.calculate(right_speed)
-                            + speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
-    driveVoltage(left_volt, right_volt);
-  }
-
-  public void driveVoltage(final double left, final double right)
-  {
-    left_main.setVoltage(left);
-    right_main.setVoltage(right);
-    // When directly setting the motor voltage,
-    // the differential_drive will trigger the motor safety
-    // because it's not called frquently enough.
-    // -> Pretend we called the differential_drive
-    differential_drive.feed();
-  }
-
+  /** @return Is gear in high speed? */
   public boolean isHighSpeed()
   {
     return shifter.get();
   }
 
+  /** @param high_speed Switch to high speed gearing? */
   public void setGear(final boolean high_speed)
   {
     shifter.set(high_speed);
   }
 
+  /** @return Does robot stand still? */
   public boolean isIdle()
   {
     return left_main.getSelectedSensorVelocity() == 0  &&
            right_main.getSelectedSensorVelocity() == 0;
   }
 
-  public PIDController getPositionPID()
-  {
-    return position_pid;
-  }
-
+  /** @return Left position (positive = forward) */
   public double getLeftPositionMeters()
   {
     return left_main.getSelectedSensorPosition() / TICKS_PER_METER;
   }
 
+  /** @return Right position (negative = forward) */
   public double getRightPositionMeters()
   {
     return right_main.getSelectedSensorPosition() / TICKS_PER_METER;
   }
 
+  /** @return Averaged left/right position (positive = forward) */
   public double getPositionMeters()
   {
     // Right encoder counts down, so '-' to add both
     return (getLeftPositionMeters() - getRightPositionMeters()) / 2;
   }
 
+  /** @return Left speed (positive = forward) */
   public double getLeftSpeedMetersPerSecond()
   {
     // "sensor per 100ms"
     return left_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
+  /** @return Right speed (negative = forward) */
   public double getRightSpeedMetersPerSecond()
   {
     // "sensor per 100ms"
     return right_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
+  /** @return Averaged left/right speed (positive = forward) */
   public double getSpeedMetersPerSecond()
   {
     // Right  encoder counts down, so '-' to add both
     return (getLeftSpeedMetersPerSecond() -
             getRightSpeedMetersPerSecond()) / 2;
-  }
-
-  /** Reset all encoders to 0 */
-  public void reset()
-  {
-    gyro.reset();
-    heading_pid.setSetpoint(0);
-    left_main.setSelectedSensorPosition(0);
-    right_main.setSelectedSensorPosition(0);
-    odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
   }
 
   /** Fetch gyro angle in the 'normal' math coordinate system.
@@ -235,12 +209,69 @@ public class DriveTrain extends SubsystemBase
     return -gyro.getAngle();
   }
 
+  /** 'Arcade' drive
+   *  @param speed Speed going forward
+   *  @param rotation
+   */ 
+  public void drive(final double speed, final double rotation)
+  {
+    differential_drive.arcadeDrive(speed, rotation);
+  }
+
+  /** Direct control of left and right motors
+   *  @param left Left speed -1..1
+   *  @param right Right speed -1..1
+   */
+  public void tankDrive(final double left, final double right)
+  {
+    differential_drive.tankDrive(left, right, false);
+  }
+
+  /** Direct control of left and right motors
+   *  @param left_speed Meters/second
+   *  @param right_speed Meters/second
+   */
+  public void driveSpeed(final double left_speed, final double right_speed)
+  {
+    // Predict necessary voltage, add the PID correction
+    final double left_volt  = feed_forward.calculate(left_speed)
+                            + speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
+    final double right_volt = feed_forward.calculate(right_speed)
+                            + speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
+    driveVoltage(left_volt, right_volt);
+  }
+
+  /** Direct control of left and right motors
+   *  @param left Motor voltage
+   *  @param right Motor voltage
+   */
+  public void driveVoltage(final double left, final double right)
+  {
+    left_main.setVoltage(left);
+    right_main.setVoltage(right);
+    // When directly setting the motor voltage,
+    // the differential_drive will trigger the motor safety
+    // because it's not called frquently enough.
+    // -> Pretend we called the differential_drive
+    differential_drive.feed();
+  }
+
+  /** @return PID for holding position speed [-1..1] */
+  public PIDController getPositionPID()
+  {
+    return position_pid;
+  }
+
+  /** @return PID for holding heading [-1..1] */
   public PIDController getHeadingPID()
   {
     return heading_pid;
   }
 
-  /** @param trajectory Trajectory
+  /** Create RamseteCommand for following a trajectory
+   *  with this drive base
+   * 
+   *  @param trajectory Trajectory to follow
    *  @return Command that uses this drivebase to follow that trajectory
    */
   public CommandBase createRamsete(final Trajectory trajectory)
