@@ -38,11 +38,17 @@ public class TrajectoryViewer
 
   private class TrajectoryPlot extends JPanel
   {
+    private double xmin, xmax, ymin, ymax, speedmax, traj_width, traj_height, scale;
+
     @Override
     protected void paintComponent(final Graphics g)
     {
+      xmin = 0;
+      xmax = 1;
+      ymin = 0;
+      ymax = 1;
+      speedmax = 0;
       // Determine bounding box of trajectory
-      double xmin = 0, xmax = 1, ymin=0, ymax = 1, speedmax = 0;
       for (State state : trajectory.getStates())
       {
         final double x = state.poseMeters.getTranslation().getX(),
@@ -54,38 +60,35 @@ public class TrajectoryViewer
         speedmax = Math.max(speedmax, state.velocityMetersPerSecond);
       }
       // Largest size (width or height) of trajectory
-      final double traj_width = xmax - xmin;
-      final double traj_height = ymax - ymin;
+      traj_width = xmax - xmin;
+      traj_height = ymax - ymin;
       final double traj_size = Math.max(traj_width, traj_height);
       // Scale to fit onto plot allowing for 10 pixels around edges
       final double plot_size = Math.min(getWidth(), getHeight()) - 20;
-      final double scale = plot_size / traj_size;
+      scale = plot_size / traj_size;
 
       final double total_time = trajectory.getTotalTimeSeconds();
+      // Draw all  states
+      g.setColor(Color.BLUE);
       for (double time=0; time < total_time+1;  time += time_step)
-      {
-        final State state = trajectory.sample(time);
-        final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY() + ymin) * scale);
-        final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
-        if (time == 0)
-          g.setColor(Color.GREEN); // Start
-        else if (time >= total_time)
-          g.setColor(Color.RED);   // End
-        else
-          g.setColor(Color.BLUE);  // On the move
-        g.fillOval(x-5, y-5, 10, 10);
+        draw(g, trajectory.sample(time));
+      // Draw start and end again in standout colors
+      g.setColor(Color.GREEN);
+      draw(g, trajectory.sample(0));
+      g.setColor(Color.RED);
+      draw(g, trajectory.sample(total_time));
+    }
 
-        final double speed = state.velocityMetersPerSecond * 20 / speedmax;
-        final int x1 = x - (int) Math.round(state.poseMeters.getRotation().getSin() * speed);
-        final int y1 = y - (int) Math.round(state.poseMeters.getRotation().getCos() * speed);
-        g.drawLine(x, y, x1, y1);
-      }
-      // Start point tends to get overdrawn by initial waypoints, so draw again on top
-      final State state = trajectory.sample(0);
+    private void draw(final Graphics g, final State state)
+    {
       final int x = 10 + (int) Math.round((traj_height - state.poseMeters.getTranslation().getY() + ymin) * scale);
       final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
-      g.setColor(Color.GREEN); // Start
       g.fillOval(x-5, y-5, 10, 10);
+
+      final double speed = state.velocityMetersPerSecond * 20 / speedmax;
+      final int x1 = x - (int) Math.round(state.poseMeters.getRotation().getSin() * speed);
+      final int y1 = y - (int) Math.round(state.poseMeters.getRotation().getCos() * speed);
+      g.drawLine(x, y, x1, y1);
     }
   }
 
