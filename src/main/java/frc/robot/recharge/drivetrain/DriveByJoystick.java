@@ -25,18 +25,17 @@ public class DriveByJoystick extends CommandBase
   @Override
   public void execute()
   {
-    // Test speed-based control (feed forward & PID):
-    // Use speed stick to request speed
-    double speed = OI.getSpeed()*2.5;
-    SmartDashboard.putNumber("Desired Speed", speed);
+    // // Test speed-based control (feed forward & PID):
+    // // Use speed stick to request speed
+    // double speed = OI.getSpeed()*2.5;
+    // SmartDashboard.putNumber("Desired Speed", speed);
 
-    // Tweak a little with rotation stick to allow turning
+    // // Tweak a little with rotation stick to allow turning
     // drive_train.driveSpeed(speed + OI.getDirection(),
     //                        speed - OI.getDirection());
-    drive_train.driveSpeed(speed, speed);
 
     // Normal joystick usage
-    // drive_train.drive(OI.getSpeed(), OI.getDirection());
+    drive_train.drive(OI.getSpeed(), OI.getDirection());
   }
 
   @Override
