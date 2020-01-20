@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
@@ -74,10 +75,10 @@ public class DriveTrain extends SubsystemBase
   // 4.4      1             4.31
   // 1.86     0.41          4.32
 
-  // Charact: kS - 0.845; kV - 3.56; kA - 0.66; r-squared 0.999; p - 18.7
-  // Charact: kS - 0.778; kV - 3.6; kA - 0.91; r -sqaured 0.999; p - 21.5
+  // Charact: kS - 0.845; kV - 3.56; kA - 0.66; r-squared 0.999; P - 18.7
+  // Charact: kS - 0.778; kV - 3.6;  kA - 0.91; r-sqaured 0.999; P - 21.5
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.8, 3.6, 0.8);
-  // TODO left & right speed PID
+  // Left & right speed PID
   private final PIDController left_speed_pid = new PIDController(5, 0, 0);
   private final PIDController right_speed_pid = new PIDController(5, 0, 0);
   
@@ -119,7 +120,6 @@ public class DriveTrain extends SubsystemBase
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
-    // SmartDashboard.putData("Speed PID", speed_pid);
 
     reset();
   }
@@ -131,7 +131,7 @@ public class DriveTrain extends SubsystemBase
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
-    // TODO Do this only for the main motors, follower will, well, follow?
+    // Do this only for the main motors, follower will, well, follow?
     motor.configOpenloopRamp(1.0);
   }
 
@@ -282,12 +282,14 @@ public class DriveTrain extends SubsystemBase
    */
   public CommandBase createRamsete(final Trajectory trajectory)
   {
-    return new RamseteCommand(trajectory,
-                              odometry::getPoseMeters,
-                              new RamseteController(),
-                              kinematics,
-                              this::driveSpeed,
-                              this);
+    final RamseteCommand ramsete = new RamseteCommand(trajectory,
+                                                      odometry::getPoseMeters,
+                                                      new RamseteController(),
+                                                      kinematics,
+                                                      this::driveSpeed,
+                                                      this);
+    // Always reset drivetrain before following trajectory
+    return new InstantCommand(this::reset).andThen(ramsete);
   }
 
   @Override
@@ -303,11 +305,11 @@ public class DriveTrain extends SubsystemBase
     SmartDashboard.putNumber("Y Position:", pose.getTranslation().getY());
     SmartDashboard.putNumber("Angle: ", pose.getRotation().getDegrees());
                     
-    SmartDashboard.putNumber("Position", getPositionMeters());
-    SmartDashboard.putNumber("Left Speed", getLeftSpeedMetersPerSecond());
-    SmartDashboard.putNumber("Right Speed", getRightSpeedMetersPerSecond());
-    SmartDashboard.putNumber("Heading", getHeadingDegrees());
+    // SmartDashboard.putNumber("Position", getPositionMeters());
+    // SmartDashboard.putNumber("Left Speed", getLeftSpeedMetersPerSecond());
+    // SmartDashboard.putNumber("Right Speed", getRightSpeedMetersPerSecond());
+    // SmartDashboard.putNumber("Heading", getHeadingDegrees());
 
-    SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());
+    // SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());
   }
 }
