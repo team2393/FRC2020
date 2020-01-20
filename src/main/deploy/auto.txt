@@ -2,22 +2,19 @@
 
 # Define a move ---------------------------------------
 Auto Move 0.5m
-
 # Trajectory from Start position (X 0, Y 0, Heading 0)
 # moving 0.5 meters forward (along the X axis)
 Trajectory
 End 0.5 0 0
+
+
 # -----------------------------------------------------
-
-# Define a move ---------------------------------------
 Auto Move 1m
-
-# Trajectory from Start position (X 0, Y 0, Heading 0)
-# moving 0.5 meters forward (along the X axis)
 Trajectory
 End 1 0 0
-# -----------------------------------------------------
 
+
+# -----------------------------------------------------
 Auto 0.5 and Back 0.5
 Trajectory
 End 0.5 0 0
@@ -26,24 +23,22 @@ Reverse
 End -0.5 0 0
 
 
+# -----------------------------------------------------
 Auto Slight Left
 Trajectory
 End 1 0.5 0
-# -----------------------------------------------------
 
 
-
-# Define another auto move ----------------------------
-A Demo 2
-T
-P 1 0.5
-E 1.5 1 90
-# -----------------------------------------------------
-
-# Define move that uses path created by Pathweaver
+# Define move that uses path created by Pathweaver ----
 Auto Pathweaver 1m
 PathWeaver output/1Meter.wpilib.json
 
+
+# -----------------------------------------------------
 Auto Pathweaver Swerve1m
 PathWeaver output/1MeterSwerve.wpilib.json
-# Shoot 3
+
+
+# Run path weaver backwards, starting at end point ----
+Auto ReverseWeaver 1m
+ReverseWeaver output/1Meter.wpilib.json

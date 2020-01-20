@@ -61,14 +61,19 @@ public class AutonomousBuilder
         current_auto.addCommands(trajectory_command.apply(trajectory));
         System.out.println("Added Trajectory");
       }
-      else if (command.startsWith("PathW"))
+      else if (command.startsWith("PathW")  ||
+               command.startsWith("ReverseW"))
       { // Read trajectory from PathWeaver file
         final Path pwfile = new File(Filesystem.getDeployDirectory(), scanner.next()).toPath();
         Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
         // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
         trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
+
+        if (command.startsWith("ReverseW"))
+          trajectory = TrajectoryHelper.reverse(trajectory);
+
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added PathWeaver " + pwfile);
+        System.out.println("Added " + command + " " + pwfile);
       }
 
       scanner.close();
@@ -88,8 +93,7 @@ public class AutonomousBuilder
     {
       System.out.println("*** Auto: " + auto.getName());
       auto.initialize();
-      // TODO As long as demo only contains PrintCommand, we can execute it on the laptop!
-      // Once we add actual RamseteCommands, that won't be possible
+      // As long as demo only contains PrintCommand, we can execute it on the laptop!
       auto.execute();
     }
   }

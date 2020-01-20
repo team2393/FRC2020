@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.auto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -34,11 +35,44 @@ public class TrajectoryHelper
                          state.poseMeters.getRotation().getDegrees());
   }
 
-  /** @param trajectory Trajectory
+  /** @param trajectory Trajectory;
    *  @return Info about end point
    */
   public static String getEndInfo(final Trajectory trajectory)
   {
     return "End: " + getInfo(getEnd(trajectory));
+  }
+
+  /** Revert a trajectory
+   * 
+   *  Change end point to start point,
+   *  next-to-last into second point.
+   *  Inverts direction of velocities etc,
+   *  keeping X/Y coordinates.
+   * 
+   *  Meant to turn existing 'forward' trajectory
+   *  into one that's used in 'reverse', going
+   *  backwards.
+   * 
+   * @param original Trajectory
+   * @return Reversed trajectory
+   */
+  public static Trajectory reverse(final Trajectory original)
+  {
+    final List<State> orig_states = original.getStates();
+    final List<State> reversed_states = new ArrayList<>();
+    final double duration = original.getTotalTimeSeconds();
+
+    // Run through original states in reverse order
+    for (int i=orig_states.size()-1;  i>=0;  --i)
+    {
+      final State orig = orig_states.get(i);
+      reversed_states.add(new State(duration - orig.timeSeconds,
+                                    -orig.velocityMetersPerSecond,
+                                    -orig.accelerationMetersPerSecondSq,
+                                     orig.poseMeters,
+                                    -orig.curvatureRadPerMeter));
+    }
+    return new Trajectory(reversed_states);
   }
 }
