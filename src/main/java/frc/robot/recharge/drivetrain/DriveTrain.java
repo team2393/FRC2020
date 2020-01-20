@@ -78,8 +78,9 @@ public class DriveTrain extends SubsystemBase
   // Charact: kS - 0.778; kV - 3.6; kA - 0.91; r -sqaured 0.999; p - 21.5
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.8, 3.6, 0.8);
   // TODO left & right speed PID
-  private final PIDController speed_pid = new PIDController(0, 0, 0);
-
+  private final PIDController left_speed_pid = new PIDController(5, 0, 0);
+  private final PIDController right_speed_pid = new PIDController(5, 0, 0);
+  
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
@@ -118,7 +119,7 @@ public class DriveTrain extends SubsystemBase
 
     SmartDashboard.putData("Position PID", position_pid);
     SmartDashboard.putData("Heading PID", heading_pid);
-    SmartDashboard.putData("Speed PID", speed_pid);
+    // SmartDashboard.putData("Speed PID", speed_pid);
 
     reset();
   }
@@ -188,11 +189,11 @@ public class DriveTrain extends SubsystemBase
     return left_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
-  /** @return Right speed (negative = forward) */
+  /** @return Right speed (positive = forward) */
   public double getRightSpeedMetersPerSecond()
   {
     // "sensor per 100ms"
-    return right_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
+    return -right_main.getSelectedSensorVelocity() * (10.0 / TICKS_PER_METER);
   }
 
   /** @return Averaged left/right speed (positive = forward) */
@@ -239,10 +240,10 @@ public class DriveTrain extends SubsystemBase
   {
     // Predict necessary voltage, add the PID correction
     final double left_volt  = feed_forward.calculate(left_speed)
-                            + speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
+                            + left_speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
     final double right_volt = feed_forward.calculate(right_speed)
-                            + speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
-   System.out.println("Speeds: " + left_volt + ", " + right_volt);
+                            + right_speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
+  //  System.out.println("Speeds: " + left_volt + ", " + right_volt);
     driveVoltage(left_volt, -right_volt);
   }
 
@@ -295,7 +296,7 @@ public class DriveTrain extends SubsystemBase
     // Update position tracker
     odometry.update(Rotation2d.fromDegrees(getHeadingDegrees()),
                      left_main.getSelectedSensorPosition() / TICKS_PER_METER,
-                    -right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
+                     -right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
     // Publish odometry X, Y, Angle
     Pose2d pose = odometry.getPoseMeters();
     SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());
@@ -303,7 +304,8 @@ public class DriveTrain extends SubsystemBase
     SmartDashboard.putNumber("Angle: ", pose.getRotation().getDegrees());
                     
     SmartDashboard.putNumber("Position", getPositionMeters());
-    SmartDashboard.putNumber("Speed", getSpeedMetersPerSecond());
+    SmartDashboard.putNumber("Left Speed", getLeftSpeedMetersPerSecond());
+    SmartDashboard.putNumber("Right Speed", getRightSpeedMetersPerSecond());
     SmartDashboard.putNumber("Heading", getHeadingDegrees());
 
     SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());

@@ -151,6 +151,8 @@ public class Enterprise extends BasicRobot
   {
     super.autonomousInit();
 
+    reset_drivetrain.schedule();
+    
     auto_commands.getSelected().schedule();
 
     // drive_to_position.schedule();
