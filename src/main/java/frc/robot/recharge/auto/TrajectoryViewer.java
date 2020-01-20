@@ -84,7 +84,7 @@ public class TrajectoryViewer
       final int y = 10 + (int) Math.round((traj_width  - state.poseMeters.getTranslation().getX()) * scale);
       g.setColor(Color.GREEN); // Start
       g.fillOval(x-5, y-5, 10, 10);
-  }
+    }
   }
 
   public TrajectoryViewer(final Trajectory trajectory)

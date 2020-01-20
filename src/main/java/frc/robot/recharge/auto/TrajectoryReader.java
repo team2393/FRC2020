@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  public static TrajectoryConfig config = new TrajectoryConfig(1.0, 0.3);
+  public static TrajectoryConfig config = new TrajectoryConfig(0.5, 0.3);
 
   /** Read a trajectory from a file.
    * 
