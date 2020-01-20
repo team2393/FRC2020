@@ -50,6 +50,11 @@ public class OI
     return getSpeedFactor() * joystick.getX(Hand.kRight);
   }
 
+  public static final boolean isToggleHeadingholdPressed()
+  {
+      return joystick.getRawButtonPressed(XboxController.Button.kA.value);
+  }
+
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()
   {

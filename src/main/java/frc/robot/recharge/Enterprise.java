@@ -49,11 +49,10 @@ public class Enterprise extends BasicRobot
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
+  private final Rumble rumble = new Rumble();
 
-  // TODO Tune PIDs for drive-to-position, turn-to-heading with actual robot
-  // TODO Trajectory: Create, follow
-  // TODO Use simple position and heading PID to follow trajectory
-  // TODO RamseteCommand to follow trajectory
+
+  // TODO Tune drive PIDs with actual robot
   // TODO Command to drive left/right based on vision info (in network tables, set by pi)
   // TODO Control motor w/ encoder for lowering/raising intake
   // TODO Control motors for intake, conveyor belt, shooter
@@ -129,12 +128,12 @@ public class Enterprise extends BasicRobot
   @Override
   public void teleopInit()
   {
-    // TODO add toggle between modes
     super.teleopInit();
+
     // manual_wheel.schedule();
-    drive_by_joystick.schedule();
-    // auto_shift.schedule();
-    // heading_hold.schedule();
+    // drive_by_joystick.schedule();
+    auto_shift.schedule();
+    heading_hold.schedule();
   }
   
   @Override
@@ -143,7 +142,22 @@ public class Enterprise extends BasicRobot
     // TODO Indicate direction to target on LED
     //final double direction = OI.getDirection();
     final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
-    // led_strip.indicateDirection(direction);    
+    // led_strip.indicateDirection(direction);
+
+    // Toggle between drive_by_joystick and heading_hold
+    if (OI.isToggleHeadingholdPressed())
+    {
+      if (heading_hold.isScheduled())
+      {
+        rumble.schedule(0.5);
+        drive_by_joystick.schedule();
+      }
+      else
+      {
+        rumble.schedule(0.1);
+        heading_hold.schedule();
+      }
+    }
   }
   
   @Override
