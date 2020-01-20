@@ -51,6 +51,7 @@ public class AutonomousBuilder
         current_auto = new SequentialCommandGroup();
         current_auto.setName(scanner.nextLine());
         autos.add(current_auto);
+        System.out.println("Reading Auto '" + current_auto.getName() + "''");
       }
       else if (command.startsWith("T"))
       { // Trajectory:
@@ -58,6 +59,7 @@ public class AutonomousBuilder
         final Trajectory trajectory = TrajectoryReader.read(file);
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
+        System.out.println("Added Trajectory");
       }
       else if (command.startsWith("PathW"))
       { // Read trajectory from PathWeaver file
@@ -66,6 +68,7 @@ public class AutonomousBuilder
         // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
         trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
         current_auto.addCommands(trajectory_command.apply(trajectory));
+        System.out.println("Added PathWeaver " + pwfile);
       }
 
       scanner.close();

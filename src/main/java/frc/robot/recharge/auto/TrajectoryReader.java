@@ -35,6 +35,9 @@ public class TrajectoryReader
    */
   public static Trajectory read(final BufferedReader file) throws Exception
   {
+    // Assume we're moving forward
+    config.setReversed(false);
+
     // Initial position and heading
     final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
 
@@ -48,7 +51,7 @@ public class TrajectoryReader
     Pose2d end = null;
     
     String line;
-    while ((line = file.readLine()) != null  &&  end == null)
+    while (end == null  &&  (line = file.readLine()) != null)
     {
       // Skip empty lines and comments
       if (line.isBlank()  ||  line.startsWith("#"))
@@ -56,7 +59,9 @@ public class TrajectoryReader
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("P"))
+      if (command.startsWith("Rev"))
+        config.setReversed(true);
+      else if (command.startsWith("P"))
       { // Point X Y (absolute)
         pos = new Translation2d(scanner.nextDouble(),
                                 scanner.nextDouble());

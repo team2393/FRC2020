@@ -18,6 +18,13 @@ Trajectory
 End 1 0 0
 # -----------------------------------------------------
 
+Auto 0.5 and Back 0.5
+Trajectory
+End 0.5 0 0
+Trajectory
+Reverse
+End -0.5 0 0
+
 
 Auto Slight Left
 Trajectory
