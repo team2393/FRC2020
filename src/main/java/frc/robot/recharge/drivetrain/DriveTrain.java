@@ -73,14 +73,18 @@ public class DriveTrain extends SubsystemBase
   // 2.15     0.5           4.12
   // 4.4      1             4.31
   // 1.86     0.41          4.32
-  private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.09, 4.3);
-  private final PIDController speed_pid = new PIDController(2, 0, 0);
+
+  // Charact: kS - 0.845; kV - 3.56; kA - 0.66; r-squared 0.999; p - 18.7
+  // Charact: kS - 0.778; kV - 3.6; kA - 0.91; r -sqaured 0.999; p - 21.5
+  private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.8, 3.6, 0.8);
+  // TODO left & right speed PID
+  private final PIDController speed_pid = new PIDController(0, 0, 0);
 
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
-  // TODO Measure distance between left & right wheels
-  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(1.0);
+  // Measure distance between left & right wheels
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.65);
 
   public DriveTrain()
   {
@@ -238,7 +242,8 @@ public class DriveTrain extends SubsystemBase
                             + speed_pid.calculate(getLeftSpeedMetersPerSecond(), left_speed);
     final double right_volt = feed_forward.calculate(right_speed)
                             + speed_pid.calculate(getRightSpeedMetersPerSecond(), right_speed);
-    driveVoltage(left_volt, right_volt);
+   System.out.println("Speeds: " + left_volt + ", " + right_volt);
+    driveVoltage(left_volt, -right_volt);
   }
 
   /** Direct control of left and right motors

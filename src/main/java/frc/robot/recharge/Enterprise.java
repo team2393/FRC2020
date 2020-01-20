@@ -33,7 +33,7 @@ import frc.robot.recharge.led.LEDStrip;
 
 /** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
-public class RechargeRobot extends BasicRobot
+public class Enterprise extends BasicRobot
 {  
   private final DriveTrain drive_train = new DriveTrain();
   
@@ -102,7 +102,6 @@ public class RechargeRobot extends BasicRobot
 
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
-    auto_commands.addOption("Another", new PrintCommand("Another option"));
     // Add moves from auto.txt
     try
     {

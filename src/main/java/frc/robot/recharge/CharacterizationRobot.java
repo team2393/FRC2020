@@ -29,7 +29,7 @@ public class CharacterizationRobot extends BasicRobot
   final Supplier<Double> leftEncoderRate = drive_train::getLeftSpeedMetersPerSecond;
   final Supplier<Double> rightEncoderPosition = drive_train::getRightPositionMeters;
   final Supplier<Double> rightEncoderRate = drive_train::getRightSpeedMetersPerSecond;
-  final Supplier<Double> gyroAngleRadians = () -> Math.toRadians(drive_train.getHeadingDegrees());
+  final Supplier<Double> gyroAngleRadians = () -> Math.toRadians(-drive_train.getHeadingDegrees());
 
   // frc-characterization commands robot speed and rotation via these entries
   final NetworkTableEntry autoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");

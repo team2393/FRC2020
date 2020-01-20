@@ -9,6 +9,22 @@ Trajectory
 End 0.5 0 0
 # -----------------------------------------------------
 
+# Define a move ---------------------------------------
+Auto Move 1m
+
+# Trajectory from Start position (X 0, Y 0, Heading 0)
+# moving 0.5 meters forward (along the X axis)
+Trajectory
+End 1 0 0
+# -----------------------------------------------------
+
+
+Auto Slight Right
+Trajectory
+End 1 -0.5 0
+# -----------------------------------------------------
+
+
 
 # Define another auto move ----------------------------
 A Demo 2
@@ -16,3 +32,8 @@ T
 P 1 0.5
 E 1.5 1 90
 # -----------------------------------------------------
+
+
+# A Demo 3
+# PathWeaver xxx.wpilib.json
+# Shoot 3

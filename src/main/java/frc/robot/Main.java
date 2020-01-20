@@ -8,16 +8,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.recharge.CharacterizationRobot;
 // import frc.robot.demo.motor.FalconTestRobot;
 // import frc.robot.demo.motor.TrajectoryTestRobot;
 // import frc.robot.demo.commands.CommandRobot;
-import frc.robot.recharge.RechargeRobot;
+import frc.robot.recharge.Enterprise;
 
 /** 'main' class, selects which robot to run */
 public final class Main
 {
   public static void main(String... args)
   {
-    RobotBase.startRobot(RechargeRobot::new);
+    RobotBase.startRobot(Enterprise::new);
   }
 }

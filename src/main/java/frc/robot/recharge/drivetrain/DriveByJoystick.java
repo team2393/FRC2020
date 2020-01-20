@@ -31,8 +31,9 @@ public class DriveByJoystick extends CommandBase
     SmartDashboard.putNumber("Desired Speed", speed);
 
     // Tweak a little with rotation stick to allow turning
-    drive_train.driveSpeed( speed + OI.getDirection(),
-                           -speed + OI.getDirection());
+    // drive_train.driveSpeed(speed + OI.getDirection(),
+    //                        speed - OI.getDirection());
+    drive_train.driveSpeed(speed, speed);
 
     // Normal joystick usage
     // drive_train.drive(OI.getSpeed(), OI.getDirection());
