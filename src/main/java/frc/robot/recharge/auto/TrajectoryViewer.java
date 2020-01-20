@@ -9,6 +9,7 @@ package frc.robot.recharge.auto;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 /** Plot trajectory on laptop
@@ -117,23 +119,26 @@ public class TrajectoryViewer
     frame.setVisible(true);
   }
 
-  public static void main(String[] args)
+  public static void main(String[] args) throws Exception
   {
-    // Create demo trajectory
-    final TrajectoryConfig config = new TrajectoryConfig(1.0, 0.3);
-    final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-    Translation2d pos = start.getTranslation();
+    // // Create demo trajectory
+    // final TrajectoryConfig config = new TrajectoryConfig(1.0, 0.3);
+    // final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+    // Translation2d pos = start.getTranslation();
     
-    final List<Translation2d> waypoints = new ArrayList<>();
-    pos = pos.plus(new Translation2d(1, 0));
-    waypoints.add(pos);
+    // final List<Translation2d> waypoints = new ArrayList<>();
+    // pos = pos.plus(new Translation2d(1, 0));
+    // waypoints.add(pos);
     
-    pos = pos.plus(new Translation2d(1, 1));
-    waypoints.add(pos);
+    // pos = pos.plus(new Translation2d(1, 1));
+    // waypoints.add(pos);
     
-    pos = pos.plus(new Translation2d(1, 0));
-    final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(0.0));
-    final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+    // pos = pos.plus(new Translation2d(1, 0));
+    // final Pose2d end = new Pose2d(pos, Rotation2d.fromDegrees(0.0));
+    // final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+
+    Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(Path.of("src/main/deploy/output/1MeterSwerve.wpilib.json"));
+    trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
 
     // Show it
     new TrajectoryViewer(trajectory);

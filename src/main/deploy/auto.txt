@@ -33,7 +33,10 @@ P 1 0.5
 E 1.5 1 90
 # -----------------------------------------------------
 
+# Define move that uses path created by Pathweaver
+Auto Pathweaver 1m
+PathWeaver output/1Meter.wpilib.json
 
-# A Demo 3
-# PathWeaver xxx.wpilib.json
+Auto Pathweaver Swerve1m
+PathWeaver output/1MeterSwerve.wpilib.json
 # Shoot 3

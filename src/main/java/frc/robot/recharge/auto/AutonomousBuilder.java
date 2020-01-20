@@ -9,12 +9,15 @@ package frc.robot.recharge.auto;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -56,6 +59,15 @@ public class AutonomousBuilder
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
       }
+      else if (command.startsWith("PathW"))
+      { // Read trajectory from PathWeaver file
+        final Path pwfile = new File(Filesystem.getDeployDirectory(), scanner.next()).toPath();
+        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
+        // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
+        trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
+        current_auto.addCommands(trajectory_command.apply(trajectory));
+      }
+
       scanner.close();
     }
 
