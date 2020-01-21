@@ -7,7 +7,9 @@
 package frc.robot.recharge.auto;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +20,8 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
@@ -30,14 +34,14 @@ public class TrajectoryReader
    *  reaching an end-of-trajactory line.
    * 
    *  @param file File reader
+   *  @param reverse Going backwards along the trajectory?
    *  @return {@link Trajectory}
    *  @throws Exception on error
    */
-  public static Trajectory read(final BufferedReader file) throws Exception
+  public static Trajectory read(final BufferedReader file, final boolean reverse) throws Exception
   {
     // Assume we're moving forward
-    config.setReversed(false);
-
+    config.setReversed(reverse);
     // Initial position and heading
     final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
 
@@ -59,9 +63,7 @@ public class TrajectoryReader
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("Rev"))
-        config.setReversed(true);
-      else if (command.startsWith("P"))
+      if (command.startsWith("P"))
       { // Point X Y (absolute)
         pos = new Translation2d(scanner.nextDouble(),
                                 scanner.nextDouble());
@@ -92,9 +94,24 @@ public class TrajectoryReader
   {
     // Open demo file
     final BufferedReader file = new BufferedReader(new FileReader("src/main/deploy/demo_trajectory.txt"));
-    final Trajectory trajectory = TrajectoryReader.read(file);
+    Trajectory trajectory = TrajectoryReader.read(file, true);
+    System.out.println("Good");
+    for (State state : trajectory.getStates())
+      System.out.println(state);
+
+
+    final Path pwfile = new File("src/main/deploy/output/1MeterSwerve.wpilib.json").toPath();
+    trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
+    // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
+    trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
+    trajectory = TrajectoryHelper.reverse(trajectory);
+
+    System.out.println("\n\nStrange");
+    for (State state : trajectory.getStates())
+      System.out.println(state);
+
 
     // Show it
-    new TrajectoryViewer(trajectory, 0.1);
+   // new TrajectoryViewer(trajectory, 0.1);
   }
 }

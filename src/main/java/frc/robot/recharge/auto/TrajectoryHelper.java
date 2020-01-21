@@ -9,6 +9,8 @@ package frc.robot.recharge.auto;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
@@ -61,6 +63,10 @@ public class TrajectoryHelper
   {
     final List<State> orig_states = original.getStates();
     final List<State> reversed_states = new ArrayList<>();
+
+    final State end = orig_states.get(orig_states.size()-1);
+    final double end_x = end.poseMeters.getTranslation().getX();
+    final double end_y = end.poseMeters.getTranslation().getY();
     final double duration = original.getTotalTimeSeconds();
 
     // Run through original states in reverse order
@@ -69,9 +75,11 @@ public class TrajectoryHelper
       final State orig = orig_states.get(i);
       reversed_states.add(new State(duration - orig.timeSeconds,
                                     -orig.velocityMetersPerSecond,
-                                    -orig.accelerationMetersPerSecondSq,
-                                     orig.poseMeters,
-                                    -orig.curvatureRadPerMeter));
+                                    orig.accelerationMetersPerSecondSq,
+                                     new Pose2d(new Translation2d(orig.poseMeters.getTranslation().getX() - end_x,
+                                                                  orig.poseMeters.getTranslation().getY() - end_y),
+                                                orig.poseMeters.getRotation()),
+                                    orig.curvatureRadPerMeter));
     }
     return new Trajectory(reversed_states);
   }

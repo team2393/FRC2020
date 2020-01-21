@@ -18,27 +18,33 @@ End 1 0 0
 Auto 0.5 and Back 0.5
 Trajectory
 End 0.5 0 0
-Trajectory
-Reverse
+ReverseTrajectory
 End -0.5 0 0
 
 
 # -----------------------------------------------------
-Auto Slight Left
+Auto Slight Left and back
 Trajectory
 End 1 0.5 0
+ReverseTrajectory
+End -1 -0.5 0
 
 
 # Define move that uses path created by Pathweaver ----
 Auto Pathweaver 1m
 PathWeaver output/1Meter.wpilib.json
 
+Auto Pathwaever 1m and back
+PathWeaver output/1Meter.wpilib.json
+ReverseWeaver output/1Meter.wpilib.json
+
 
 # -----------------------------------------------------
 Auto Pathweaver Swerve1m
 PathWeaver output/1MeterSwerve.wpilib.json
 
+#
+Auto Pathweaver Swerve1m and back
+PathWeaver output/1MeterSwerve.wpilib.json
+ReveseWeaver output/1MeterSwerve.wpilib.json
 
-# Run path weaver backwards, starting at end point ----
-Auto ReverseWeaver 1m
-ReverseWeaver output/1Meter.wpilib.json

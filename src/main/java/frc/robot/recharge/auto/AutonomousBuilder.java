@@ -45,7 +45,7 @@ public class AutonomousBuilder
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("A"))
+      if (command.startsWith("Auto"))
       { // Auto Name-of-this-sequence:
         // Start new auto
         current_auto = new SequentialCommandGroup();
@@ -53,10 +53,11 @@ public class AutonomousBuilder
         autos.add(current_auto);
         System.out.println("Reading Auto '" + current_auto.getName() + "''");
       }
-      else if (command.startsWith("T"))
+      else if (command.startsWith("Traj") ||
+               command.startsWith("ReverseTr"))
       { // Trajectory:
         // Read trajectory info
-        final Trajectory trajectory = TrajectoryReader.read(file);
+        final Trajectory trajectory = TrajectoryReader.read(file, command.startsWith("Reverse"));
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
         System.out.println("Added Trajectory");

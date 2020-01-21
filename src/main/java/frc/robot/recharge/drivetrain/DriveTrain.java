@@ -200,7 +200,7 @@ public class DriveTrain extends SubsystemBase
   public double getSpeedMetersPerSecond()
   {
     // Right  encoder counts down, so '-' to add both
-    return (getLeftSpeedMetersPerSecond() -
+    return (getLeftSpeedMetersPerSecond() +
             getRightSpeedMetersPerSecond()) / 2;
   }
 
