@@ -57,7 +57,7 @@ public class TrajectoryViewer
         xmax = Math.max(xmax, x);
         ymin = Math.min(ymin, y);
         ymax = Math.max(ymax, y);
-        speedmax = Math.max(speedmax, state.velocityMetersPerSecond);
+        speedmax = Math.max(speedmax, Math.abs(state.velocityMetersPerSecond));
       }
       // Largest size (width or height) of trajectory
       traj_width = xmax - xmin;
@@ -142,6 +142,7 @@ public class TrajectoryViewer
 
     Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(Path.of("src/main/deploy/output/1MeterSwerve.wpilib.json"));
     trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
+    trajectory = TrajectoryHelper.reverse(trajectory);
 
     // Show it
     new TrajectoryViewer(trajectory);
