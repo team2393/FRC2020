@@ -34,6 +34,8 @@ public class DriveByJoystick extends CommandBase
     // drive_train.driveSpeed(speed + OI.getDirection(),
     //                        speed - OI.getDirection());
 
+    // TODO Filter joystick via https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/slew-rate-limiter.html ?
+
     // Normal joystick usage
     drive_train.drive(OI.getSpeed(), OI.getDirection());
   }
