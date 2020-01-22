@@ -25,9 +25,9 @@ End -0.5 0 0
 # -----------------------------------------------------
 Auto Slight Left and back
 Trajectory
-End 1 0.5 0
+End 3 0.5 0
 ReverseTrajectory
-End -1 -0.5 0
+End -3 -0.5 0
 
 
 # Define move that uses path created by Pathweaver ----
@@ -49,10 +49,5 @@ PathWeaver output/1MeterSwerve.wpilib.json
 ReverseWeaver output/1MeterSwerve.wpilib.json
 
 
-Auto 3m out, round and back
-# 3m forward, turn around,
-Point 3 -0.25
-# run back passing startpoint 0.5m to the right
-Point 0 -0.5
-# and then back to the start
-End 0 0 0
+Auto Loop
+PathWeaver output/Loop.wpilib.json

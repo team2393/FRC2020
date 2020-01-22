@@ -171,12 +171,8 @@ public class Enterprise extends BasicRobot
     reset_drivetrain.schedule();
     
     // Run the selected command.
-    // Once that ends, keep updating motors (stand still)
-    // to avoid motor safety warnings.
-    auto_commands.getSelected()
-                 .andThen(new PrintCommand("Completed auto-move"))
-                 .andThen(new RunCommand(() -> drive_train.drive(0, 0)))
-                 .schedule();
+    drive_train.reset();
+    auto_commands.getSelected().schedule();
   }
 
   @Override
