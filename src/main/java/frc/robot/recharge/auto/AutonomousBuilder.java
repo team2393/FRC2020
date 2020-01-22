@@ -36,6 +36,11 @@ public class AutonomousBuilder
     final List<SequentialCommandGroup> autos = new ArrayList<>();
     SequentialCommandGroup current_auto = null;
 
+    // TODO Don't reset drivetrain.
+    // If we reset position for each trajectory, the small errors at end of trajectory follower add up.
+    // Get current position,
+    // transform each trajectory relative to the position at the time,
+    // and move 'current' position to the desired end point of each trajectory.
     String line;
     while ((line = file.readLine()) != null)
     {
