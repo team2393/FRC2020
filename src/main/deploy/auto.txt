@@ -46,5 +46,5 @@ PathWeaver output/1MeterSwerve.wpilib.json
 #
 Auto Pathweaver Swerve1m and back
 PathWeaver output/1MeterSwerve.wpilib.json
-ReveseWeaver output/1MeterSwerve.wpilib.json
+ReverseWeaver output/1MeterSwerve.wpilib.json
 
