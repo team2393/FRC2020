@@ -135,13 +135,14 @@ public class DriveTrain extends SubsystemBase
     motor.configOpenloopRamp(1.0);
   }
 
-  /** Reset all encoders to 0 */
+  /** Reset all encoders to 0, low gear, ... */
   public void reset()
   {
     gyro.reset();
     left_main.setSelectedSensorPosition(0);
     right_main.setSelectedSensorPosition(0);
     odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
+    setGear(false);
   }
 
   /** @return Is gear in high speed? */
@@ -289,7 +290,7 @@ public class DriveTrain extends SubsystemBase
                                                       this::driveSpeed,
                                                       this);
     // Always reset drivetrain before following trajectory
-    return new InstantCommand(this::reset).andThen(ramsete);
+    return new Reset(this).andThen(ramsete);
   }
 
   @Override
