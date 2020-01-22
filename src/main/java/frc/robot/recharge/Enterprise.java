@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.auto.AutonomousBuilder;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
@@ -168,10 +169,13 @@ public class Enterprise extends BasicRobot
 
     reset_drivetrain.schedule();
     
-    auto_commands.getSelected().schedule();
-
-    // drive_to_position.schedule();
-    // turn_to_heading.schedule();
+    // Run the selected command.
+    // Once that ends, keep updating motors (stand still)
+    // to avoid motor safety warnings.
+    auto_commands.getSelected()
+                 .andThen(new PrintCommand("Completed auto-move"))
+                 .andThen(new RunCommand(() -> drive_train.drive(0, 0)))
+                 .schedule();
   }
 
   @Override
