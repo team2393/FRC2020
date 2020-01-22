@@ -48,3 +48,11 @@ Auto Pathweaver Swerve1m and back
 PathWeaver output/1MeterSwerve.wpilib.json
 ReverseWeaver output/1MeterSwerve.wpilib.json
 
+
+Auto 3m out, round and back
+# 3m forward, turn around,
+Point 3 -0.25
+# run back passing startpoint 0.5m to the right
+Point 0 -0.5
+# and then back to the start
+End 0 0 0
