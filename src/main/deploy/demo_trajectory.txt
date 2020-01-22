@@ -2,13 +2,9 @@
 # Start position is X 0, Y 0, Heading 0,
 # i.e. "looking up the X axis"
 
-# Reverse
-
 # Point on the way, absolute X, Y
 #Point 3 0
-
-# Just "P" can also be used for "Point"
-#P 3 -1
+#Point 3 -1
 
 # Relative point on the way, X, Y relative to last point
 #RPoint 0 -1

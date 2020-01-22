@@ -63,24 +63,26 @@ public class TrajectoryReader
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("P"))
+      if (command.startsWith("Point"))
       { // Point X Y (absolute)
         pos = new Translation2d(scanner.nextDouble(),
                                 scanner.nextDouble());
         waypoints.add(pos);                     
       }
-      else if (command.startsWith("RP"))
+      else if (command.startsWith("RPoint"))
       { // RelativePoint X Y
         pos = pos.plus(new Translation2d(scanner.nextDouble(),
                                          scanner.nextDouble()));
         waypoints.add(pos);                     
       }
-      else if (command.startsWith("E"))
+      else if (command.startsWith("End"))
       { // End X Y Heading
         end = new Pose2d(scanner.nextDouble(),
                          scanner.nextDouble(),
                          Rotation2d.fromDegrees(scanner.nextDouble()));
       }
+      else
+        throw new Exception("Unknown trajectory command:" + line);
       scanner.close();
     }
 

@@ -76,6 +76,8 @@ public class AutonomousBuilder
         current_auto.addCommands(trajectory_command.apply(trajectory));
         System.out.println("Added " + command + " " + pwfile);
       }
+      else
+        throw new Exception("Unknown autonomouse command: " + line);
 
       scanner.close();
     }
