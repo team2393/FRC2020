@@ -26,7 +26,9 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  public static TrajectoryConfig config = new TrajectoryConfig(1, 0.55);
+  public static TrajectoryConfig config = new TrajectoryConfig(1, 0.55)
+  // TODO .setKinematics(DriveTrain.kinematics)
+       ;
 
   /** Read a trajectory from a file.
    * 
