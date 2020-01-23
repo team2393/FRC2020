@@ -75,7 +75,7 @@ public class AutonomousBuilder
 
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added " + command);
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else if (command.equals("Poses") ||
                command.equals("ReversePoses"))
@@ -89,7 +89,7 @@ public class AutonomousBuilder
 
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added " + command);
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else if (command.equals("PathWeaver")  ||
                command.equals("ReverseWeaver"))
@@ -104,7 +104,7 @@ public class AutonomousBuilder
         nominal = TrajectoryHelper.getEndPose(trajectory);
 
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added " + command + " " + pwfile);
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else
         throw new Exception("Unknown autonomouse command: " + line);
