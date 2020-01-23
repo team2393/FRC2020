@@ -19,6 +19,15 @@ public class RobotMap
   public final static int LEFT_MOTOR_SLAVE = 3;
   public final static int RIGHT_MOTOR_SLAVE = 4;
 
+  // Shooter Motors
+  public final static int SHOOTER_MOTOR = 5;
+  public final static int CONVEYOR_MOTOR = 6;
+  public final static int INTAKE_MOTOR = 7;
+  public final static int ANGLE_MOTOR = 8;
+
+  // Digital IO Sensors
+  public final static int BALL_SENSOR = 1;
+
   // Motor port used for wheel-of-fortune on control panel
   public final static int CONTROL_PANEL_WHEEL = 9;
 
