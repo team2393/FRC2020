@@ -16,6 +16,7 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -36,11 +37,13 @@ public class AutonomousBuilder
     final List<SequentialCommandGroup> autos = new ArrayList<>();
     SequentialCommandGroup current_auto = null;
 
-    // TODO Don't reset drivetrain.
-    // If we reset position for each trajectory, the small errors at end of trajectory follower add up.
-    // Get current position,
-    // transform each trajectory relative to the position at the time,
-    // and move 'current' position to the desired end point of each trajectory.
+    // Track where we think the robot should be.
+    // At the end of a trajectory, it's set to the final pose
+    // and the next trajectory then starts there.
+    // The trajectory follower can thus correct when it compares
+    // to encoder readings.
+    Pose2d nominal = null;
+
     String line;
     while ((line = file.readLine()) != null)
     {
@@ -50,36 +53,58 @@ public class AutonomousBuilder
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("Auto"))
+      if (command.equals("Auto"))
       { // Auto Name-of-this-sequence:
         // Start new auto
         current_auto = new SequentialCommandGroup();
         current_auto.setName(scanner.nextLine());
         autos.add(current_auto);
+        // Initial position at start of autonomous
+        nominal = new Pose2d();
         System.out.println("Reading Auto '" + current_auto.getName() + "''");
       }
-      else if (command.startsWith("Traj") ||
-               command.startsWith("ReverseTr"))
+      else if (command.equals("Trajectory") ||
+               command.equals("ReverseTrajectory"))
       { // Trajectory:
         // Read trajectory info
-        final Trajectory trajectory = TrajectoryReader.read(file, command.startsWith("Reverse"));
+        Trajectory trajectory = TrajectoryReader.readPoints(file, command.equals("ReverseTrajectory"));
+        // Make it start at the assumed position
+        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+        // .. and then we expect to be where the trajectory ends
+        nominal = TrajectoryHelper.getEndPose(trajectory);
+
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added Trajectory");
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
-      else if (command.startsWith("PathW")  ||
-               command.startsWith("ReverseW"))
+      else if (command.equals("Poses") ||
+               command.equals("ReversePoses"))
+      { // Trajectory:
+        // Read trajectory info
+        Trajectory trajectory = TrajectoryReader.readPoses(file, command.equals("ReversePoses"));
+        // Make it start at the assumed position
+        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+        // .. and then we expect to be where the trajectory ends
+        nominal = TrajectoryHelper.getEndPose(trajectory);
+
+        // Turn into command, which may be a 'print' or a 'ramsete' that follows it
+        current_auto.addCommands(trajectory_command.apply(trajectory));
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
+      }
+      else if (command.equals("PathWeaver")  ||
+               command.equals("ReverseWeaver"))
       { // Read trajectory from PathWeaver file
         final Path pwfile = new File(Filesystem.getDeployDirectory(), scanner.next()).toPath();
         Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
-        // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
-        trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
-
-        if (command.startsWith("ReverseW"))
+        if (command.equals("ReverseWeaver"))
           trajectory = TrajectoryHelper.reverse(trajectory);
+        // Make it start at the assumed position
+        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+        // .. and then we expect to be where the trajectory ends
+        nominal = TrajectoryHelper.getEndPose(trajectory);
 
         current_auto.addCommands(trajectory_command.apply(trajectory));
-        System.out.println("Added " + command + " " + pwfile);
+        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else
         throw new Exception("Unknown autonomouse command: " + line);

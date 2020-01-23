@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "CodeLens (Launch) - TrajectoryHelper",
+      "request": "launch",
+      "mainClass": "frc.robot.recharge.auto.TrajectoryHelper",
+      "projectName": "FRC2020"
+    },
+    {
+      "type": "java",
       "name": "CodeLens (Launch) - AutonomousBuilder",
       "request": "launch",
       "mainClass": "frc.robot.recharge.auto.AutonomousBuilder",

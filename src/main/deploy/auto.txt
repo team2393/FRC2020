@@ -5,13 +5,25 @@ Auto Move 0.5m
 # Trajectory from Start position (X 0, Y 0, Heading 0)
 # moving 0.5 meters forward (along the X axis)
 Trajectory
+# Trajectory might contain intermediate "Point X Y" points
 End 0.5 0 0
 
 
 # -----------------------------------------------------
-Auto Move 1m
+Auto Turn Right
 Trajectory
-End 1 0 0
+End 1 -1 -90
+
+
+# -----------------------------------------------------
+Auto Racetrack
+Poses
+Pose 1 0 0
+Pose 1.5 -0.5 -90
+Pose 1 -1.0 -180
+Pose 0 -1.0 -180
+Pose -0.5 -0.5 90
+End 0 0 0
 
 
 # -----------------------------------------------------
@@ -43,11 +55,11 @@ ReverseWeaver output/1Meter.wpilib.json
 Auto Pathweaver Swerve1m
 PathWeaver output/1MeterSwerve.wpilib.json
 
-#
+# -----------------------------------------------------
 Auto Pathweaver Swerve1m and back
 PathWeaver output/1MeterSwerve.wpilib.json
 ReverseWeaver output/1MeterSwerve.wpilib.json
 
-
+# -----------------------------------------------------
 Auto Loop
 PathWeaver output/Loop.wpilib.json

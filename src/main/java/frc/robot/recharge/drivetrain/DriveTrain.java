@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
@@ -86,7 +85,7 @@ public class DriveTrain extends SubsystemBase
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
   // Measure distance between left & right wheels
-  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.65);
+  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.65);
 
   public DriveTrain()
   {
@@ -283,14 +282,12 @@ public class DriveTrain extends SubsystemBase
    */
   public CommandBase createRamsete(final Trajectory trajectory)
   {
-    final RamseteCommand ramsete = new RamseteCommand(trajectory,
-                                                      odometry::getPoseMeters,
-                                                      new RamseteController(),
-                                                      kinematics,
-                                                      this::driveSpeed,
-                                                      this);
-    // Always reset drivetrain before following trajectory
-    return new Reset(this).andThen(ramsete);
+    return new RamseteCommand(trajectory,
+                              odometry::getPoseMeters,
+                              new RamseteController(),
+                              kinematics,
+                              this::driveSpeed,
+                              this);
   }
 
   @Override
