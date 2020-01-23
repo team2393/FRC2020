@@ -67,7 +67,21 @@ public class AutonomousBuilder
                command.equals("ReverseTrajectory"))
       { // Trajectory:
         // Read trajectory info
-        Trajectory trajectory = TrajectoryReader.read(file, command.equals("ReverseTrajectory"));
+        Trajectory trajectory = TrajectoryReader.readPoints(file, command.equals("ReverseTrajectory"));
+        // Make it start at the assumed position
+        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+        // .. and then we expect to be where the trajectory ends
+        nominal = TrajectoryHelper.getEndPose(trajectory);
+
+        // Turn into command, which may be a 'print' or a 'ramsete' that follows it
+        current_auto.addCommands(trajectory_command.apply(trajectory));
+        System.out.println("Added " + command);
+      }
+      else if (command.equals("Poses") ||
+               command.equals("ReversePoses"))
+      { // Trajectory:
+        // Read trajectory info
+        Trajectory trajectory = TrajectoryReader.readPoses(file, command.equals("ReversePoses"));
         // Make it start at the assumed position
         trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
         // .. and then we expect to be where the trajectory ends
