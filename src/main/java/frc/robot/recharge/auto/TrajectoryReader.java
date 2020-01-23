@@ -23,7 +23,7 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  public static TrajectoryConfig config = new TrajectoryConfig(1, 0.55).setKinematics(DriveTrain.kinematics);
+  public static TrajectoryConfig config = new TrajectoryConfig(1.25, 1.0).setKinematics(DriveTrain.kinematics);
 
   /** Read a trajectory from a file.
    * 

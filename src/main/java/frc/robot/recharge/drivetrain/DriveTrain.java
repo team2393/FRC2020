@@ -85,7 +85,7 @@ public class DriveTrain extends SubsystemBase
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
   // Measure distance between left & right wheels
-  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.65);
+  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.7);
 
   public DriveTrain()
   {
@@ -284,7 +284,7 @@ public class DriveTrain extends SubsystemBase
   {
     return new RamseteCommand(trajectory,
                               odometry::getPoseMeters,
-                              new RamseteController(),
+                              new RamseteController(2.0, 0.7),
                               kinematics,
                               this::driveSpeed,
                               this);
