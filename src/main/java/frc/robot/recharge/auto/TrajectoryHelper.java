@@ -105,7 +105,13 @@ public class TrajectoryHelper
    */
   public static Trajectory makeTrajectoryStartAt(final Trajectory trajectory, final Pose2d start)
   {
+    // The relativeTo() methods in Pose2d and Trajectory are basically
+    // a "substract" operation for X, Y and the rotation angle.
+    // Assume a trajectory that moves from "5" to "6", and start is at "2".
+    // The offset becomes "5" - "2" = "3"
     final Pose2d offset = trajectory.getInitialPose().relativeTo(start);
+    // Computing the "5 -> 6" trajectory relative to "3" becomes "2 -> 3".
+    // So we get a trajectory that moves by "1" unit, starting at "2".
     return trajectory.relativeTo(offset);
   }
 
