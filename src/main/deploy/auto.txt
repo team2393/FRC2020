@@ -15,6 +15,15 @@ Trajectory
 End 1 -1 -90
 
 
+Auto Racetrack Pieces
+Trajectory
+End 1 0 0
+Trajectory
+End 1 -1 -90
+Trajectory
+End 1 0 0
+
+
 # -----------------------------------------------------
 Auto Racetrack
 Poses

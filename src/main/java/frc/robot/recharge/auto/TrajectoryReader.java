@@ -18,13 +18,12 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  public static TrajectoryConfig config = new TrajectoryConfig(1, 0.55)
-  // TODO .setKinematics(DriveTrain.kinematics)
-       ;
+  public static TrajectoryConfig config = new TrajectoryConfig(1, 0.55).setKinematics(DriveTrain.kinematics);
 
   /** Read a trajectory from a file.
    * 
