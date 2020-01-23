@@ -63,19 +63,19 @@ public class TrajectoryReader
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("Point"))
+      if (command.equals("Point"))
       { // Point X Y (absolute)
         pos = new Translation2d(scanner.nextDouble(),
                                 scanner.nextDouble());
         waypoints.add(pos);                     
       }
-      else if (command.startsWith("RPoint"))
+      else if (command.equals("RPoint"))
       { // RelativePoint X Y
         pos = pos.plus(new Translation2d(scanner.nextDouble(),
                                          scanner.nextDouble()));
         waypoints.add(pos);                     
       }
-      else if (command.startsWith("End"))
+      else if (command.equals("End"))
       { // End X Y Heading
         end = new Pose2d(scanner.nextDouble(),
                          scanner.nextDouble(),

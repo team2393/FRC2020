@@ -50,7 +50,7 @@ public class AutonomousBuilder
   
       Scanner scanner = new Scanner(line);
       final String command = scanner.next();
-      if (command.startsWith("Auto"))
+      if (command.equals("Auto"))
       { // Auto Name-of-this-sequence:
         // Start new auto
         current_auto = new SequentialCommandGroup();
@@ -58,24 +58,24 @@ public class AutonomousBuilder
         autos.add(current_auto);
         System.out.println("Reading Auto '" + current_auto.getName() + "''");
       }
-      else if (command.startsWith("Traj") ||
-               command.startsWith("ReverseTr"))
+      else if (command.equals("Trajectory") ||
+               command.equals("ReverseTrajectory"))
       { // Trajectory:
         // Read trajectory info
-        final Trajectory trajectory = TrajectoryReader.read(file, command.startsWith("Reverse"));
+        final Trajectory trajectory = TrajectoryReader.read(file, command.equals("ReverseTrajectory"));
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
         current_auto.addCommands(trajectory_command.apply(trajectory));
         System.out.println("Added Trajectory");
       }
-      else if (command.startsWith("PathW")  ||
-               command.startsWith("ReverseW"))
+      else if (command.equals("PathWeaver")  ||
+               command.equals("ReverseWeaver"))
       { // Read trajectory from PathWeaver file
         final Path pwfile = new File(Filesystem.getDeployDirectory(), scanner.next()).toPath();
         Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
         // We need traj. starting at X 0, Y 0, Heading 0, so move relative to start point
         trajectory = trajectory.relativeTo(trajectory.sample(0).poseMeters);
 
-        if (command.startsWith("ReverseW"))
+        if (command.equals("ReverseWeaver"))
           trajectory = TrajectoryHelper.reverse(trajectory);
 
         current_auto.addCommands(trajectory_command.apply(trajectory));
