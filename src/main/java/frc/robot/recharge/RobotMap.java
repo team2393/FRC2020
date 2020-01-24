@@ -26,7 +26,8 @@ public class RobotMap
   public final static int ANGLE_MOTOR = 8;
 
   // Digital IO Sensors
-  public final static int BALL_SENSOR = 1;
+  public final static int BALL_AT_END_OF_CONVEYOR = 1;
+  public final static int BALL_AT_END_OF_EJECTOR = 2;
 
   // Motor port used for wheel-of-fortune on control panel
   public final static int CONTROL_PANEL_WHEEL = 9;
