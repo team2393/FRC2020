@@ -84,7 +84,7 @@ public class DriveTrain extends SubsystemBase
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
-  // Measure distance between left & right wheels
+  // TODO Get 'distance' between left & right wheels from characterization
   public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.7);
 
   public DriveTrain()
