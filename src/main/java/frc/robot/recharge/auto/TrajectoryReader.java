@@ -18,12 +18,15 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import frc.robot.recharge.drivetrain.DriveTrain;
+import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  public static TrajectoryConfig config = new TrajectoryConfig(1.25, 1.0).setKinematics(DriveTrain.kinematics);
+  public static TrajectoryConfig config = new TrajectoryConfig(1.25, 1.0)
+                                                                        .addConstraint(new CurvatureConstraint(100.0))
+                                                                      //.setKinematics(DriveTrain.kinematics)
+                                                                      ;
 
   /** Read a trajectory from a file.
    * 
@@ -144,6 +147,15 @@ public class TrajectoryReader
     // Open demo file
     final BufferedReader file = new BufferedReader(new FileReader("src/main/deploy/demo_trajectory.txt"));
     Trajectory trajectory = TrajectoryReader.readPoses(file, false);
+    double min = 0, max = 0;
+    for (State state : trajectory.getStates())
+    {
+      // System.out.println(state);
+      final double degree_per_second = Math.toDegrees(state.velocityMetersPerSecond * state.curvatureRadPerMeter);
+      min = Math.min(min, degree_per_second);
+      max = Math.max(max, degree_per_second);
+    }
+    System.out.format("Rotation: %.2f .. %.2f degrees/sec\n", min, max);
 
     // Show it
     new TrajectoryViewer(trajectory, 0.1);
