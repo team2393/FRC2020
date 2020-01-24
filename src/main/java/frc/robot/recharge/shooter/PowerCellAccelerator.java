@@ -24,10 +24,11 @@ public class PowerCellAccelerator extends SubsystemBase
   private final WPI_TalonSRX conveyor_motor = new WPI_TalonSRX(RobotMap.CONVEYOR_MOTOR);
   private final WPI_TalonSRX intake_motor = new WPI_TalonSRX(RobotMap.INTAKE_MOTOR);
   private final WPI_TalonSRX angle_adjustment = new WPI_TalonSRX(RobotMap.ANGLE_MOTOR);
-
+  
   // Sensors
-  private final DigitalInput ball_sensor = new DigitalInput(RobotMap.BALL_SENSOR);
-
+  private final DigitalInput ball_at_end_of_conveyor = new DigitalInput(RobotMap.BALL_AT_END_OF_CONVEYOR);
+  private final DigitalInput ball_at_end_of_ejector = new DigitalInput(RobotMap.BALL_AT_END_OF_EJECTOR);
+  
   public void setShooterSpeed(double speed) 
   {
     shooting_motor.set(speed);  
@@ -57,7 +58,13 @@ public class PowerCellAccelerator extends SubsystemBase
 
   public boolean isStorageFull()
   {
-    return ball_sensor.get(); // TODO Maybe turn this into a int that returns amount of balls in storage depending on sensor layout
+    // Sensor is inverted, 'false' == seeing a ball
+    return !ball_at_end_of_conveyor.get(); // TODO Maybe turn this into a int that returns amount of balls in storage depending on sensor layout
   }
 
+  public boolean isBallEjected()
+  {
+    // Sensor is inverted, 'false' == seeing a ball
+    return !ball_at_end_of_ejector.get();
+  }
 }
