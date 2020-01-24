@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
+  // TODO Try various curvature constraints.
+  //      Also check speed PID (P) and wheel base track width from characterization
   public static TrajectoryConfig config = new TrajectoryConfig(1.25, 1.0)
-                                                                        .addConstraint(new CurvatureConstraint(100.0))
+                                                                        .addConstraint(new CurvatureConstraint(45.0))
                                                                       //.setKinematics(DriveTrain.kinematics)
                                                                       ;
 
