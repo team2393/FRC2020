@@ -7,6 +7,7 @@
 
 package frc.robot.recharge;
 
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,11 +38,15 @@ public class OI
       return 1;
   }
 
+  // TODO Wait 1/4 second to reach full speed? Same for rotation?
+  // private static final SlewRateLimiter speed_limiter = new SlewRateLimiter(4);
+
   /** @return Speed (1=full ahead) */
   public static double getSpeed()
   {
-    return getSpeedFactor() * -joystick.getY(Hand.kLeft);
-
+    double speed = getSpeedFactor() * -joystick.getY(Hand.kLeft);
+    // speed = speed_limiter.calculate(speed);
+    return speed;
   }
 
   /** @return Left/right steering */
