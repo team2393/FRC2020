@@ -169,17 +169,17 @@ public class DriveTrain extends SubsystemBase
     return left_main.getSelectedSensorPosition() / TICKS_PER_METER;
   }
 
-  /** @return Right position (negative = forward) */
+  /** @return Right position (positive = forward) */
   public double getRightPositionMeters()
   {
-    return right_main.getSelectedSensorPosition() / TICKS_PER_METER;
+    return -right_main.getSelectedSensorPosition() / TICKS_PER_METER;
   }
 
   /** @return Averaged left/right position (positive = forward) */
   public double getPositionMeters()
   {
     // Right encoder counts down, so '-' to add both
-    return (getLeftPositionMeters() - getRightPositionMeters()) / 2;
+    return (getLeftPositionMeters() + getRightPositionMeters()) / 2;
   }
 
   /** @return Left speed (positive = forward) */
@@ -257,7 +257,7 @@ public class DriveTrain extends SubsystemBase
     right_main.setVoltage(right);
     // When directly setting the motor voltage,
     // the differential_drive will trigger the motor safety
-    // because it's not called frquently enough.
+    // because it's not called frequently enough.
     // -> Pretend we called the differential_drive
     differential_drive.feed();
   }
@@ -295,8 +295,9 @@ public class DriveTrain extends SubsystemBase
   {
     // Update position tracker
     odometry.update(Rotation2d.fromDegrees(getHeadingDegrees()),
-                     left_main.getSelectedSensorPosition() / TICKS_PER_METER,
-                     -right_main.getSelectedSensorPosition()/ TICKS_PER_METER);
+                    getLeftPositionMeters(),
+                    getRightPositionMeters());                   
+
     // Publish odometry X, Y, Angle
     Pose2d pose = odometry.getPoseMeters();
     SmartDashboard.putNumber("X Position:", pose.getTranslation().getX());
