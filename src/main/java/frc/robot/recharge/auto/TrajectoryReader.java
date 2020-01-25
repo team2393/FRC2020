@@ -7,6 +7,7 @@
 package frc.robot.recharge.auto;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class TrajectoryReader
                                                                       //.setKinematics(DriveTrain.kinematics)
                                                                       ;
 
-  /** Read a trajectory from a file.
+  /** Read a trajectory from a file with "Point X Y" and "End X Y Heading" commands
    * 
    *  Will read trajectory info from the current position of the file reader until
    *  reaching an end-of-trajactory line.
@@ -94,7 +95,7 @@ public class TrajectoryReader
     return TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
   }
 
-    /** Read a trajectory from a file.
+  /** Read a trajectory from a file with "Pose X Y Heading" commands
    * 
    *  Will read trajectory info from the current position of the file reader until
    *  reaching an end-of-trajactory line.
@@ -144,11 +145,46 @@ public class TrajectoryReader
     return TrajectoryGenerator.generateTrajectory(points, config);
   }
   
+  /** Read poses from a PathWeaver *.path file,
+   *  then create trajectory.
+   * 
+   *  The result may be a little off the PathWeaver-generated
+   *  trajectory, but can take advantage of 'constraints'.
+   * 
+   *  @param file Well, the file to read
+   *  @return {@link Trajectory}
+   *  @throws Exception on error
+   */
+  public static Trajectory readPath(final File file) throws Exception
+  {
+    final List<Pose2d> points = new ArrayList<>();
+    try ( final Scanner scanner = new Scanner(file) )
+    {
+      scanner.useDelimiter("\\s*,\\s*");
+      // Skip the first "X,Y,Tangent X,Tangent Y,Fixed Theta,Name" line
+      scanner.nextLine();
+      while (scanner.hasNextLine())
+      {
+        final double x = scanner.nextDouble();
+        final double y = scanner.nextDouble();
+        final double dx = scanner.nextDouble();
+        final double dy = scanner.nextDouble();
+        points.add(new Pose2d(x, y, new Rotation2d(dx, dy)));
+        scanner.nextLine();
+      }
+    }
+    return TrajectoryGenerator.generateTrajectory(points, config);
+  }
+
   public static void main(String[] args) throws Exception
   {
+    Trajectory trajectory = readPath(new File("PathWeaver/PathWeaver/Paths/Loop.path"));
+    trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory, new Pose2d());
+    new TrajectoryViewer(trajectory, 0.1);
+
     // Open demo file
     final BufferedReader file = new BufferedReader(new FileReader("src/main/deploy/demo_trajectory.txt"));
-    Trajectory trajectory = TrajectoryReader.readPoses(file, false);
+    trajectory = TrajectoryReader.readPoses(file, false);
     double min = 0, max = 0;
     for (State state : trajectory.getStates())
     {
