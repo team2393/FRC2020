@@ -10,15 +10,30 @@ package frc.robot.recharge;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.led.LEDStrip;
 
 /** Robot code for testing devices */
 public class TestRobot extends BasicRobot
 {
-  DigitalInput ball = new DigitalInput(8);
+  private final DigitalInput ball = new DigitalInput(8);
+  private final LEDStrip led = new LEDStrip();
+
+  @Override
+  public void disabledPeriodic()
+  {
+    led.rainbow();
+  }
 
   @Override
   public void teleopPeriodic()
   {
     SmartDashboard.putBoolean("ball detected", !ball.get());
+    led.oscillate();
+  }
+
+  @Override
+  public void autonomousPeriodic()
+  {
+    led.bluewhite();
   }
 }
