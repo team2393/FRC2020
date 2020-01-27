@@ -15,15 +15,6 @@ Trajectory
 End 1 -1 -90
 
 
-Auto Racetrack Pieces
-Trajectory
-End 1 0 0
-Trajectory
-End 1 -1 -90
-Trajectory
-End 1 0 0
-
-
 # -----------------------------------------------------
 Auto Smurftrack
 Poses
@@ -44,6 +35,19 @@ Pose 2 -1.0 -180
 Pose 0 -1.0 -180
 Pose -0.5 -0.5 90
 End 0 0 0
+
+
+
+# -----------------------------------------------------
+Auto Longtrack
+Poses
+Pose 3 0 0
+Pose 3.5 -0.5 -90
+Pose 3 -1.0 -180
+Pose 0 -1.0 -180
+Pose -0.5 -0.5 90
+End 0 0 0
+
 
 # -----------------------------------------------------
 Auto Test 1
@@ -68,24 +72,7 @@ ReverseTrajectory
 End -3 -0.5 0
 
 
-# Define move that uses path created by Pathweaver ----
-Auto Pathweaver 1m
-PathWeaver output/1Meter.wpilib.json
-
-Auto Pathwaever 1m and back
-PathWeaver output/1Meter.wpilib.json
-ReverseWeaver output/1Meter.wpilib.json
-
-
 # -----------------------------------------------------
-Auto Pathweaver Swerve1m
-PathWeaver output/1MeterSwerve.wpilib.json
+Auto Pathweaver Test
+PathWeaver PathWeaver/Paths/Test.path
 
-# -----------------------------------------------------
-Auto Pathweaver Swerve1m and back
-PathWeaver output/1MeterSwerve.wpilib.json
-ReverseWeaver output/1MeterSwerve.wpilib.json
-
-# -----------------------------------------------------
-Auto Loop
-PathWeaver output/Loop.wpilib.json

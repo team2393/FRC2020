@@ -76,16 +76,16 @@ public class DriveTrain extends SubsystemBase
 
   // Charact: kS - 0.845; kV - 3.56; kA - 0.66; r-squared 0.999; P - 18.7
   // Charact: kS - 0.778; kV - 3.6;  kA - 0.91; r-sqaured 0.999; P - 21.5
-  private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.8, 3.6, 0.8);
+  private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.846, 3.58, 0.175);
   // Left & right speed PID
-  private final PIDController left_speed_pid = new PIDController(5, 0, 0);
-  private final PIDController right_speed_pid = new PIDController(5, 0, 0);
+  private final PIDController left_speed_pid = new PIDController(6.5, 0, 0);
+  private final PIDController right_speed_pid = new PIDController(6.5, 0, 0);
   
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
   // TODO Get 'distance' between left & right wheels from characterization
-  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.7);
+  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.672);
 
   public DriveTrain()
   {
@@ -131,7 +131,7 @@ public class DriveTrain extends SubsystemBase
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
     // Do this only for the main motors, follower will, well, follow?
-    motor.configOpenloopRamp(1.0);
+    // motor.configOpenloopRamp(1.0);
   }
 
   /** Reset all encoders to 0, low gear, ... */

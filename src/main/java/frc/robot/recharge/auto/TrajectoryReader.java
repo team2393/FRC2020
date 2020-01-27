@@ -20,15 +20,16 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
+import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
   // TODO Try various curvature constraints.
   //      Also check speed PID (P) and wheel base track width from characterization
-  public static TrajectoryConfig config = new TrajectoryConfig(1.25, 1.0)
-                                                                        .addConstraint(new CurvatureConstraint(45.0))
-                                                                      //.setKinematics(DriveTrain.kinematics)
+  public static TrajectoryConfig config = new TrajectoryConfig(2.0, 1.0)
+                                                                      .addConstraint(new CurvatureConstraint(90.0))
+                                                                      // .setKinematics(DriveTrain.kinematics)
                                                                       ;
 
   /** Read a trajectory from a file with "Point X Y" and "End X Y Heading" commands
@@ -178,8 +179,10 @@ public class TrajectoryReader
 
   public static void main(String[] args) throws Exception
   {
-    Trajectory trajectory = readPath(new File("PathWeaver/PathWeaver/Paths/Loop.path"));
+    Trajectory trajectory = readPath(new File("src/main/deploy/PathWeaver/Paths/Test.path"));
     trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory, new Pose2d());
+    for (State state : trajectory.getStates())
+      System.out.println(state);
     new TrajectoryViewer(trajectory, 0.1);
 
     // Open demo file

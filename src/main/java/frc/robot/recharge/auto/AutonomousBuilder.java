@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -94,14 +95,19 @@ public class AutonomousBuilder
       else if (command.equals("PathWeaver")  ||
                command.equals("ReverseWeaver"))
       { // Read trajectory from PathWeaver file
-        final Path pwfile = new File(Filesystem.getDeployDirectory(), scanner.next()).toPath();
-        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(pwfile);
+        final File pwfile = new File(Filesystem.getDeployDirectory(), scanner.next());
+        System.out.println(pwfile);
+        Trajectory trajectory = TrajectoryReader.readPath(pwfile);
         if (command.equals("ReverseWeaver"))
           trajectory = TrajectoryHelper.reverse(trajectory);
         // Make it start at the assumed position
+        System.out.println("Move start point to " + nominal);
         trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
         // .. and then we expect to be where the trajectory ends
         nominal = TrajectoryHelper.getEndPose(trajectory);
+
+        for (State state : trajectory.getStates())
+          System.out.println(state);
 
         current_auto.addCommands(trajectory_command.apply(trajectory));
         System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
