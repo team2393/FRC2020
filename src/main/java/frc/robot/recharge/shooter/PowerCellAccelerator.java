@@ -31,6 +31,15 @@ import frc.robot.recharge.RobotMap;
  */
 public class PowerCellAccelerator extends SubsystemBase 
 {
+  enum Mode
+  {
+    Off,
+    Arm,
+    Shoot
+  };
+
+  private Mode mode = Mode.Off;
+
   // Motors
   // TODO figure out what type of motor controllers will actually be used -- Tony was leaning towards falcons for most
   private final WPI_TalonFX shooting_motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
@@ -130,4 +139,18 @@ public class PowerCellAccelerator extends SubsystemBase
    */
 
   // TODO Maybe have a way to report the amount of balls in storage depending on sensor layout
+
+  @Override
+  public void periodic()
+  {
+    if (mode == Mode.Off)
+    {
+      // moveConveyor(0.0);
+    }
+    else if (mode == Mode.Arm)
+    {
+      // if (.. sensor ..)
+      //   ...
+    }
+  }
 }
