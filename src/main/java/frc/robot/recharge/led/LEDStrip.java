@@ -111,4 +111,48 @@ public class LEDStrip
 
     strip.setData(buffer);
   }
+
+  public void bluewhite()
+  {
+    final int section = 3; // N must devide into sections!
+    boolean phase = (System.currentTimeMillis() / 300) %2 == 1;
+
+    int i = 0;
+    while (i<N)
+    {
+      for (int s=0; s<section; ++s)
+        if (phase)
+          buffer.setRGB(i++, 200, 200, 200);
+        else
+          buffer.setRGB(i++, 0, 0, 255);
+      phase = ! phase;
+    }
+    strip.setData(buffer);
+  }
+
+  public void oscillate()
+  {
+    final int size = 5;
+    final double phase = 2*Math.PI * System.currentTimeMillis() / 1000;
+    final int pos = N/2 + (int) ((N/2 - size + 1) * Math.sin(phase));
+
+    for (int i=0; i<N; ++i)
+      buffer.setRGB(i, 0, 0, 10);
+    
+    int start, end;
+    if (pos > N/2)
+    {
+      start = MathUtil.clamp(pos, N/2, N);
+      end = MathUtil.clamp(pos + size, N/2, N);
+    }
+    else
+    {
+      start = MathUtil.clamp(pos-size, 0, N/2);
+      end = MathUtil.clamp(pos, 0, N/2);
+    }
+    for (int i=start; i<end; ++i)
+      buffer.setRGB(i, 255, 255, 10);
+
+    strip.setData(buffer);
+  }
 }
