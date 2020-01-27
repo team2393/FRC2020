@@ -7,11 +7,17 @@
 
 package frc.robot.recharge.shooter;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.recharge.OI;
 import frc.robot.recharge.RobotMap;
 
 
@@ -19,14 +25,41 @@ public class PowerCellAccelerator extends SubsystemBase
 {
 
   // Motors
-  // TODO figure out what type of motor controllers will actually be used
+  // TODO figure out what type of motor controllers will actually be used -- Tony was leaning towards falcons for most
   private final WPI_TalonFX shooting_motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
-  private final WPI_TalonSRX conveyor_motor = new WPI_TalonSRX(RobotMap.CONVEYOR_MOTOR);
-  private final WPI_TalonSRX intake_motor = new WPI_TalonSRX(RobotMap.INTAKE_MOTOR);
-  private final WPI_TalonSRX angle_adjustment = new WPI_TalonSRX(RobotMap.ANGLE_MOTOR);
-
+  private final WPI_TalonFX conveyor_top = new WPI_TalonFX(RobotMap.CONVEYOR_TOP);
+  private final WPI_TalonFX conveyor_bottom = new WPI_TalonFX(RobotMap.CONVEYOR_BOTTOM); 
+  private final WPI_VictorSPX intake_motor = new WPI_VictorSPX(RobotMap.INTAKE_MOTOR);
+  private final WPI_TalonFX intake_position = new WPI_TalonFX(RobotMap.INTAKE_POSITION);
+  private final WPI_TalonFX angle_adjustment = new WPI_TalonFX(RobotMap.ANGLE_MOTOR);
+  
   // Sensors
-  private final DigitalInput ball_sensor = new DigitalInput(RobotMap.BALL_SENSOR);
+  private final DigitalInput shooter_sensor_mid = new DigitalInput(RobotMap.SHOOTER_SENSOR_MID);
+  private final DigitalInput shooter_sensor_top = new DigitalInput(RobotMap.SHOOTER_SENSOR_TOP);
+
+  // PID
+  private final PIDController intake_position_pid = new PIDController(0, 0, 0);
+  private final PIDController shooter_angle_pid = new PIDController(0, 0, 0);
+
+  // private static final double TICKS_PER_DEGREE = 0 / Units.inchesToMeters(0);
+
+  public void PowerCellAccelerator()
+  {
+    commonSettings(shooting_motor);
+    commonSettings(conveyor_top);
+    commonSettings(conveyor_bottom);
+    commonSettings(intake_position);
+    commonSettings(angle_adjustment);
+  }
+
+  /** @param motor Motor to configure with common settings */
+  private void commonSettings(final WPI_TalonFX motor)
+  {
+    motor.configFactoryDefault();
+    motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    motor.clearStickyFaults();
+    motor.setNeutralMode(NeutralMode.Coast);
+  }
 
   public void setShooterSpeed(double speed) 
   {
@@ -36,12 +69,14 @@ public class PowerCellAccelerator extends SubsystemBase
   public void moveConveyor(double speed)
   {
     // Should the conveyor have the ability to move backwards or should it only be "on" or "off"
-    conveyor_motor.set(speed);
+    // Conveyors should probably be moved seperately
+    conveyor_bottom.set(speed);
+    conveyor_top.set(speed);
   }
   
   public void setIntakeSpeed(double speed)
   {
-    intake_motor.set(Math.abs(speed)); // TODO find out which way motor spins and only allow intake to spin one direction
+    intake_motor.set(-Math.abs(speed)); // TODO find out which way motor spins and only allow intake to spin one direction
   }
   
   public void setAngle(int angle)
@@ -55,9 +90,17 @@ public class PowerCellAccelerator extends SubsystemBase
     return shooting_motor.getSelectedSensorVelocity();
   }
 
-  public boolean isStorageFull()
+  // TODO Maybe turn this into a int that returns amount of balls in storage depending on sensor layout
+  /** Returns true if a power cell is being shot */
+  public boolean powerCellFired()
   {
-    return ball_sensor.get(); // TODO Maybe turn this into a int that returns amount of balls in storage depending on sensor layout
+    return !shooter_sensor_top.get();
+  }
+
+  /** Returns true if power cell is in "ready" position */
+  public boolean powerCellReady()
+  {
+    return !shooter_sensor_mid.get();
   }
 
 }
