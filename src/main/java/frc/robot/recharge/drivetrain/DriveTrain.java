@@ -65,17 +65,7 @@ public class DriveTrain extends SubsystemBase
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
   private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.025);
 
-  // Results of basic drive test:
-  // Minimum voltage to move: 0.09 V
-  //
-  // SimpleMotorFeedforward:   Voltage = Vmin + K * Speed
-  // Voltage  Speed [m/s]   K
-  // 2.15     0.5           4.12
-  // 4.4      1             4.31
-  // 1.86     0.41          4.32
-
-  // Charact: kS - 0.845; kV - 3.56; kA - 0.66; r-squared 0.999; P - 18.7
-  // Charact: kS - 0.778; kV - 3.6;  kA - 0.91; r-sqaured 0.999; P - 21.5
+  // FF and PID (P only) from frc-characterization
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.846, 3.58, 0.175);
   // Left & right speed PID
   private final PIDController left_speed_pid = new PIDController(6.5, 0, 0);
@@ -84,7 +74,8 @@ public class DriveTrain extends SubsystemBase
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
 
-  // TODO Get 'distance' between left & right wheels from characterization
+  // Distance between left & right wheels is about 0.7m.
+  // Value actually used is from from frc-characterization
   public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.672);
 
   public DriveTrain()
@@ -130,7 +121,8 @@ public class DriveTrain extends SubsystemBase
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
-    // Do this only for the main motors, follower will, well, follow?
+    // Do not throttle the motors because that impacts the
+    // autonomous 'Ramsete' command performance
     // motor.configOpenloopRamp(1.0);
   }
 
