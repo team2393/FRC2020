@@ -25,12 +25,13 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  // TODO Try various curvature constraints.
-  //      Also check speed PID (P) and wheel base track width from characterization
+  /** Trajectory config & constraints to use when turning
+   *  poses & points into a trajectory
+   */
   public static TrajectoryConfig config = new TrajectoryConfig(2.0, 1.0)
-                                                                      .addConstraint(new CurvatureConstraint(90.0))
-                                                                      // .setKinematics(DriveTrain.kinematics)
-                                                                      ;
+                                          .addConstraint(new CurvatureConstraint(90.0))
+                                          .setKinematics(DriveTrain.kinematics)
+                                          ;
 
   /** Read a trajectory from a file with "Point X Y" and "End X Y Heading" commands
    * 
@@ -158,6 +159,9 @@ public class TrajectoryReader
    */
   public static Trajectory readPath(final File file) throws Exception
   {
+    //  Always treat trajectory as 'going forward'
+    config.setReversed(false);
+
     final List<Pose2d> points = new ArrayList<>();
     try ( final Scanner scanner = new Scanner(file) )
     {
