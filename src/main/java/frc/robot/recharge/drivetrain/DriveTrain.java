@@ -63,7 +63,7 @@ public class DriveTrain extends SubsystemBase
 
   // PID
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
-  private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.025);
+  private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.005);
 
   // FF and PID (P only) from frc-characterization
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.846, 3.58, 0.175);
