@@ -12,6 +12,48 @@ package frc.robot.recharge;
  */ 
 public class RobotMap
 {    
+  // Power Distribution Panel
+  //
+  // 40 Amp connectors
+  // 1) Drive motor
+  // 2) Drive motor
+  // 3) Drive motor
+  // 4) Drive motor
+  // 5) Shooter motor
+  // 6) Lift-up motor
+  // 7) intake motor
+  // 8)
+  //
+  // Below 40 Amp ports
+  // 1) Horizontal conveyor motor
+  // 2) Vertical conveyor motor
+  // 3) Ejection angle motor
+  // 4) Control panel wheel motor
+  // 5) Telescope raising motor
+  // 6) LED strip power
+  // 7) Camera LED ring
+  // 8)
+  //
+  // PDP controller port -> RoboRIO
+  // PDP PCM port -> PCM, compressor, solenoids
+  //
+  // PDP VRM port ->
+  // VRM 12V, 2A
+  // 1) Radio
+  // 2) must not be used
+  //
+  // VRM 12V, 500mA
+  // 1) Prox sensor at end of conveyors
+  // 2) Prox sensor in 'ejector'
+  //
+  // VRM 5V, 500mA
+  // 1)
+  // 2)
+  //
+  // VRM 5V, 2A
+  // 1) Raspberry Pi power
+  // 2)
+
   // Talon CAN IDs =================================
   // Drivetrain motors
   public final static int LEFT_MOTOR_MAIN = 1;
@@ -41,5 +83,4 @@ public class RobotMap
 
   // PCM port used to solenoids
   public static final int GEAR_SOLENOID = 7;
-
 }
