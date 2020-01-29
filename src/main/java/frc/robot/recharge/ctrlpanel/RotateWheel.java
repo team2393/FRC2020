@@ -7,17 +7,24 @@
 
 package frc.robot.recharge.ctrlpanel;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Command to rotate wheel N times */
 public class RotateWheel extends CommandBase
 {
+  /** We want to see each color this many times to be certain it's not a fluke reading */
+  private static final int REDUNDANCY = 3;
   private final ControlWheel wheel;
   private final int required_sectors;
 
   /** Number of color wheel sectors that we need to see go by */
   private int sectors;
 
+  /** How many times do we need to see each color? */
+  private int times_left = REDUNDANCY;
+
+  /** Index of the next expected color (that we want to see 'times_left' times) */
   private int next_color = -1;
 
   /** @param wheel Control wheel to turn
@@ -28,12 +35,15 @@ public class RotateWheel extends CommandBase
     this.wheel = wheel;
     required_sectors = times * 8;
     addRequirements(wheel);
+
+    SmartDashboard.putNumber("WheelSectors", required_sectors);
   }
 
   @Override
   public void initialize()
   {
     sectors = required_sectors;
+    SmartDashboard.putNumber("WheelSectors", sectors);
     next_color = -1;
     wheel.fast();
   }
@@ -57,6 +67,7 @@ public class RotateWheel extends CommandBase
     if (next_color < 0)
     {
       next_color = (color + 1) % ColorDetector.COLORS.length;
+      times_left = REDUNDANCY; 
       System.out.println("Started on " + ColorDetector.COLORS[color] +
                          ", looking for " + ColorDetector.COLORS[next_color]);
       return;
@@ -64,9 +75,13 @@ public class RotateWheel extends CommandBase
 
     // Have we reached the next expected color?
     if (color == next_color)
+      -- times_left;
+    // Have we seen the expected color often enough?
+    if (times_left <= 0)
     {
       // One more sector done
       --sectors;
+      SmartDashboard.putNumber("WheelSectors", sectors);
       if (isFinished())
       {
         System.out.println("Found " + ColorDetector.COLORS[color] +
@@ -74,6 +89,7 @@ public class RotateWheel extends CommandBase
         return;
       }
       next_color = (color + 1) % ColorDetector.COLORS.length;
+      times_left = REDUNDANCY; 
       System.out.println("Found " + ColorDetector.COLORS[color] +
                          ", now looking for " + ColorDetector.COLORS[next_color] +
                          ", " + sectors + " more sectors");
