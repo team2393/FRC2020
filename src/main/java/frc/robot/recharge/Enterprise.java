@@ -30,6 +30,7 @@ import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.Reset;
+import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.drivetrain.TurnToHeading;
 import frc.robot.recharge.led.LEDStrip;
 
@@ -172,7 +173,9 @@ public class Enterprise extends BasicRobot
     
     // Run the selected command.
     drive_train.reset();
-    auto_commands.getSelected().schedule();
+    // auto_commands.getSelected().schedule();
+
+    new RotateToTarget(drive_train).schedule();
   }
 
   @Override
