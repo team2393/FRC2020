@@ -21,8 +21,8 @@ public class RotateWheel extends CommandBase
   /** Number of color wheel sectors that we need to see go by */
   private int sectors;
 
-  /** How many times do we need to see each color? */
-  private int times_left = REDUNDANCY;
+  /** How many times did we see thecurrently expected color? */
+  private int times = 0;
 
   /** Index of the next expected color (that we want to see 'times_left' times) */
   private int next_color = -1;
@@ -67,7 +67,7 @@ public class RotateWheel extends CommandBase
     if (next_color < 0)
     {
       next_color = (color + 1) % ColorDetector.COLORS.length;
-      times_left = REDUNDANCY; 
+      times = 0; 
       System.out.println("Started on " + ColorDetector.COLORS[color] +
                          ", looking for " + ColorDetector.COLORS[next_color]);
       return;
@@ -75,9 +75,12 @@ public class RotateWheel extends CommandBase
 
     // Have we reached the next expected color?
     if (color == next_color)
-      -- times_left;
+    {
+      ++times;
+      System.out.println("Detected " + ColorDetector.COLORS[color] + ": " + times + " of " + REDUNDANCY);
+    }
     // Have we seen the expected color often enough?
-    if (times_left <= 0)
+    if (times >= REDUNDANCY)
     {
       // One more sector done
       --sectors;
@@ -89,7 +92,7 @@ public class RotateWheel extends CommandBase
         return;
       }
       next_color = (color + 1) % ColorDetector.COLORS.length;
-      times_left = REDUNDANCY; 
+      times = 0; 
       System.out.println("Found " + ColorDetector.COLORS[color] +
                          ", now looking for " + ColorDetector.COLORS[next_color] +
                          ", " + sectors + " more sectors");
