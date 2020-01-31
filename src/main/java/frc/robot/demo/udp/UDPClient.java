@@ -17,13 +17,14 @@ public class UDPClient
   private final DatagramChannel udp;
   private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
 
-  public UDPClient() throws Exception
+  public UDPClient(final int port) throws Exception
   {
     udp = DatagramChannel.open(StandardProtocolFamily.INET);
     udp.configureBlocking(true);
     udp.socket().setBroadcast(true);
     udp.socket().setReuseAddress(true);
-    udp.bind(new InetSocketAddress("127.0.0.1", 5801));
+    udp.bind(new InetSocketAddress(port));
+    System.out.println("UDP Client listening on " + udp.getLocalAddress());
   }
 
   public int read() throws Exception
@@ -40,7 +41,7 @@ public class UDPClient
 
   public static void main(String[] args) throws Exception
   {
-    final UDPClient client = new UDPClient();
+    final UDPClient client = new UDPClient(5801);
     while (true)
     {
       final int number = client.read();

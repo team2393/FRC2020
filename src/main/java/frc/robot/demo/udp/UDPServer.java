@@ -7,20 +7,24 @@
 package frc.robot.demo.udp;
 
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.DoubleAdder;
 
 /** Send a number via UDP */
 public class UDPServer
 {
   private final DatagramChannel udp;
   private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-  private final InetSocketAddress broadcast;
+  private final List<InetSocketAddress> broadcasts = new ArrayList<>();
 
-  public UDPServer() throws Exception
+  public UDPServer(final int port) throws Exception
   {
     // Create a 'socket' that can use broadcasts
     udp = DatagramChannel.open(StandardProtocolFamily.INET);
@@ -28,7 +32,14 @@ public class UDPServer
     udp.socket().setBroadcast(true);
     udp.socket().setReuseAddress(true);
 
-    broadcast = new InetSocketAddress("127.255.255.255", 5801);
+    // Find all network interfaces that support broadcast
+    for (NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces()))
+      if (iface.isUp())
+        for (InterfaceAddress addr : iface.getInterfaceAddresses())
+          if (addr.getBroadcast() != null)
+          broadcasts.add(new InetSocketAddress(addr.getBroadcast(), port));
+
+    System.out.println("UDP Server broadcasting to " + broadcasts);
   }
 
   public void send(final int number) throws Exception
@@ -36,19 +47,23 @@ public class UDPServer
     // Place number in byte buffer
     buffer.clear();
     buffer.putInt(number);
-    buffer.flip();
-
+    
     // Send as broadcast
-    udp.send(buffer, broadcast);
+    for (InetSocketAddress addr : broadcasts)
+    {
+      buffer.flip();
+      udp.send(buffer, addr);
+    }
   }
 
   public static void main(String[] args) throws Exception
   {
-    final UDPServer server = new UDPServer();
+    // Example server that sends numbers at about 30 Hz
+    final UDPServer server = new UDPServer(5801);
     for (int number = 1;  true;  ++number)
     {
       server.send(number);
-      TimeUnit.SECONDS.sleep(1);
+      TimeUnit.MILLISECONDS.sleep(1000/30);
     }  
   }
 }
