@@ -15,7 +15,7 @@ import java.nio.channels.DatagramChannel;
 public class UDPClient
 {
   private final DatagramChannel udp;
-  private final ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+  private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
 
   public UDPClient() throws Exception
   {
@@ -26,7 +26,7 @@ public class UDPClient
     udp.bind(new InetSocketAddress("127.0.0.1", 5801));
   }
 
-  public double read() throws Exception
+  public int read() throws Exception
   {
     // Read <whatever> into buffer
     // (blocks until we receive something)
@@ -35,7 +35,7 @@ public class UDPClient
     
     // Assume that the buffer now contains a number
     buffer.flip();
-    return buffer.getDouble();
+    return buffer.getInt();
   }
 
   public static void main(String[] args) throws Exception
@@ -43,7 +43,7 @@ public class UDPClient
     final UDPClient client = new UDPClient();
     while (true)
     {
-      final double number = client.read();
+      final int number = client.read();
       System.out.println(number);
     }  
   }

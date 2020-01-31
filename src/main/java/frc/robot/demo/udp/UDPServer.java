@@ -11,12 +11,13 @@ import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.DoubleAdder;
 
 /** Send a number via UDP */
 public class UDPServer
 {
   private final DatagramChannel udp;
-  private final ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+  private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
   private final InetSocketAddress broadcast;
 
   public UDPServer() throws Exception
@@ -30,12 +31,13 @@ public class UDPServer
     broadcast = new InetSocketAddress("127.255.255.255", 5801);
   }
 
-  public void send(final double number) throws Exception
+  public void send(final int number) throws Exception
   {
     // Place number in byte buffer
     buffer.clear();
-    buffer.putDouble(number);
+    buffer.putInt(number);
     buffer.flip();
+
     // Send as broadcast
     udp.send(buffer, broadcast);
   }
@@ -43,11 +45,9 @@ public class UDPServer
   public static void main(String[] args) throws Exception
   {
     final UDPServer server = new UDPServer();
-    double number = 1.0;
-    while (true)
+    for (int number = 1;  true;  ++number)
     {
       server.send(number);
-      number += 1.1;
       TimeUnit.SECONDS.sleep(1);
     }  
   }
