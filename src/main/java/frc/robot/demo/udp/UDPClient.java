@@ -23,7 +23,7 @@ public class UDPClient
     udp.configureBlocking(true);
     udp.socket().setBroadcast(true);
     udp.socket().setReuseAddress(true);
-    udp.bind(new InetSocketAddress("127.0.0.1", 4812));
+    udp.bind(new InetSocketAddress("127.0.0.1", 5801));
   }
 
   public double read() throws Exception

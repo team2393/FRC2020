@@ -27,7 +27,7 @@ public class UDPServer
     udp.socket().setBroadcast(true);
     udp.socket().setReuseAddress(true);
 
-    broadcast = new InetSocketAddress("127.255.255.255", 4812);
+    broadcast = new InetSocketAddress("127.255.255.255", 5801);
   }
 
   public void send(final double number) throws Exception
