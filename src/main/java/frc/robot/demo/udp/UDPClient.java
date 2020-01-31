@@ -28,8 +28,12 @@ public class UDPClient
 
   public double read() throws Exception
   {
+    // Read <whatever> into buffer
+    // (blocks until we receive something)
     buffer.clear();
     udp.receive(buffer);
+    
+    // Assume that the buffer now contains a number
     buffer.flip();
     return buffer.getDouble();
   }
