@@ -34,12 +34,12 @@ import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.drivetrain.TurnToHeading;
 import frc.robot.recharge.led.LEDStrip;
 
-/** Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
+/**
+ * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
-public class Enterprise extends BasicRobot
-{  
+public class Enterprise extends BasicRobot {
   private final DriveTrain drive_train = new DriveTrain();
-  
+
   // Commands that require the drive train, i.e. starting any of these commands
   // will cancel whatever else was running and required the drive train
   private final CommandBase reset_drivetrain = new Reset(drive_train);
@@ -47,47 +47,49 @@ public class Enterprise extends BasicRobot
   private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
   private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
   private final HeadingHold heading_hold = new HeadingHold(drive_train);
-  
-  // Shift commands can run concurrently with other commands that require the drive train
+
+  // Shift commands can run concurrently with other commands that require the
+  // drive train
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
   private final Rumble rumble = new Rumble();
 
-
   // TODO Tune drive PIDs with actual robot
-  // TODO Command to drive left/right based on vision info (in network tables, set by pi)
+  // TODO Command to drive left/right based on vision info (in network tables, set
+  // by pi)
   // TODO Control motor w/ encoder for lowering/raising intake
   // TODO Control motors for intake, conveyor belt, shooter
   // TODO IR detector to check if there are any balls in hopper?
   // TODO Connect control wheel commands to buttons
   // TODO Climb: Raise/lower telescope via motor that pulls/gives rope
   // TODO Climb: Pull climbin rope _in_ (cannot feed out because of ratchet)
-  
+
   // private final ColorSensor color_sensor = new ColorSensor();
 
   // private final ControlWheel fortune = new ControlWheel();
   // private final Command manual_wheel = new ManualWheelSpeed(fortune);
   // private final Command rotate_wheel = new RotateWheel(fortune, 3);
   // private final Command rotate_to_color = new RotateToColor(fortune);
-  
+
   // private final LEDStrip led_strip = new LEDStrip();
 
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
-  
+
   @Override
-  public void robotInit()
-  {
+  public void robotInit() {
     super.robotInit();
     // pcm.clearAllPCMStickyFaults();
-    
+
     // Bind buttons to actions (only active in teleop)
     // Pressing 'A' enables manual wheel control (and stops auto rotation)
     // OI.enable_wheel.whenPressed(manual_wheel);
     // // Pressing 'B' turns wheel automatically, then re-enables manual control
-    // OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() -> manual_wheel.schedule()));
+    // OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() ->
+    // manual_wheel.schedule()));
     // // Pressing 'X' turns wheel to the desired color
-    // OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() -> manual_wheel.schedule()));
+    // OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() ->
+    // manual_wheel.schedule()));
 
     // Manual shifting
     // Note that DriveByJoystick will automatically shift,
@@ -105,32 +107,27 @@ public class Enterprise extends BasicRobot
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
     // Add moves from auto.txt
-    try
-    {
+    try {
       // Read commands from auto file.
       // Drivebase turns trajectories into ramsete commands.
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
       for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train::createRamsete))
         auto_commands.addOption(moves.getName(), moves);
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       System.err.println("Error in auto.txt:");
       ex.printStackTrace();
     }
     SmartDashboard.putData("Autonomous", auto_commands);
   }
-  
+
   @Override
-  public void disabledInit()
-  {
+  public void disabledInit() {
     super.disabledInit();
     // led_strip.idle();
   }
 
   @Override
-  public void teleopInit()
-  {
+  public void teleopInit() {
     super.teleopInit();
 
     // manual_wheel.schedule();
@@ -138,44 +135,44 @@ public class Enterprise extends BasicRobot
     auto_shift.schedule();
     heading_hold.schedule();
   }
-  
+
   @Override
-  public void teleopPeriodic()
-  {
+  public void teleopPeriodic() {
     // TODO Indicate direction to target on LED
-    //final double direction = OI.getDirection();
+    // final double direction = OI.getDirection();
     final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
-    // TODO Filter direction sent by Raspberry/camera via https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/median-filter.html
+    // TODO Filter direction sent by Raspberry/camera via
+    // https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/median-filter.html
     // led_strip.indicateDirection(direction);
 
     // Toggle between drive_by_joystick and heading_hold
-    if (OI.isToggleHeadingholdPressed())
-    {
-      if (heading_hold.isScheduled())
-      {
+    if (OI.isToggleHeadingholdPressed()) {
+      if (heading_hold.isScheduled()) {
         rumble.schedule(0.5);
         drive_by_joystick.schedule();
-      }
-      else
-      {
+      } else {
         rumble.schedule(0.1);
         heading_hold.schedule();
       }
     }
   }
-  
+
   @Override
-  public void autonomousInit()
-  {
+  public void autonomousInit() {
     super.autonomousInit();
 
     reset_drivetrain.schedule();
-    
+
     // Run the selected command.
     drive_train.reset();
     // auto_commands.getSelected().schedule();
 
-    new RotateToTarget(drive_train).schedule();
+    try {
+      new RotateToTarget(drive_train).schedule();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Override

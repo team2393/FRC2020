@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-package frc.robot.demo.udp;
+package frc.robot.recharge.udp;
 
 import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;

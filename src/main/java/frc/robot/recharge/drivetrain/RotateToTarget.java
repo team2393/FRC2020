@@ -7,26 +7,31 @@
 
 package frc.robot.recharge.drivetrain;
 
+import java.time.LocalTime;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.recharge.udp.UDPReceiverThread;
 
 /** Rotate to target based on camera info */
 public class RotateToTarget extends CommandBase 
 {
   private final Timer timer = new Timer();
   private final DriveTrain drive_train;
- 
-  /** Last pipeline calls that we saw */
-  private int last_calls = -1;
 
-  private int skipped = 0;
+  private int skip = 1;
+  private int direction = 0;
+
+  public UDPReceiverThread udp;
 
   private boolean on_target;
   
-  public RotateToTarget(final DriveTrain drive_train) 
+  public RotateToTarget(final DriveTrain drive_train) throws Exception
   {
+    udp = new UDPReceiverThread(5801);
+
     this.drive_train = drive_train;
     addRequirements(drive_train);
 
@@ -48,22 +53,29 @@ public class RotateToTarget extends CommandBase
    */
   public double getTargetDirection()
   {
-    // Do we have new image information?
-    int calls = (int) SmartDashboard.getNumber("PipelineCalls", -1);
-    if (calls != last_calls)
-      skipped = 0;
+    if (++skip > 1)
+    {
+      direction = udp.get();
+      System.out.println("Read");
+      if (direction == UDPReceiverThread.STALE)
+      {
+        direction = 0;
+        System.out.println(LocalTime.now() + " Stale");  
+      }
+      else
+        skip  = 0;
+    }
     else
-      if (++skipped > 1)
-          return 0;
+      System.out.println("Re-use");
 
-    last_calls = calls;
-    return SmartDashboard.getNumber("Direction", 0);
+    return direction; 
   }
 
   @Override
   public void execute()
   {
     final double direction = getTargetDirection();
+
     final double rotation;
     // Don't react to target that's too far off to the side
     if (Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 30))
