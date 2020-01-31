@@ -19,7 +19,9 @@ public class UDPServer
   private final ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
   private final InetSocketAddress broadcast;
 
-  public UDPServer() throws Exception {
+  public UDPServer() throws Exception
+  {
+    // Create a 'socket' that can use broadcasts
     udp = DatagramChannel.open(StandardProtocolFamily.INET);
     udp.configureBlocking(true);
     udp.socket().setBroadcast(true);
@@ -30,9 +32,11 @@ public class UDPServer
 
   public void send(final double number) throws Exception
   {
+    // Place number in byte buffer
     buffer.clear();
     buffer.putDouble(number);
     buffer.flip();
+    // Send as broadcast
     udp.send(buffer, broadcast);
   }
 
