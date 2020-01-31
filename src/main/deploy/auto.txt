@@ -77,11 +77,17 @@ Auto Pathweaver Test
 PathWeaver PathWeaver/Paths/Test.path
 
 
+#Auto Simple Shoot
+# Shoot
+
 # -----------------------------------------------------
 Auto Pick 2 and shoot
+# OpenIntake
 ReversePoses
 End -4 0 0
+# CloseIntake
 Poses
 Pose 2 0 0
 End 4 0.5 30
-
+# RotateToTarget
+# Shoot
