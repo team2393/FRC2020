@@ -20,19 +20,19 @@ public class RobotMap
   // 3) Drive motor
   // 4) Drive motor
   // 5) Shooter motor
-  // 6) Lift-up motor
+  // 6) Lift-up climber  motor
   // 7) Intake wheel motor
-  // 8) Intake raise/lower motor
+  // 8) Intake raise/lower motor 1
   //
   // Below 40 Amp ports
   // 1) Horizontal conveyor motor
   // 2) Vertical conveyor motor
-  // 3) Ejection angle motor
-  // 4) Control panel wheel motor
+  // 3) Ejection angle hood motor
+  // 4) Control panel color wheel motor
   // 5) Telescope raising motor
-  // 6) LED strip power
-  // 7) Camera LED ring
-  // 8)
+  // 6) Camera LED ring
+  // 7) Intake raise/lower motor 2
+  // 8) 3rd prox sensor
   //
   // PDP controller port -> RoboRIO
   // PDP PCM port -> PCM, compressor, solenoids
@@ -52,7 +52,7 @@ public class RobotMap
   //
   // VRM 5V, 2A
   // 1) Raspberry Pi power
-  // 2)
+  // 2) Color LED strip power
 
   // Talon CAN IDs =================================
   // Drivetrain motors
