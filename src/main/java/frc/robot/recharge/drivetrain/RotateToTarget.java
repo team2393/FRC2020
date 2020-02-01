@@ -35,10 +35,10 @@ public class RotateToTarget extends CommandBase
     this.drive_train = drive_train;
     addRequirements(drive_train);
 
-    SmartDashboard.setDefaultNumber("TargetRotGain", 0.05);
-    SmartDashboard.setDefaultNumber("TargetRotMax", 0.33);
+    SmartDashboard.setDefaultNumber("TargetRotGain", 0.03);
+    SmartDashboard.setDefaultNumber("TargetRotMax", 0.35);
     // "Full screen" range would be +- 160
-    SmartDashboard.setDefaultNumber("TargetRotThres", 100);
+    SmartDashboard.setDefaultNumber("TargetRotThres", 150);
   }
 
   @Override
@@ -56,17 +56,17 @@ public class RotateToTarget extends CommandBase
     if (++skip > 1)
     {
       direction = udp.get();
-      System.out.println("Read");
+      // System.out.println("Read");
       if (direction == UDPReceiverThread.STALE)
       {
         direction = 0;
-        System.out.println(LocalTime.now() + " Stale");  
+        // System.out.println(LocalTime.now() + " Stale");  
       }
       else
         skip  = 0;
     }
-    else
-      System.out.println("Re-use");
+    // else
+    //   System.out.println("Re-use");
 
     return direction; 
   }
@@ -78,12 +78,12 @@ public class RotateToTarget extends CommandBase
 
     final double rotation;
     // Don't react to target that's too far off to the side
-    if (Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 30))
+    if (Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 150))
       rotation = 0.0;
     else // Proportial gain controller
-      rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.0);
+      rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.03);
 
-    final double max = SmartDashboard.getNumber("TargetRotMax", 0.4);
+    final double max = SmartDashboard.getNumber("TargetRotMax", 0.35);
     drive_train.drive(0, MathUtil.clamp(rotation, -max, max));
 
     // if (Math.abs(direction) < 2)
