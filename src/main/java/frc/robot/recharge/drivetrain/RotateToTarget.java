@@ -93,8 +93,7 @@ public class RotateToTarget extends CommandBase
   @Override
   public boolean isFinished()
   {
-    return false;
-    // return on_target  ||  timer.get() > 5.0;
+    return timer.get() > 5.0;
   }
 
   @Override

@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.recharge.drivetrain.DriveTrain;
+import frc.robot.recharge.drivetrain.RotateToTarget;
 
 /** Build auto commands from a file */
 public class AutonomousBuilder
@@ -32,7 +34,7 @@ public class AutonomousBuilder
    *  @throws Exception on error
    */
   public static List<SequentialCommandGroup> read(final File filename,
-                                                  final Function<Trajectory, CommandBase> trajectory_command) throws Exception
+                                                  final DriveTrain drive_train) throws Exception
   {
     final BufferedReader file = new BufferedReader(new FileReader(filename));
     final List<SequentialCommandGroup> autos = new ArrayList<>();
@@ -75,7 +77,7 @@ public class AutonomousBuilder
         nominal = TrajectoryHelper.getEndPose(trajectory);
 
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
-        current_auto.addCommands(trajectory_command.apply(trajectory));
+        current_auto.addCommands(drive_train.createRamsete(trajectory));
         System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else if (command.equals("Poses") ||
@@ -89,7 +91,7 @@ public class AutonomousBuilder
         nominal = TrajectoryHelper.getEndPose(trajectory);
 
         // Turn into command, which may be a 'print' or a 'ramsete' that follows it
-        current_auto.addCommands(trajectory_command.apply(trajectory));
+        current_auto.addCommands(drive_train.createRamsete(trajectory));
         System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
       else if (command.equals("PathWeaver")  ||
@@ -109,31 +111,20 @@ public class AutonomousBuilder
         for (State state : trajectory.getStates())
           System.out.println(state);
 
-        current_auto.addCommands(trajectory_command.apply(trajectory));
+        current_auto.addCommands(drive_train.createRamsete(trajectory));
         System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
       }
+      else if(command.equals("RotateToTarget"))
+          current_auto.addCommands(new RotateToTarget(drive_train));
       else
+      {
+        scanner.close();
         throw new Exception("Unknown autonomouse command: " + line);
+      }
 
       scanner.close();
     }
 
     return autos;
-  }
-  
-  public static void main(String[] args) throws Exception
-  {
-    // Open demo file
-    final List<SequentialCommandGroup> autos =
-     AutonomousBuilder.read(new File("src/main/deploy/auto.txt"),
-                            trajectory -> new PrintCommand("Trajectory to " + TrajectoryHelper.getEndInfo(trajectory)));
-
-    for (SequentialCommandGroup auto : autos)
-    {
-      System.out.println("*** Auto: " + auto.getName());
-      auto.initialize();
-      // As long as demo only contains PrintCommand, we can execute it on the laptop!
-      auto.execute();
-    }
   }
 }

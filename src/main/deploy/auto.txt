@@ -91,3 +91,8 @@ Pose 2 0 0
 End 4 0.5 30
 # RotateToTarget
 # Shoot
+
+
+
+Auto Rotate to target
+RotateToTarget

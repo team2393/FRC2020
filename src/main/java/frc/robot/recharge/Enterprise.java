@@ -111,7 +111,7 @@ public class Enterprise extends BasicRobot {
       // Read commands from auto file.
       // Drivebase turns trajectories into ramsete commands.
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
-      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train::createRamsete))
+      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train))
         auto_commands.addOption(moves.getName(), moves);
     } catch (Exception ex) {
       System.err.println("Error in auto.txt:");
@@ -165,14 +165,14 @@ public class Enterprise extends BasicRobot {
 
     // Run the selected command.
     drive_train.reset();
-    // auto_commands.getSelected().schedule();
+    auto_commands.getSelected().schedule();
 
-    try {
-      new RotateToTarget(drive_train).schedule();
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    // try {
+    //   new RotateToTarget(drive_train).schedule();
+    // } catch (Exception e) {
+    //   // TODO Auto-generated catch block
+    //   e.printStackTrace();
+    // }
   }
 
   @Override
