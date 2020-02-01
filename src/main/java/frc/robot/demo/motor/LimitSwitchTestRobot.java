@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -18,11 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
 
 /** Example of limit switch usage */
-public class FalconLimitSwitchTestRobot extends BasicRobot
+public class LimitSwitchTestRobot extends BasicRobot
 {
   private final XboxController joystick = new XboxController(0);
   // Works the same for WPI_TalonSRX or WPI_TalonFX
-  private final WPI_TalonFX motor = new WPI_TalonFX(1);
+  private final WPI_TalonSRX motor = new WPI_TalonSRX(5);
     
   @Override
   public void robotInit()
@@ -31,16 +32,14 @@ public class FalconLimitSwitchTestRobot extends BasicRobot
 
     // Configure motor
     motor.configFactoryDefault();
-    motor.setNeutralMode(NeutralMode.Brake);
+    // motor.setNeutralMode(NeutralMode.Brake);
 
     // This is the default configuration:
     // Motor will run until one connects a limit switch and closes it.
-    motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    //motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
     // Alternatively, can select "Deactivated" source, or configure to be "NormallyClosed",
     // which is better for a fail-safe setup.
-    // TODO Test if motor stops when limit switch is hit
-    // TODO Change to NC
     // motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
   }
   
@@ -55,6 +54,7 @@ public class FalconLimitSwitchTestRobot extends BasicRobot
     
     // Show limit switch state.
     // This should always work, no matter if switch is configured to do anything
-    SmartDashboard.putBoolean("Limit Switch", motor.isFwdLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("Fwd Limit Switch", motor.isFwdLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("Rev Limit Switch", motor.isRevLimitSwitchClosed() == 1);
   }
 }
