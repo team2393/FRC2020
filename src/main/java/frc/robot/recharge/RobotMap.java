@@ -21,8 +21,8 @@ public class RobotMap
   // 4) Drive motor
   // 5) Shooter motor
   // 6) Lift-up motor
-  // 7) intake motor
-  // 8)
+  // 7) Intake wheel motor
+  // 8) Intake raise/lower motor
   //
   // Below 40 Amp ports
   // 1) Horizontal conveyor motor
