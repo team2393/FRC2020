@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.auto.ApplySettings;
 import frc.robot.recharge.auto.AutonomousBuilder;
 import frc.robot.recharge.ctrlpanel.ColorSensor;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
@@ -54,6 +55,9 @@ public class Enterprise extends BasicRobot {
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
   private final Rumble rumble = new Rumble();
+
+  private final CommandBase near_settings = new ApplySettings("near.txt");
+ private final CommandBase far_settings =  new ApplySettings("far.txt");
 
   // TODO Tune drive PIDs with actual robot
   // TODO Command to drive left/right based on vision info (in network tables, set
@@ -103,7 +107,9 @@ public class Enterprise extends BasicRobot {
     SmartDashboard.putData("Auto Shift", auto_shift);
     SmartDashboard.putData("Heading Hold", heading_hold);
     SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
-
+    SmartDashboard.putData("Near Settings", near_settings);
+    SmartDashboard.putData("Far Settings", far_settings);
+    
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
     // Add moves from auto.txt
