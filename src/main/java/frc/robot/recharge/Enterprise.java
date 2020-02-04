@@ -16,24 +16,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.auto.ApplySettings;
 import frc.robot.recharge.auto.AutonomousBuilder;
-import frc.robot.recharge.ctrlpanel.ColorSensor;
-import frc.robot.recharge.ctrlpanel.ControlWheel;
-import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
-import frc.robot.recharge.ctrlpanel.RotateToColor;
-import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
-import frc.robot.recharge.drivetrain.DriveToPosition;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.Reset;
 import frc.robot.recharge.drivetrain.RotateToTarget;
-import frc.robot.recharge.drivetrain.TurnToHeading;
-import frc.robot.recharge.led.LEDStrip;
 
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -44,11 +35,13 @@ public class Enterprise extends BasicRobot {
   // Commands that require the drive train, i.e. starting any of these commands
   // will cancel whatever else was running and required the drive train
   private final CommandBase reset_drivetrain = new Reset(drive_train);
-  private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
-  private final DriveToPosition drive_to_position = new DriveToPosition(drive_train);
-  private final TurnToHeading turn_to_heading = new TurnToHeading(drive_train);
-  private final HeadingHold heading_hold = new HeadingHold(drive_train);
 
+  private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
+  private final HeadingHold heading_hold = new HeadingHold(drive_train);
+  /** Most recent drive mode, either drive_by_joystick or heading_hold */
+  private CommandBase drive_mode = heading_hold;
+  private final CommandBase align_on_target = new RotateToTarget(drive_train);
+  
   // Shift commands can run concurrently with other commands that require the
   // drive train
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
@@ -81,7 +74,8 @@ public class Enterprise extends BasicRobot {
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
 
   @Override
-  public void robotInit() {
+  public void robotInit()
+  {
     super.robotInit();
     // pcm.clearAllPCMStickyFaults();
 
@@ -105,10 +99,11 @@ public class Enterprise extends BasicRobot {
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
-    SmartDashboard.putData("Heading Hold", heading_hold);
-    SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
+    // SmartDashboard.putData("Heading Hold", heading_hold);
+    // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
     SmartDashboard.putData("Near Settings", near_settings);
     SmartDashboard.putData("Far Settings", far_settings);
+    SmartDashboard.putData("Align", align_on_target); // TODO Remove
     
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -127,23 +122,20 @@ public class Enterprise extends BasicRobot {
   }
 
   @Override
-  public void disabledInit() {
-    super.disabledInit();
-    // led_strip.idle();
-  }
-
-  @Override
-  public void teleopInit() {
+  public void teleopInit()
+  {
     super.teleopInit();
 
     // manual_wheel.schedule();
     // drive_by_joystick.schedule();
     auto_shift.schedule();
-    heading_hold.schedule();
+
+    drive_mode.schedule();
   }
 
   @Override
-  public void teleopPeriodic() {
+  public void teleopPeriodic()
+  {
     // TODO Indicate direction to target on LED
     // final double direction = OI.getDirection();
     final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
@@ -152,14 +144,32 @@ public class Enterprise extends BasicRobot {
     // led_strip.indicateDirection(direction);
 
     // Toggle between drive_by_joystick and heading_hold
-    if (OI.isToggleHeadingholdPressed()) {
-      if (heading_hold.isScheduled()) {
+    if (OI.isToggleHeadingholdPressed())
+    {
+      if (drive_mode == heading_hold)
+      { // Switching to 'rough' mode
         rumble.schedule(0.5);
-        drive_by_joystick.schedule();
-      } else {
-        rumble.schedule(0.1);
-        heading_hold.schedule();
+        drive_mode = drive_by_joystick;
       }
+      else
+      { // Switching to 'smooth' mode
+        rumble.schedule(0.1);
+        drive_mode = heading_hold;
+      }
+      drive_mode.schedule();
+    }
+
+    // Align on target?
+    if (OI.isAlignOnTargetHeld())
+    {
+      if (! align_on_target.isScheduled())
+        align_on_target.schedule();
+    }
+    else
+    {
+        // Re-enable original drive mode, which cancels alignment
+        if (! drive_mode.isScheduled())
+          drive_mode.schedule();
     }
   }
 
@@ -184,19 +194,6 @@ public class Enterprise extends BasicRobot {
   @Override
   public void autonomousPeriodic()
   {
-    // TODO led_strip.rainbow();? Also indicate direction to target to debug what the robot sees?
-  
-    // Every 3 seconds, toggle between two positions
-    // long test_index = (System.currentTimeMillis() / 3000) % 2;
-    // // double test_pos_meters = 2;
-    // // drive_to_position.setDesiredPosition(test_index * test_pos_meters);
-
-    // double test_degrees = 10;
-    // // turn_to_heading.setDesiredHeading(test_index * test_degrees);
-    // if (turn_to_heading.isFinished())
-    // {
-    //   System.out.println("At heading");
-    //   turn_to_heading.schedule();
-    // }
+    // TODO led_strip.rainbow();? Also indicate direction to target to debug what the robot sees?  
   }
 }

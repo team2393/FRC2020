@@ -28,9 +28,16 @@ public class RotateToTarget extends CommandBase
 
   private boolean on_target;
   
-  public RotateToTarget(final DriveTrain drive_train) throws Exception
+  public RotateToTarget(final DriveTrain drive_train)
   {
-    udp = new UDPReceiverThread(5801);
+    try
+    {
+      udp = new UDPReceiverThread(5801);
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
 
     this.drive_train = drive_train;
     addRequirements(drive_train);
@@ -86,14 +93,14 @@ public class RotateToTarget extends CommandBase
     final double max = SmartDashboard.getNumber("TargetRotMax", 0.35);
     drive_train.drive(0, MathUtil.clamp(rotation, -max, max));
 
-    // if (Math.abs(direction) < 2)
-    //   on_target = true;
+    if (Math.abs(direction) < 2)
+      on_target = true;
   }
   
   @Override
   public boolean isFinished()
   {
-    return timer.get() > 5.0;
+    return on_target  ||  timer.get() > 5.0;
   }
 
   @Override

@@ -57,7 +57,12 @@ public class OI
 
   public static final boolean isToggleHeadingholdPressed()
   {
-      return joystick.getRawButtonPressed(XboxController.Button.kA.value);
+      return joystick.getRawButtonPressed(XboxController.Button.kY.value);
+  }
+
+  public static final boolean isAlignOnTargetHeld()
+  {
+      return joystick.getRawButton(XboxController.Button.kA.value);
   }
 
   /** @return Manual fortune wheel speed */
