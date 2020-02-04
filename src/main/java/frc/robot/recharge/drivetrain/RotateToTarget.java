@@ -42,8 +42,7 @@ public class RotateToTarget extends CommandBase
     this.drive_train = drive_train;
     addRequirements(drive_train);
 
-    SmartDashboard.setDefaultNumber("TargetRotGain", 0.03);
-    SmartDashboard.setDefaultNumber("TargetRotMax", 0.35);
+    SmartDashboard.setDefaultNumber("TargetRotGain", 0.02);
     // "Full screen" range would be +- 160
     SmartDashboard.setDefaultNumber("TargetRotThres", 150);
   }
@@ -83,14 +82,21 @@ public class RotateToTarget extends CommandBase
   {
     final double direction = getTargetDirection();
 
-    final double rotation;
+    double rotation;
     // Don't react to target that's too far off to the side
     if (Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 150))
       rotation = 0.0;
-    else // Proportial gain controller
-      rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.03);
+    else
+    {
+      // Proportial gain controller with some minimum move
+      rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.02);
+      if (direction > 1)
+        rotation += 0.1;
+      else if (direction < 1)
+        rotation -= 0.1;
+    }
 
-    final double max = SmartDashboard.getNumber("TargetRotMax", 0.35);
+    final double max = 0.35;
     drive_train.drive(0, MathUtil.clamp(rotation, -max, max));
 
     if (Math.abs(direction) < 2)

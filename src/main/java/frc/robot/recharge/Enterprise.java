@@ -108,17 +108,22 @@ public class Enterprise extends BasicRobot {
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
     // Add moves from auto.txt
-    try {
+    try
+    {
       // Read commands from auto file.
       // Drivebase turns trajectories into ramsete commands.
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
       for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train))
         auto_commands.addOption(moves.getName(), moves);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       System.err.println("Error in auto.txt:");
       ex.printStackTrace();
     }
     SmartDashboard.putData("Autonomous", auto_commands);
+
+    near_settings.schedule();
   }
 
   @Override
