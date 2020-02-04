@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.recharge.udp.CameraData;
 import frc.robot.recharge.udp.UDPReceiverThread;
 
 /** Rotate to target based on camera info */
@@ -22,7 +23,7 @@ public class RotateToTarget extends CommandBase
   private final DriveTrain drive_train;
 
   private int skip = 1;
-  private int direction = 0;
+  private CameraData last = new CameraData(0, 0);
 
   public UDPReceiverThread udp;
 
@@ -54,33 +55,33 @@ public class RotateToTarget extends CommandBase
     timer.start();
   }
 
-  /** @return Direction to target, positive for 'right',
-   *          0 for 'on target' or 'don't know'
-   */
-  public double getTargetDirection()
+  public void updateData()
   {
     if (++skip > 1)
     {
-      direction = udp.get();
+      CameraData data = udp.get();
       // System.out.println("Read");
-      if (direction == UDPReceiverThread.STALE)
+      if (data == null)
       {
-        direction = 0;
+        last.direction = last.distance = 0;
         // System.out.println(LocalTime.now() + " Stale");  
       }
       else
+      {
         skip  = 0;
+        last.direction = data.direction;
+        last.distance = data.distance;
+      }
     }
     // else
     //   System.out.println("Re-use");
-
-    return direction; 
   }
 
   @Override
   public void execute()
   {
-    final double direction = getTargetDirection();
+    updateData();
+    final double direction = last.direction;
 
     double rotation;
     // Don't react to target that's too far off to the side
@@ -88,7 +89,7 @@ public class RotateToTarget extends CommandBase
       rotation = 0.0;
     else
     {
-      // Proportial gain controller with some minimum move
+      // Proportial gain controller with some minimum 
       rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.02);
       if (direction > 1)
         rotation += 0.1;
@@ -96,10 +97,15 @@ public class RotateToTarget extends CommandBase
         rotation -= 0.1;
     }
 
-    final double max = 0.35;
-    drive_train.drive(0, MathUtil.clamp(rotation, -max, max));
+    double position_error = (last.direction == 0)  ?  0  :  (86 - last.distance);
 
-    if (Math.abs(direction) < 2)
+    double speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.02);
+
+    final double max = 0.35;
+    
+    drive_train.drive(MathUtil.clamp(speed, -max, max), MathUtil.clamp(rotation, -max, max));
+
+    if (Math.abs(direction) < 2 && Math.abs(position_error) < 2)
       on_target = true;
   }
   

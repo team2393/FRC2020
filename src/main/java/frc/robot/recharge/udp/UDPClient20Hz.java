@@ -24,13 +24,10 @@ public class UDPClient20Hz
     {
       // Check at ~20 Hz what we received
       TimeUnit.MILLISECONDS.sleep(1000/20);
-      final int number = receiver.get();
+      final CameraData data = receiver.get();
 
       // Is it good data?
-      if (number == UDPReceiverThread.STALE)
-        System.out.println("--- STALE DATA, YUCK !!!!!!!");
-      else
-        System.out.println(LocalTime.now() + " " + number);
+      System.out.println(LocalTime.now() + " " + data);
     }
   }
 }

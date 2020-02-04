@@ -7,18 +7,16 @@
 package frc.robot.recharge.udp;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** Thread that keeps reading from UDPClient, remembering the latest value */
 public class UDPReceiverThread
 {
-  /** Smallest 'int', not expected to be a valid number, used to mark state data */
-  public static final int STALE = Integer.MIN_VALUE;
-
   /** The latest number, 'atomic' because accessed by
    *  a) Receiving thread
    *  b) Thread that checks what we received
    */
-  private final AtomicInteger latest = new AtomicInteger(STALE);
+  private final AtomicReference<CameraData> data = new AtomicReference<>();
   private final UDPClient client;
   private final Thread thread;
 
@@ -35,7 +33,9 @@ public class UDPReceiverThread
     try
     {
       while (true)
-        latest.set(client.read());
+      {
+        data.set(client.read());
+      }
     }
     catch (Exception ex)
     {
@@ -44,13 +44,13 @@ public class UDPReceiverThread
     System.err.println("Receive thread quits");
   }
 
-  /** @return Latest value or 'STALE' */
-  public int get()
+  /** @return Latest value or 'null' if stale */
+  public CameraData get()
   {
     // Get the latest value and then mark it as stale.
     // When we're called next time, either
     // a) We did receive a new value -> Good
     // b) No new value -> Caller can see that it's STALE
-    return latest.getAndSet(STALE);
+    return data.getAndSet(null);
   }
 }

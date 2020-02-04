@@ -10,12 +10,13 @@ import java.net.InetSocketAddress;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.Arrays;
 
 /** Receive a number via UDP */
 public class UDPClient
 {
   private final DatagramChannel udp;
-  private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+  private final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES*2);
 
   public UDPClient(final int port) throws Exception
   {
@@ -27,7 +28,7 @@ public class UDPClient
     System.out.println("UDP Client listening on " + udp.getLocalAddress());
   }
 
-  public int read() throws Exception
+  public CameraData read() throws Exception
   {
     // Read <whatever> into buffer
     // (blocks until we receive something)
@@ -36,7 +37,9 @@ public class UDPClient
     
     // Assume that the buffer now contains a number
     buffer.flip();
-    return buffer.getInt();
+    int direction = buffer.getInt();
+    int distance = buffer.getInt();
+    return new CameraData(direction, distance);
   }
 
   public static void main(String[] args) throws Exception
@@ -44,8 +47,8 @@ public class UDPClient
     final UDPClient client = new UDPClient(5801);
     while (true)
     {
-      final int number = client.read();
-      System.out.println(number);
+      final CameraData data = client.read();
+      System.out.println(data);
     }  
   }
 }

@@ -8,7 +8,7 @@ SatMin 5
 SatMax 255
 ValMin    90
 ValMax   255
-AspectMin 1
+AspectMin 2
 AspectMax 20
 AreaMin 0
 AreaMax 7000
