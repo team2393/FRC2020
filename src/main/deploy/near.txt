@@ -2,11 +2,11 @@
 # Format is  NAME SPACE VALUE
 # Can also use 'tab' instead of 'space',
 # but don't do that.
-HueMin 35.0
-HueMax 95
-SatMin 5
-SatMax 255
-ValMin    90
+HueMin 30
+HueMax 90
+SatMin 25
+SatMax 130
+ValMin 90
 ValMax   255
 AspectMin 2
 AspectMax 20

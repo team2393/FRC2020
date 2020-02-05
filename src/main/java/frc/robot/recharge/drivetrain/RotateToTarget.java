@@ -46,6 +46,7 @@ public class RotateToTarget extends CommandBase
     SmartDashboard.setDefaultNumber("TargetRotGain", 0.02);
     // "Full screen" range would be +- 160
     SmartDashboard.setDefaultNumber("TargetRotThres", 150);
+    SmartDashboard.setDefaultNumber("Desired Distance", -500);
   }
 
   @Override
@@ -97,12 +98,18 @@ public class RotateToTarget extends CommandBase
         rotation -= 0.1;
     }
 
-    double position_error = (last.direction == 0)  ?  0  :  (86 - last.distance);
-
-    double speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.02);
-
-    final double max = 0.35;
+    double desired_distance = SmartDashboard.getNumber("Desired Distance", -500); 
+    double speed = 0;
+    double position_error = 0;
     
+    // Make sure desired distance is within screen
+    if (desired_distance > -120 && desired_distance < 120)
+    {
+      position_error = (last.distance == 0)  ?  0  :  (desired_distance - last.distance);
+      speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.02);
+    }
+    
+    final double max = 0.35;   
     drive_train.drive(MathUtil.clamp(speed, -max, max), MathUtil.clamp(rotation, -max, max));
 
     if (Math.abs(direction) < 2 && Math.abs(position_error) < 2)
