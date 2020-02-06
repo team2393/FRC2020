@@ -14,10 +14,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.recharge.OI;
 import frc.robot.recharge.RobotMap;
 
 /** Power cell handling
@@ -31,15 +30,6 @@ import frc.robot.recharge.RobotMap;
  */
 public class PowerCellAccelerator extends SubsystemBase 
 {
-  enum Mode
-  {
-    Off,
-    Arm,
-    Shoot
-  };
-
-  private Mode mode = Mode.Off;
-
   // Motors
   // TODO figure out what type of motor controllers will actually be used -- Tony was leaning towards falcons for most
   private final WPI_TalonFX shooting_motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
@@ -57,42 +47,66 @@ public class PowerCellAccelerator extends SubsystemBase
   private final PIDController intake_position_pid = new PIDController(0, 0, 0);
   private final PIDController shooter_angle_pid = new PIDController(0, 0, 0);
 
-  // private static final double TICKS_PER_DEGREE = 0 / Units.inchesToMeters(0);
+  public final static double CONVEYOR_VOLTAGE = 5.0;
 
-  public void PowerCellAccelerator()
+  public final static double SHOOTER_VOLTAGE = 10.5;
+
+  public final static double MINIMUM_SHOOTER_RPM = 5000;
+
+  private final Timer shoot_timer = new Timer();
+  private boolean shoot = false;
+
+  public PowerCellAccelerator()
   {
-    commonSettings(shooting_motor);
-    commonSettings(conveyor_top);
-    commonSettings(conveyor_bottom);
-    commonSettings(intake_position);
-    commonSettings(angle_adjustment);
+    commonSettings(shooting_motor, NeutralMode.Brake);
+    commonSettings(conveyor_top, NeutralMode.Coast);
+    commonSettings(conveyor_bottom, NeutralMode.Coast);
+    commonSettings(intake_position, NeutralMode.Coast);
+    commonSettings(angle_adjustment, NeutralMode.Coast);
+
+    shooting_motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    intake_position.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    angle_adjustment.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
   }
 
   /** @param motor Motor to configure with common settings */
-  private void commonSettings(final WPI_TalonFX motor)
+  private void commonSettings(final WPI_TalonFX motor, final NeutralMode mode)
   {
     motor.configFactoryDefault();
-    motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
-    motor.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(mode);
   }
 
-  public void setShooterSpeed(double speed) 
+  /** Turn shooter 'on' or 'off'.
+   * 
+   *  When turned 'off', it actually remains
+   *  running for a few seconds so in case
+   *  we want to turn it 'on' again it's
+   *  already up to speed.
+   */
+  public void eject(final boolean on_off)
   {
-    shooting_motor.set(speed);  
+    shoot = on_off;
+    if (shoot)
+      shoot_timer.reset();
   }
 
-  public void moveConveyor(double speed)
+  public void setShooterVoltate(double volt) 
+  {
+    shooting_motor.setVoltage(volt);  
+  }
+
+  public void moveConveyor(double volt)
   {
     // Should the conveyor have the ability to move backwards or should it only be "on" or "off"
     // Conveyors should probably be moved seperately
-    conveyor_bottom.set(speed);
-    conveyor_top.set(speed);
+    conveyor_bottom.setVoltage(volt);
+    conveyor_top.setVoltage(volt);
   }
   
-  public void setIntakeSpeed(double speed)
+  public void setIntakeSpeed(double volt)
   {
-    intake_motor.set(-Math.abs(speed)); // TODO find out which way motor spins and only allow intake to spin one direction
+    intake_motor.setVoltage(-Math.abs(volt)); // TODO find out which way motor spins and only allow intake to spin one direction
   }
   
   public void setAngle(int angle)
@@ -100,13 +114,11 @@ public class PowerCellAccelerator extends SubsystemBase
     // Calculate angle with encoder values and use PID to adjust
   }
 
-  public double getShooterVelocity()
+  public double getShooterRPM()
   {
-    // TODO command that waits for shooter motor to reach a certain velocity before loading ball
     return shooting_motor.getSelectedSensorVelocity();
   }
 
-  // TODO Maybe turn this into a int that returns amount of balls in storage depending on sensor layout
   /** Returns true if a power cell is being shot */
   public boolean powerCellFired()
   {
@@ -143,14 +155,12 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
-    if (mode == Mode.Off)
-    {
-      // moveConveyor(0.0);
-    }
-    else if (mode == Mode.Arm)
-    {
-      // if (.. sensor ..)
-      //   ...
-    }
+    // Run ejector if we're asked to do it,
+    // or for 2 more seconds after the last shot
+    // so it remains running through a series of shots
+    if (shoot || shoot_timer.get() < 2.0)
+      setShooterVoltate(SHOOTER_VOLTAGE);
+    else
+      setShooterVoltate(0);
   }
 }
