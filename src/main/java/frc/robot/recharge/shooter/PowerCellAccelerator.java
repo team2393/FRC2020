@@ -88,7 +88,7 @@ public class PowerCellAccelerator extends SubsystemBase
   {
     shoot = on_off;
     if (shoot)
-      shoot_timer.reset();
+      shoot_timer.start();
   }
 
   public void setShooterVoltate(double volt) 
