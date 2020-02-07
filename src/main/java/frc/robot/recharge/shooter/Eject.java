@@ -43,7 +43,7 @@ public class Eject extends CommandBase
     if (pca.getShooterRPM() > PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
     {
       state = State.EJECT;
-      timer.reset();
+      timer.start();
     }
     
     // Are we shooting? If so, move a ball out
