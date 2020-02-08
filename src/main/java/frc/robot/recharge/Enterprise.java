@@ -29,7 +29,8 @@ import frc.robot.recharge.drivetrain.RotateToTarget;
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
-public class Enterprise extends BasicRobot {
+public class Enterprise extends BasicRobot
+{
   private final DriveTrain drive_train = new DriveTrain();
 
   // Commands that require the drive train, i.e. starting any of these commands
@@ -103,7 +104,6 @@ public class Enterprise extends BasicRobot {
     // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
     SmartDashboard.putData("Near Settings", near_settings);
     SmartDashboard.putData("Far Settings", far_settings);
-    SmartDashboard.putData("Align", align_on_target); // TODO Remove
     
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -179,7 +179,8 @@ public class Enterprise extends BasicRobot {
   }
 
   @Override
-  public void autonomousInit() {
+  public void autonomousInit()
+  {
     super.autonomousInit();
 
     reset_drivetrain.schedule();
@@ -187,14 +188,7 @@ public class Enterprise extends BasicRobot {
     // Run the selected command.
     drive_train.reset();
     auto_commands.getSelected().schedule();
-
-    // try {
-    //   new RotateToTarget(drive_train).schedule();
-    // } catch (Exception e) {
-    //   // TODO Auto-generated catch block
-    //   e.printStackTrace();
-    // }
-  }
+}
 
   @Override
   public void autonomousPeriodic()
