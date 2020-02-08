@@ -15,6 +15,7 @@ import com.ctre.phoenix.music.Orchestra;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.sound.BeepBipBipBeeeep;
+import frc.robot.recharge.util.PingSubnet;
 
 /** Robot code for testing devices */
 public class TestRobot extends BasicRobot
@@ -25,6 +26,12 @@ public class TestRobot extends BasicRobot
   private final List<TalonFX> instruments = List.of(new TalonFX(1));
   private final Orchestra orch = new Orchestra(instruments);
   private final CommandBase beep = new BeepBipBipBeeeep(instruments);
+
+  @Override
+  public void robotInit()
+  {
+    new PingSubnet();
+  }
 
   @Override
   public void teleopInit()
