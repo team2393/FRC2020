@@ -94,7 +94,7 @@
 		<location x="575" y="144"/>
 	</widget>
 	<widget field="TargetRotGain" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="160"/>
+		<location x="544" y="349"/>
 	</widget>
 	<widget field="LumMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="140"/>
@@ -106,7 +106,7 @@
 		<location x="432" y="144"/>
 	</widget>
 	<widget field="TargetRotMax" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="80"/>
+		<location x="368" y="509"/>
 	</widget>
 	<widget field="AreaMin" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="426" y="269"/>
@@ -115,16 +115,16 @@
 		<location x="0" y="40"/>
 	</widget>
 	<widget field="PipelineCalls" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="20"/>
+		<location x="407" y="317"/>
 	</widget>
 	<widget field="TargetRotThres" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="0"/>
+		<location x="392" y="352"/>
 	</widget>
 	<widget field="Align" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
 		<location x="4" y="17"/>
 	</widget>
 	<widget field="Desired Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="21" y="26"/>
+		<location x="528" y="45"/>
 	</widget>
 </dashboard>
 <live-window>
