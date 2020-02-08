@@ -7,33 +7,44 @@
 
 package frc.robot.recharge;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.List;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.music.Orchestra;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BasicRobot;
-import frc.robot.recharge.led.LEDStrip;
+import frc.robot.recharge.sound.BeepBipBipBeeeep;
+import frc.robot.recharge.util.PingSubnet;
 
 /** Robot code for testing devices */
 public class TestRobot extends BasicRobot
 {
-  private final DigitalInput ball = new DigitalInput(8);
-  private final LEDStrip led = new LEDStrip();
+  // private final DigitalInput ball = new DigitalInput(8);
+  // private final LEDStrip led = new LEDStrip();
+
+  private final List<TalonFX> instruments = List.of(new TalonFX(1));
+  private final Orchestra orch = new Orchestra(instruments);
+  private final CommandBase beep = new BeepBipBipBeeeep(instruments);
 
   @Override
-  public void disabledPeriodic()
+  public void robotInit()
   {
-    led.rainbow();
+    new PingSubnet();
   }
 
   @Override
-  public void teleopPeriodic()
+  public void teleopInit()
   {
-    SmartDashboard.putBoolean("ball detected", !ball.get());
-    led.oscillate();
+    super.teleopInit();
+    beep.schedule();
   }
 
   @Override
-  public void autonomousPeriodic()
+  public void autonomousInit()
   {
-    led.bluewhite();
+    super.autonomousInit();
+    System.out.println(orch.loadMusic("tune.chrp"));
+    System.out.println(orch.play());
   }
 }
