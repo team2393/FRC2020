@@ -16,18 +16,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class HomeIntake extends CommandBase
 {
-  private final PowerCellAccelerator pca;
+  private final Intake intake;
   private boolean homed;
 
-  public HomeIntake(final PowerCellAccelerator pca)
+  public HomeIntake(final Intake intake)
   {
-    this.pca = pca;
+    this.intake = intake;
   }
 
   @Override
   public void execute()
   {
-    homed = pca.homeIntake();
+    homed = intake.homeIntake();
   }
 
   @Override
