@@ -9,41 +9,57 @@ package frc.robot.recharge;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
-import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Based on the robot code created by the python
- *  'frc-characterization drive new'
- *  command, adapted to use our drive train settings.
+ *  'frc-characterization'
+ *  for an 'arm'.
  */
-public class CharacterizationRobot extends BasicRobot
+public class CharacterizationRobotArm extends BasicRobot
 {  
-  final DriveTrain drive_train = new DriveTrain();
+  // The offset of encoder zero from horizontal, in degrees.
+  // It is CRUCIAL that this be set correctly, or the characterization will not
+  // work!
+  static private double OFFSET = 0;
+  static private double ENCODER_EDGES_PER_REV = 4906;
+  static private double encoderConstant = (1 / ENCODER_EDGES_PER_REV) * 360.;
 
-  final Supplier<Double> leftEncoderPosition = drive_train::getLeftPositionMeters;
-  final Supplier<Double> leftEncoderRate = drive_train::getLeftSpeedMetersPerSecond;
-  final Supplier<Double> rightEncoderPosition = drive_train::getRightPositionMeters;
-  final Supplier<Double> rightEncoderRate = drive_train::getRightSpeedMetersPerSecond;
-  final Supplier<Double> gyroAngleRadians = () -> Math.toRadians(drive_train.getHeadingDegrees());
+  
+  // TODO Select motor, configure encoder
+  final WPI_TalonFX motor = new WPI_TalonFX(1);
+  final Supplier<Double> encoderPosition = () -> motor.getSelectedSensorPosition() * encoderConstant + OFFSET;
+  final Supplier<Double> encoderRate = () -> motor.getSelectedSensorVelocity() * encoderConstant * 10.0;
 
-  // frc-characterization commands robot speed and rotation via these entries
+
+  // frc-characterization commands robot via this entry
   final NetworkTableEntry autoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");
-  final NetworkTableEntry rotateEntry = NetworkTableInstance.getDefault().getEntry("/robot/rotate");
   // Robot reports measurements to frc-characterization via this entry
   final NetworkTableEntry telemetryEntry = NetworkTableInstance.getDefault().getEntry("/robot/telemetry");
 
-  final Number[] numberArray = new Number[10];
+  final Number[] numberArray = new Number[6];
   double priorAutospeed = 0;
 
   @Override
   public void robotInit()
   {
     super.robotInit();
+
+    motor.setNeutralMode(NeutralMode.Brake);
+    motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    motor.setInverted(false);
+    motor.setSensorPhase(false);
+
+    // Reset encoders
+    motor.setSelectedSensorPosition(0);
 
     // Set the update rate instead of using flush because of a ntcore bug
     // -> probably don't want to do this on a robot in competition
@@ -54,7 +70,7 @@ public class CharacterizationRobot extends BasicRobot
   public void disabledInit()
   {
     super.disabledInit();
-    drive_train.drive(0, 0);
+    motor.set(0);
   }
   
   @Override
@@ -63,16 +79,14 @@ public class CharacterizationRobot extends BasicRobot
     // Not calling super.robotPeriodic() since not using commands
 
     // Feedback for users, but not used by the control program
-    SmartDashboard.putNumber("l_encoder_pos", leftEncoderPosition.get());
-    SmartDashboard.putNumber("l_encoder_rate", leftEncoderRate.get());
-    SmartDashboard.putNumber("r_encoder_pos", rightEncoderPosition.get());
-    SmartDashboard.putNumber("r_encoder_rate", rightEncoderRate.get());
+    SmartDashboard.putNumber("encoder_pos", encoderPosition.get());
+    SmartDashboard.putNumber("encoder_rate", encoderRate.get());
   }
 
   @Override
   public void teleopPeriodic()
   {
-    drive_train.drive(OI.getSpeed(), OI.getDirection());
+    motor.set(OI.getSpeed());
   }
   
   @Override
@@ -81,37 +95,26 @@ public class CharacterizationRobot extends BasicRobot
     // Retrieve values to send back before telling the motors to do something
     double now = Timer.getFPGATimestamp();
 
-    double leftPosition = leftEncoderPosition.get();
-    double leftRate = leftEncoderRate.get();
-
-    double rightPosition = rightEncoderPosition.get();
-    double rightRate = rightEncoderRate.get();
-
+    double position = encoderPosition.get();
+    double rate = encoderRate.get();
+    
     double battery = RobotController.getBatteryVoltage();
     double motorVolts = battery * Math.abs(priorAutospeed);
-
-    double leftMotorVolts = motorVolts;
-    double rightMotorVolts = motorVolts;
-
+    
     // Retrieve the commanded speed from NetworkTables
     double autospeed = autoSpeedEntry.getDouble(0);
     priorAutospeed = autospeed;
 
     // command motors to do things
-    drive_train.tankDrive((rotateEntry.getBoolean(false) ? -1 : 1) * autospeed,
-                          autospeed);
+    motor.set(autospeed);
 
     // send telemetry data array back to NT
     numberArray[0] = now;
     numberArray[1] = battery;
     numberArray[2] = autospeed;
-    numberArray[3] = leftMotorVolts;
-    numberArray[4] = rightMotorVolts;
-    numberArray[5] = leftPosition;
-    numberArray[6] = rightPosition;
-    numberArray[7] = leftRate;
-    numberArray[8] = rightRate;
-    numberArray[9] = gyroAngleRadians.get();
+    numberArray[3] = motorVolts;
+    numberArray[4] = position;
+    numberArray[5] = rate;
 
     telemetryEntry.setNumberArray(numberArray);    
   }
