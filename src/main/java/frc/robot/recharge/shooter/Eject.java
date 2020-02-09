@@ -40,7 +40,7 @@ public class Eject extends CommandBase
   public void execute()
   {
     // Once it's fast enough, SHOOT!!
-    if (pca.getShooterRPM() > PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
+    if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
     {
       state = State.EJECT;
       timer.start();
@@ -57,6 +57,13 @@ public class Eject extends CommandBase
       else
         pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
     }
+
+    // If there is a separate sensor at end of horizontal conveyor,
+    // keep horiz. belt moving until ball is in there.
+    // if (pca.powerCellAtEndOfHorizontal())
+    //   pca.moveHorizontalConveyor(0);
+    // else
+    //   pca.moveHorizontalConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
   }
 
   @Override
@@ -71,5 +78,6 @@ public class Eject extends CommandBase
   {
     pca.eject(false);
     pca.moveConveyor(0);
+    //   pca.moveHorizontalConveyor(0);
   }
 }
