@@ -8,16 +8,12 @@
 package frc.robot.recharge.shooter;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
@@ -27,8 +23,6 @@ import frc.robot.recharge.RobotMap;
  *  'Fuel cell' balls from from hopper onto horizontal conveyor belt.
  *  Horizontal belt moves them to vertical conveyor,
  *  which feeds them to ejector/shooter.
- *  Angle of rotatable hood/shield/deflector adjusts
- *  the angle at which balls are ejected.
  */
 public class PowerCellAccelerator extends SubsystemBase 
 {
@@ -38,16 +32,10 @@ public class PowerCellAccelerator extends SubsystemBase
   private final WPI_TalonFX shooting_motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
   private final WPI_TalonFX conveyor_top = new WPI_TalonFX(RobotMap.CONVEYOR_TOP);
   private final WPI_TalonFX conveyor_bottom = new WPI_TalonFX(RobotMap.CONVEYOR_BOTTOM); 
-  // Must have encoder (angle)
-  private final WPI_TalonFX angle_adjustment = new WPI_TalonFX(RobotMap.ANGLE_MOTOR);
   
   // Sensors
   private final DigitalInput shooter_sensor_mid = new DigitalInput(RobotMap.SHOOTER_SENSOR_MID);
   private final DigitalInput shooter_sensor_top = new DigitalInput(RobotMap.SHOOTER_SENSOR_TOP);
-
-  // PID
-  // TODO Tune, then turn into ProfiledPIDController
-  private final PIDController shooter_angle_pid = new PIDController(0, 0, 0);
 
   public final static double CONVEYOR_VOLTAGE = 5.0;
 
@@ -63,11 +51,9 @@ public class PowerCellAccelerator extends SubsystemBase
     commonSettings(shooting_motor, NeutralMode.Coast);
     commonSettings(conveyor_top, NeutralMode.Brake);
     commonSettings(conveyor_bottom, NeutralMode.Brake);
-    commonSettings(angle_adjustment, NeutralMode.Brake);
 
-    // Encoder for speed resp. position
+    // Encoder for speed
     shooting_motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    angle_adjustment.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
   }
   
   /** @param motor Motor to configure with common settings
@@ -92,26 +78,6 @@ public class PowerCellAccelerator extends SubsystemBase
   public boolean powerCellReady()
   {
     return !shooter_sensor_mid.get();
-  }
-
-  private double getHoodAngle()
-  {
-    // TODO Calibrate conversion from encoder counts to angle
-    return angle_adjustment.getSelectedSensorPosition();
-  }
-
-  public void setHoodAngle(final double angle)
-  {
-    // Calculate angle with encoder values and use PID to adjust
-
-    // TODO First connect joystick axis to 'angle' to simply move motor
-    angle_adjustment.setVoltage(angle);
-
-    // Calibrate angle
-    // Then change this to
-    // shooter_angle_pid.setSetpoint(angle);
-    // enable PID in periodic() below and tune PID.
-    // Then change to ProfiledPIDController
   }
 
   /** Turn shooter 'on' or 'off'.
@@ -152,11 +118,7 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Hood Angle", getHoodAngle());
     SmartDashboard.putNumber("Eject RPM", getShooterRPM());
-
-    // TODO See setHoodAngle(angle);
-    // angle_adjustment.setVoltage(shooter_angle_pid.calculate(getHoodAngle()));
 
     // Run ejector if we're asked to do it,
     // or for 2 more seconds after the last shot
