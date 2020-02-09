@@ -11,12 +11,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,6 +63,12 @@ public class Intake extends SubsystemBase
   private double getIntakeAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
+
+    // Try frc-characterization for 'arm'.
+    // An angle of zero (degrees/radians) must be 'horizontal'
+    // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
+    // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
+
     return intake_position.getSelectedSensorPosition();
   }
 

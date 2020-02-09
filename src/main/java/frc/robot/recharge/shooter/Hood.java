@@ -42,6 +42,11 @@ public class Hood extends SubsystemBase
   private double getHoodAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
+    // TODO Try frc-characterization of 'arm'
+    // An angle of zero (degrees/radians) must be 'horizontal'
+    // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
+    // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
+
     return angle_adjustment.getSelectedSensorPosition();
   }
 
