@@ -30,21 +30,31 @@ public class Load extends CommandBase
   @Override
   public void execute()
   {
-    // Move conveyor so that one or more balls
-    // get loaded
-    pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    if (pca.powerCellReady())
+    {
+      // Stop when the first ball reaches the end of the conveyor.
+      pca.moveConveyor(0);
+      // If there is a separate sensor at end of horizontal conveyor,
+      // keep horiz. belt moving until ball is in there.
+      // if (pca.powerCellAtEndOfHorizontal())
+      //   pca.moveHorizontalConveyor(0);
+      // else
+      //   pca.moveHorizontalConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    }
+    else
+    {
+      // Move conveyor so that one or more balls get loaded
+      pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+      // pca.moveHorizontalConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    }
   }
 
-  @Override
-  public boolean isFinished()
-  {
-    // Stop when the first ball reaches the end of the conveyor
-    return pca.powerCellReady();
-  }
+  // isFinished(): false, keep turning on/off based on ball state
 
   @Override
   public void end(final boolean interrupted)
   {
     pca.moveConveyor(0);
+    //   pca.moveHorizontalConveyor(0);
   }
 }

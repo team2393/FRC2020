@@ -44,6 +44,7 @@ public class PowerCellAccelerator extends SubsystemBase
   private final DigitalInput shooter_sensor_top = new DigitalInput(RobotMap.SHOOTER_SENSOR_TOP);
 
   // PID
+  // TODO Tune, then turn into ProfiledPIDController
   private final PIDController intake_position_pid = new PIDController(0, 0, 0);
   private final PIDController shooter_angle_pid = new PIDController(0, 0, 0);
 
@@ -91,12 +92,12 @@ public class PowerCellAccelerator extends SubsystemBase
       shoot_timer.start();
   }
 
-  public void setShooterVoltate(double volt) 
+  public void setShooterVoltate(final double volt) 
   {
     shooting_motor.setVoltage(volt);  
   }
 
-  public void moveConveyor(double volt)
+  public void moveConveyor(final double volt)
   {
     // Should the conveyor have the ability to move backwards or should it only be "on" or "off"
     // Conveyors should probably be moved seperately
@@ -104,12 +105,12 @@ public class PowerCellAccelerator extends SubsystemBase
     conveyor_top.setVoltage(volt);
   }
   
-  public void setIntakeSpeed(double volt)
+  public void setIntakeSpeed(final double volt)
   {
     intake_motor.setVoltage(-Math.abs(volt)); // TODO find out which way motor spins and only allow intake to spin one direction
   }
   
-  public void setAngle(int angle)
+  public void setAngle(final int angle)
   {
     // Calculate angle with encoder values and use PID to adjust
   }
