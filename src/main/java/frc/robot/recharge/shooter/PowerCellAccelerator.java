@@ -107,6 +107,9 @@ public class PowerCellAccelerator extends SubsystemBase
     return shooting_motor.getSelectedSensorVelocity();
   }
 
+  // FF & PID for shooter motor to set RPM
+  // https://trickingrockstothink.com/blog_posts/2019/10/19/tuning_pid.html
+
   /** Returns true if a power cell is being shot */
   public boolean powerCellFired()
   {

@@ -30,7 +30,8 @@ public class Intake extends SubsystemBase
   // Must have encoder (angle) and limit switch (home)
   private final WPI_TalonFX intake_position = new WPI_TalonFX(RobotMap.INTAKE_POSITION);
 
-  // PID
+  // FF & PID
+  // https://trickingrockstothink.com/blog_posts/2019/10/26/controls_supp_arm.html
   // TODO Tune, then turn into ProfiledPIDController
   private final PIDController intake_position_pid = new PIDController(0, 0, 0);
 
