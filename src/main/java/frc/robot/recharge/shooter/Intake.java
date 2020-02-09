@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase
     PowerCellAccelerator.commonSettings(intake_motor, NeutralMode.Coast);
     PowerCellAccelerator.commonSettings(intake_position, NeutralMode.Brake);
 
-    // Encoder for speed resp. position
+    // Encoder for position (angle)
     intake_position.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);    
 
     // Limit switch to 'home'

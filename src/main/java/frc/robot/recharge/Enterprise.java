@@ -25,6 +25,8 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.Reset;
 import frc.robot.recharge.drivetrain.RotateToTarget;
+import frc.robot.recharge.shooter.HomeHood;
+import frc.robot.recharge.shooter.HomeIntake;
 
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -73,6 +75,9 @@ public class Enterprise extends BasicRobot
   // private final LEDStrip led_strip = new LEDStrip();
 
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
+
+  // Have we homed what needs homing?
+  private boolean homed = false;
 
   @Override
   public void robotInit()
@@ -126,15 +131,25 @@ public class Enterprise extends BasicRobot
     near_settings.schedule();
   }
 
+  private void homeWhatNeedsHoming()
+  {
+    if (! homed)
+    {
+      // TODO Home the various subsystems as they become available
+      // new HomeHood(hood).schedule();
+      // new HomeIntake(intake).schedule();
+      homed = true;
+    }
+  }
+
   @Override
   public void teleopInit()
   {
     super.teleopInit();
 
-    // manual_wheel.schedule();
-    // drive_by_joystick.schedule();
-    auto_shift.schedule();
+    homeWhatNeedsHoming();
 
+    auto_shift.schedule();
     drive_mode.schedule();
   }
 
@@ -183,7 +198,7 @@ public class Enterprise extends BasicRobot
   {
     super.autonomousInit();
 
-    reset_drivetrain.schedule();
+    homeWhatNeedsHoming();
 
     // Run the selected command.
     drive_train.reset();

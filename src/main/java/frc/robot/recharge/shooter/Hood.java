@@ -8,6 +8,8 @@
 package frc.robot.recharge.shooter;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -24,7 +26,7 @@ import frc.robot.recharge.RobotMap;
 public class Hood extends SubsystemBase
 {
   // Motors
-  // Must have encoder (angle)
+  // Must have encoder (angle) and limit switch (end position)
   private final WPI_TalonFX angle_adjustment = new WPI_TalonFX(RobotMap.ANGLE_MOTOR);
   
   // PID
@@ -35,10 +37,27 @@ public class Hood extends SubsystemBase
   {
     PowerCellAccelerator.commonSettings(angle_adjustment, NeutralMode.Brake);
 
-    // Encoder for position
+    // Encoder for position (angle)
     angle_adjustment.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+
+    // Limit switch at end position
+    angle_adjustment.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
   }
   
+  /** Move hood towards 'home' limit switch.
+   *  @return true if at 'home' position
+   */
+  public boolean homeHood()
+  {
+    // TODO Find voltage for slow movement towards home switch
+    // TODO Is home switch the forward or reverse limit switch?
+    angle_adjustment.setVoltage(-0.1);
+    final boolean homed = angle_adjustment.isFwdLimitSwitchClosed() == 1;
+    if (homed)
+     angle_adjustment.setSelectedSensorPosition(0);
+    return homed;
+  }
+
   private double getHoodAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
