@@ -62,6 +62,9 @@ public class TurnToHeading extends CommandBase
     // else
     //   drive_train.drive(0, MathUtil.clamp(rotation, -0.5, 0.5)); 
     drive_train.drive(0, rotation); 
+
+    // TODO Try to set left/right voltage instead of using arcade drive
+    // drive_train.driveVoltage(left, right);
   }
 
   @Override
