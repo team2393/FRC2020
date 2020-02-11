@@ -208,12 +208,15 @@ public class DriveTrain extends SubsystemBase
   }
 
   /** 'Arcade' drive
+   * 
+   *  Values are not squared to allow use w/ PID.
+   *
    *  @param speed Speed going forward
    *  @param rotation
    */ 
   public void drive(final double speed, final double rotation)
   {
-    differential_drive.arcadeDrive(speed, rotation);
+    differential_drive.arcadeDrive(speed, rotation, false);
   }
 
   /** Direct control of left and right motors

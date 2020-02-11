@@ -41,10 +41,23 @@ public class OI
   // TODO Wait 1/4 second to reach full speed? Same for rotation?
   // private static final SlewRateLimiter speed_limiter = new SlewRateLimiter(4);
 
+  /** 'Signed square' to get more sensitivity around joystick center
+   *  
+   *  Same idea as in DifferentialDrive.arcadeDrive,
+   *  but drive train passes the speed & rotation values
+   *  on un-squared to keep PID-based moves linear.
+   *  Instead, we square the joystick values so that interactive
+   *  drive is de-sensitized.
+   */
+  private static double square(final double value)
+  {
+    return Math.signum(value) * (value * value);
+  }
+
   /** @return Speed (1=full ahead) */
   public static double getSpeed()
   {
-    double speed = getSpeedFactor() * -joystick.getY(Hand.kLeft);
+    double speed = square(getSpeedFactor() * -joystick.getY(Hand.kLeft));
     // speed = speed_limiter.calculate(speed);
     return speed;
   }
@@ -52,7 +65,7 @@ public class OI
   /** @return Left/right steering */
   public static double getDirection()
   {
-    return getSpeedFactor() * joystick.getX(Hand.kRight);
+    return square(getSpeedFactor() * joystick.getX(Hand.kRight));
   }
 
   public static final boolean isToggleHeadingholdPressed()
