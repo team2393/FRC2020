@@ -44,7 +44,7 @@ public class PowerCellAccelerator extends SubsystemBase
 
   public final static double CONVEYOR_VOLTAGE = 5.0;
 
-  public final static double SHOOTER_RPM = 5500;
+  public final static double SHOOTER_RPM = 3000;
 
   public final static double MINIMUM_SHOOTER_RPM = 5000;
 

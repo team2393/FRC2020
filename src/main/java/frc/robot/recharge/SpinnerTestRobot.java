@@ -20,8 +20,8 @@ public class SpinnerTestRobot extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.setDefaultNumber("kV", 0);
-    SmartDashboard.setDefaultNumber("P", 0);
+    SmartDashboard.setDefaultNumber("kV", 0.0239);
+    SmartDashboard.setDefaultNumber("P", 0.01);
   }
 
   @Override
@@ -35,7 +35,9 @@ public class SpinnerTestRobot extends BasicRobot
   public void teleopPeriodic()
   {
     // +- 12 Volts
-    spinner.setVoltage(OI.getSpeed() * 12);
+    final double voltage = (OI.getSpeed() * 12);
+    System.out.println("Voltage: " + (voltage) + " RPM: " + spinner.getRPM());
+    spinner.setVoltage(voltage);
   }
 
   @Override
@@ -45,6 +47,6 @@ public class SpinnerTestRobot extends BasicRobot
     spinner.configure(SmartDashboard.getNumber("kV", 0),
                       SmartDashboard.getNumber("P", 0));
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    spinner.setRPM(high ? 2000 : 500);
+    spinner.setRPM(high ? 2000 : 3000);
   }
 }

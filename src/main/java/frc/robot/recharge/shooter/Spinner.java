@@ -20,16 +20,16 @@ public class Spinner
   private final WPI_TalonFX motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
 
   /** TODO Encoder ticks for one turn of the wheel */
-  private final static double TICK_PER_REVOLUTION = 4096;
+  private final static double TICK_PER_REVOLUTION = 3310;
   
   // FF & PID for shooter motor to set RPM
   // https://trickingrockstothink.com/blog_posts/2019/10/19/tuning_pid.html
 
   /** TODO Feed-forward velocity constant: Volts per RPM */
-  private double kV = 0.001;
+  private double kV = 0.00239;
 
   /** TODO P gain */
-  private final PIDController pid = new PIDController(0, 0, 0);
+  private final PIDController pid = new PIDController(0.01, 0, 0);
 
   public Spinner()
   {
