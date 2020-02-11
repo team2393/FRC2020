@@ -7,47 +7,68 @@
 
 package frc.robot.recharge.drivetrain;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 /** Control heading via PID */
 public class TurnToHeading extends CommandBase 
 {
   private final DriveTrain drive_train;
+  private final ProfiledPIDController pid;
+  private final Timer timer = new Timer();
 
-  public TurnToHeading(final DriveTrain drive_train) 
+  public TurnToHeading(final DriveTrain drive_train, final double heading) 
   {
     this.drive_train = drive_train;
+    // Use heading PID settings, but limit profile to 90 deg/sec rotational speed
+    pid = new ProfiledPIDController(drive_train.getHeadingPID().getP(),
+                                    drive_train.getHeadingPID().getI(),
+                                    drive_train.getHeadingPID().getD(),
+                                    new TrapezoidProfile.Constraints(90.0, 45.0));
+    // Good enough: Within 1 degree, slower than 1 deg/sec
+    pid.setTolerance(1.0, 1.0);
+    pid.setGoal(heading);
     addRequirements(drive_train);
   }
 
   public void setDesiredHeading(final double degrees)
   {
-    drive_train.getHeadingPID().setSetpoint(degrees);
+    pid.reset(drive_train.getHeadingDegrees());
+    pid.setGoal(degrees);
   }
 
   @Override
   public void initialize()
   {
-    drive_train.getHeadingPID().reset();
+    pid.reset(drive_train.getHeadingDegrees());
+    timer.start();
   }
 
   @Override
   public void execute()
   {
-    final double rotation = drive_train.getHeadingPID().calculate(drive_train.getHeadingDegrees());
-    // Avoid 'jittering' in place
-    if (Math.abs(rotation) < 0.05)
-      drive_train.drive(0, 0);
-    else
-      drive_train.drive(0, MathUtil.clamp(rotation, -0.5, 0.5)); 
-    }
+    final double rotation = pid.calculate(drive_train.getHeadingDegrees());
 
-  // @Override
-  // public boolean isFinished()
-  // {
-  //   return drive_train.getHeadingPID().atSetpoint();
-  // }
+    // TODO Avoid 'jittering' in place
+    // if (Math.abs(rotation) < 0.05)
+    //   drive_train.drive(0, 0);
+    // else
+    //   drive_train.drive(0, MathUtil.clamp(rotation, -0.5, 0.5)); 
+    drive_train.drive(0, rotation); 
+  }
+
+  @Override
+  public boolean isFinished()
+  {
+    if (timer.get() > 5.0)
+    {
+      System.err.println("TurnToHeading gives up (timeout)");
+      return true;
+    }
+    return pid.atGoal();
+  }
   
   @Override
   public void end(boolean interrupted)

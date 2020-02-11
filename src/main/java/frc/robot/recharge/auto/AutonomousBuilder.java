@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.RotateToTarget;
+import frc.robot.recharge.drivetrain.TurnToHeading;
 
 /** Build auto commands from a file */
 public class AutonomousBuilder
@@ -116,6 +117,11 @@ public class AutonomousBuilder
       }
       else if(command.equals("RotateToTarget"))
           current_auto.addCommands(new RotateToTarget(drive_train));
+      else if(command.equals("TurnToHeading"))
+      {
+        final double heading = scanner.nextDouble();
+        current_auto.addCommands(new TurnToHeading(drive_train, heading));
+      }
       else
       {
         scanner.close();

@@ -119,7 +119,12 @@ public class RotateToTarget extends CommandBase
   @Override
   public boolean isFinished()
   {
-    return on_target  ||  timer.get() > 5.0;
+    if (timer.get() > 5.0)
+    {
+      System.err.println("RotateToTarget gives up (timeout)");
+      return true;
+    }
+    return on_target;
   }
 
   @Override

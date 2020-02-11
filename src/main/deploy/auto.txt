@@ -10,13 +10,14 @@ End 0.5 0 0
 
 
 # -----------------------------------------------------
-Auto Turn Right
+Auto Curve Right
 Trajectory
 End 1 -1 -90
 
 
 # -----------------------------------------------------
 Auto Smurftrack
+# Poses are a list of X Y Heading
 Poses
 Pose 1 0 0
 Pose 1.5 -0.5 -90
@@ -50,11 +51,14 @@ End 0 0 0
 
 
 # -----------------------------------------------------
-Auto Test 1
-ReverseTrajectory
-End -3 0 0
-Trajectory
-End 3 0.5 20
+Auto Turn in place
+TurnToHeading 10
+TurnToHeading -10
+TurnToHeading 0
+TurnToHeading 45
+TurnToHeading -90
+TurnToHeading 0
+
 
 # -----------------------------------------------------
 Auto 0.5 and Back 0.5
@@ -77,9 +81,6 @@ Auto Pathweaver Test
 PathWeaver PathWeaver/Paths/Test.path
 
 
-#Auto Simple Shoot
-# Shoot
-
 # -----------------------------------------------------
 Auto Pick 2 and shoot
 # OpenIntake
@@ -93,6 +94,6 @@ End 4 0.5 30
 # Shoot
 
 
-
+# -----------------------------------------------------
 Auto Rotate to target
 RotateToTarget
