@@ -14,12 +14,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 // import frc.robot.demo.commands.CommandRobot;
 import frc.robot.recharge.Enterprise;
 // import frc.robot.recharge.TestRobot;
+import frc.robot.recharge.SpinnerTestRobot;
 
 /** 'main' class, selects which robot to run */
 public final class Main
 {
   public static void main(String... args)
   {
-    RobotBase.startRobot(Enterprise::new);
+    RobotBase.startRobot(SpinnerTestRobot::new);
   }
 }

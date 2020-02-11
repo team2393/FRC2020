@@ -31,7 +31,7 @@ public class CharacterizationRobotArm extends BasicRobot
   // work!
   static private double OFFSET = 0;
   static private double ENCODER_EDGES_PER_REV = 4906;
-  static private double encoderConstant = (1 / ENCODER_EDGES_PER_REV) * 360.;
+  static private double encoderConstant = (1.0 / ENCODER_EDGES_PER_REV) * 360.;
 
   
   // TODO Select motor, configure encoder

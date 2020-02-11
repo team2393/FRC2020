@@ -30,7 +30,7 @@ public class CharacterizationRobotMotor extends BasicRobot
   final WPI_TalonFX motor = new WPI_TalonFX(1);
 
   static private double ENCODER_EDGES_PER_REV = 4906;
-  static private double encoderConstant = (1 / ENCODER_EDGES_PER_REV);
+  static private double encoderConstant = (1.0 / ENCODER_EDGES_PER_REV);
   
   final Supplier<Double> encoderPosition = () -> motor.getSelectedSensorPosition() * encoderConstant;
   final Supplier<Double> encoderRate = () -> motor.getSelectedSensorVelocity() * encoderConstant * 10.0;
