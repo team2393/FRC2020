@@ -49,7 +49,12 @@ public class TurnToHeading extends CommandBase
   @Override
   public void execute()
   {
-    final double rotation = pid.calculate(drive_train.getHeadingDegrees());
+    final double correction = pid.calculate(drive_train.getHeadingDegrees());
+    final double turn_speed = pid.getSetpoint().velocity;
+
+    // TODO Determine feed-forward volt-per-turn
+    final double kV = 0.0;
+    final double rotation = turn_speed * kV + correction;
 
     // TODO Avoid 'jittering' in place
     // if (Math.abs(rotation) < 0.05)
