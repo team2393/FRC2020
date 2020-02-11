@@ -21,6 +21,6 @@ public final class Main
 {
   public static void main(String... args)
   {
-    RobotBase.startRobot(SpinnerTestRobot::new);
+    RobotBase.startRobot(Enterprise::new);
   }
 }

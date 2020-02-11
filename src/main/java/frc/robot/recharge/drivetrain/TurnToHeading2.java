@@ -8,47 +8,64 @@
 package frc.robot.recharge.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 /** Control heading via PID */
-public class TurnToHeading extends CommandBase 
+public class TurnToHeading2 extends CommandBase 
 {
   private final DriveTrain drive_train;
-  private final double desired_heading;
+  private final ProfiledPIDController pid;
   private final Timer timer = new Timer();
 
-  public TurnToHeading(final DriveTrain drive_train, final double heading) 
+  public TurnToHeading2(final DriveTrain drive_train, final double heading) 
   {
     this.drive_train = drive_train;
-    desired_heading = heading;
     // Use heading PID settings, but limit profile to 90 deg/sec rotational speed
+    pid = new ProfiledPIDController(0.01,
+                                    drive_train.getHeadingPID().getI(),
+                                    drive_train.getHeadingPID().getD(),
+                                    new TrapezoidProfile.Constraints(90.0, 45.0));
     // Good enough: Within 1 degree, slower than 1 deg/sec
-    drive_train.getHeadingPID().setTolerance(1.0);
+    pid.setTolerance(1.0, 1.0);
+    pid.setGoal(heading);
     addRequirements(drive_train);
+  }
+
+  public void setDesiredHeading(final double degrees)
+  {
+    pid.reset(drive_train.getHeadingDegrees());
+    pid.setGoal(degrees);
   }
 
   @Override
   public void initialize()
   {
-    drive_train.getHeadingPID().reset();
-    drive_train.getHeadingPID().setSetpoint(desired_heading);
+    pid.reset(drive_train.getHeadingDegrees());
     timer.start();
   }
 
   @Override
   public void execute()
   {
-    double rotation = - drive_train.getHeadingPID().calculate(drive_train.getHeadingDegrees(), desired_heading);
+    final double correction = pid.calculate(drive_train.getHeadingDegrees());
+    final double turn_speed = pid.getSetpoint().velocity;
 
-    rotation = MathUtil.clamp(rotation, -0.4, 0.4);
+    // TODO Determine feed-forward volt-per-turn
+    final double kV =  0.5 / 150.0;
+    final double rotation = -turn_speed * kV - correction;
 
     // TODO Avoid 'jittering' in place
     // if (Math.abs(rotation) < 0.05)
     //   drive_train.drive(0, 0);
     // else
     //   drive_train.drive(0, MathUtil.clamp(rotation, -0.5, 0.5)); 
+    System.out.println(rotation);
     drive_train.drive(0, rotation); 
+
+    // TODO Try to set left/right voltage instead of using arcade drive
+    // drive_train.driveVoltage(left, right);
   }
 
   @Override
@@ -59,7 +76,7 @@ public class TurnToHeading extends CommandBase
       System.err.println("TurnToHeading gives up (timeout)");
       return true;
     }
-    return drive_train.getHeadingPID().atSetpoint();
+    return pid.atGoal();
   }
   
   @Override

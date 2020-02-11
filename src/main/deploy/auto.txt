@@ -54,10 +54,14 @@ End 0 0 0
 Auto Turn in place
 TurnToHeading 10
 TurnToHeading -10
-TurnToHeading 0
-TurnToHeading 45
-TurnToHeading -90
-TurnToHeading 0
+TurnToHeading 10
+TurnToHeading -10
+TurnToHeading 10
+TurnToHeading -10
+TurnToHeading 10
+TurnToHeading -10
+TurnToHeading 10
+TurnToHeading -10
 
 
 # -----------------------------------------------------

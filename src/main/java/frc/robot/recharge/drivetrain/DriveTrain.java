@@ -63,7 +63,7 @@ public class DriveTrain extends SubsystemBase
 
   // PID
   private final PIDController position_pid = new PIDController(5.0, 0.0, 1.5);
-  private final PIDController heading_pid = new PIDController(0.1, 0.0, 0.005);
+  private final PIDController heading_pid = new PIDController(0.01, 0.0, 0.005);
 
   // FF and PID (P only) from frc-characterization
   private final SimpleMotorFeedforward feed_forward = new SimpleMotorFeedforward(0.846, 3.58, 0.175);
@@ -303,7 +303,10 @@ public class DriveTrain extends SubsystemBase
     // SmartDashboard.putNumber("Position", getPositionMeters());
     // SmartDashboard.putNumber("Left Speed", getLeftSpeedMetersPerSecond());
     // SmartDashboard.putNumber("Right Speed", getRightSpeedMetersPerSecond());
-    // SmartDashboard.putNumber("Heading", getHeadingDegrees());
+    SmartDashboard.putNumber("Heading", getHeadingDegrees());
+
+    SmartDashboard.putNumber("Turnrate", gyro.getRate());
+
 
     // SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());
   }
