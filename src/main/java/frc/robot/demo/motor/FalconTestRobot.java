@@ -6,18 +6,14 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.demo.motor;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.BasicRobot;
 
 /** Example of PID control for position
@@ -27,41 +23,26 @@ import frc.robot.BasicRobot;
  */
 public class FalconTestRobot extends BasicRobot
 {
-  private final XboxController joystick = new XboxController(0);
   private final WPI_TalonFX motor = new WPI_TalonFX(1);
 
-  private static final int steps_per_rev = 2048;
+  private static final double steps_per_rev = 2048;
 
-  private double desired_position = 0;
+  private final PIDController pid = new PIDController(0.15, 0, 0.0002);
 
-  /** Controller which computes error, correction etc.
-   *  Manual:               0.0005, 0, 0.0001
-   *  frc-characterization: 0.02,   0, 0.008 ?!
-   */
-  private final PIDController position_pid = new PIDController(0.0005, 0, 0.00015);
-  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(10.0*steps_per_rev, 20*steps_per_rev);
-  private final ProfiledPIDController prop_position_pid = new ProfiledPIDController(0.0003, 0, 0.0003, constraints);
+  private double request_per_rps = 0.25 / 24.5;
+  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(10.0, 10.0);
+  private final ProfiledPIDController profiled_pid = new ProfiledPIDController(0.15, 0, 0, constraints);
   
-  /** Command that reads current position,
-   *  invokes PIDController to get output value,
-   *  feeds that to the motor
-   */
-  private final PIDCommand hold_position = new PIDCommand(
-    position_pid,
-    () -> motor.getSelectedSensorPosition(),
-    () -> desired_position,
-    output -> motor.set(ControlMode.PercentOutput, output));
+  public double getRevs()
+  {
+    return motor.getSelectedSensorPosition()/steps_per_rev;
+  }
 
-  private final ProfiledPIDCommand hold_position2 = new ProfiledPIDCommand(
-    prop_position_pid,
-    () ->motor.getSelectedSensorPosition(),
-    () -> new TrapezoidProfile.State(desired_position, 0),
-    (output, state) ->
-    {
-      motor.set(ControlMode.PercentOutput, output);
-      System.out.println("Position setpoint: " + state.position);
-    });
-    
+  public double getRPS()
+  {
+    return motor.getSelectedSensorVelocity()/steps_per_rev * 10.0;
+  }
+
   @Override
   public void robotInit()
   {
@@ -69,47 +50,72 @@ public class FalconTestRobot extends BasicRobot
     // Configure motor
     motor.configFactoryDefault();
     motor.setNeutralMode(NeutralMode.Brake);
-    motor.configOpenloopRamp(2.0);
+    motor.configOpenloopRamp(0.1);
 
-    // 1/8 of a rev or better is consideted 'at desired position'
-    position_pid.setTolerance(steps_per_rev / 8);
+    // 1/5 of a rev or better is consideted 'at desired position'
+    pid.setTolerance(0.2);
+    profiled_pid.setTolerance(0.2, 0.2);
 
     // When using I gain, consider setting this:
     // position_pid.setIntegratorRange(minimumIntegral, maximumIntegral);
 
     // Allow setting PID parameters on dashboard
-    SmartDashboard.putData("Position PID", position_pid);
-    SmartDashboard.putData("Profiled PID", prop_position_pid);
-    SmartDashboard.setDefaultNumber("Turns", 4);
+    SmartDashboard.putData("PID", pid);
+    SmartDashboard.setDefaultNumber("Profiled P", 0.15);
+    SmartDashboard.setDefaultNumber("Profiled D", 0.0);
+
+    SmartDashboard.setDefaultNumber("R per RPS", request_per_rps);
+
+    SmartDashboard.setDefaultNumber("Turns", 10);
   }
 
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putNumber("Position", motor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Revs", getRevs());
+    SmartDashboard.putNumber("RPS", getRPS());
+  }
+
+  @Override
+  public void teleopPeriodic()
+  {
+    motor.set(0.25);
   }
 
   @Override
   public void autonomousInit()
   {
     super.autonomousInit();
-    hold_position.schedule();
+
+    motor.setSelectedSensorPosition(0);
+    pid.reset();
+    profiled_pid.reset(getRevs());
   }
   
   @Override
   public void autonomousPeriodic()
   {
     // Toggle between two desired positions every 2 seconds
-    desired_position = ((System.currentTimeMillis() / 2000) % 2) * steps_per_rev * SmartDashboard.getNumber("Turns", 1);
-    SmartDashboard.putNumber("Position Error", position_pid.getPositionError());
-    SmartDashboard.putBoolean("At Position", position_pid.atSetpoint());
-  }
+    final double desired_position = ((System.currentTimeMillis() / 2000) % 2) * SmartDashboard.getNumber("Turns", 1);
 
-  @Override
-  public void teleopPeriodic()
-  {
-    // Manually control motor speed via joystick
-    motor.set(ControlMode.PercentOutput, joystick.getY(Hand.kRight));
+    double speed;
+    
+    // Plain PID
+    speed = pid.calculate(getRevs(), desired_position);
+    // SmartDashboard.putNumber("Position Error", pid.getPositionError());
+    // SmartDashboard.putBoolean("At Position", pid.atSetpoint());
+
+    // Profiled PID
+    profiled_pid.setP(SmartDashboard.getNumber("Profiled P", 0.0));
+    profiled_pid.setD(SmartDashboard.getNumber("Profiled D", 0.0));
+    request_per_rps = SmartDashboard.getNumber("R per RPS", 0);
+    speed = profiled_pid.calculate(getRevs(), desired_position);
+    System.out.println(profiled_pid.getSetpoint().position);
+    speed += profiled_pid.getSetpoint().velocity * request_per_rps;
+    SmartDashboard.putNumber("Position Error", profiled_pid.getPositionError());
+    SmartDashboard.putBoolean("At Position", profiled_pid.atGoal());
+
+    motor.set(MathUtil.clamp(speed, -0.25, 0.25));
   }
 }
