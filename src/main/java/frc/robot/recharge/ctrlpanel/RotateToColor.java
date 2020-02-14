@@ -45,17 +45,24 @@ public class RotateToColor extends CommandBase
   
   private int getDesiredColor()
   {
+    /*
+      Game Data   Our Position  Our Value
+      Red         Blue          0
+      Yellow      Green         1
+      Blue        Red           2
+      Green       Yellow        3
+    */
     final String gameData = DriverStation.getInstance().getGameSpecificMessage();
     if (gameData.length() < 1)
       return -1;
     if (gameData.charAt(0) == 'B')
-      return 0;
-    if (gameData.charAt(0) == 'G')
-      return 1;
-    if (gameData.charAt(0) == 'R')
       return 2;
-    if (gameData.charAt(0) == 'Y')
+    if (gameData.charAt(0) == 'G')
       return 3;
+    if (gameData.charAt(0) == 'R')
+      return 0;
+    if (gameData.charAt(0) == 'Y')
+      return 1;
     return -1;
   }
 
