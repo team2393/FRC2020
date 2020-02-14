@@ -27,25 +27,35 @@ import frc.robot.recharge.RobotMap;
 public class Intake extends SubsystemBase 
 {
   // Motors
-  private final WPI_VictorSPX intake_motor = new WPI_VictorSPX(RobotMap.INTAKE_MOTOR);
+  private final WPI_VictorSPX spinner = new WPI_VictorSPX(RobotMap.INTAKE_MOTOR);
+  
   // Must have encoder (angle) and limit switch (home)
-  private final WPI_TalonFX intake_position = new WPI_TalonFX(RobotMap.INTAKE_POSITION);
+  private final WPI_TalonFX rotator = new WPI_TalonFX(RobotMap.INTAKE_POSITION);
 
   // FF & PID
   // https://trickingrockstothink.com/blog_posts/2019/10/26/controls_supp_arm.html
-  // TODO Tune, then turn into ProfiledPIDController
-  private final PIDController intake_position_pid = new PIDController(0, 0, 0);
+  // TODO Tune, then turn into ProfiledPIDController?
+  private ArmFeedforward angle_ff = new ArmFeedforward(0.0, 0.0, 0.0);
+  private final PIDController angle_pid = new PIDController(0, 0, 0);
+
+  private boolean run_spinner = false;
+
+  /** Desired arm/rotator angle. Negative to disable PID */
+  private double desired_angle = -1;
 
   public Intake()
   {
-    PowerCellAccelerator.commonSettings(intake_motor, NeutralMode.Coast);
-    PowerCellAccelerator.commonSettings(intake_position, NeutralMode.Brake);
+    PowerCellAccelerator.commonSettings(spinner, NeutralMode.Coast);
+    // Spin up/down with delay to please the battery
+    spinner.configOpenloopRamp(0.6);
+
+    PowerCellAccelerator.commonSettings(rotator, NeutralMode.Brake);
 
     // Encoder for position (angle)
-    intake_position.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);    
+    rotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);    
 
     // Limit switch to 'home'
-    intake_position.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    rotator.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
   }
     
   /** Move intake up towards 'home' switch.
@@ -55,14 +65,15 @@ public class Intake extends SubsystemBase
   {
     // TODO Find voltage for slow movement towards home switch
     // TODO Is home switch the forward or reverse limit switch?
-    intake_position.setVoltage(-0.1);
-    final boolean homed = intake_position.isFwdLimitSwitchClosed() == 1;
+    rotator.setVoltage(-0.1);
+    final boolean homed = rotator.isFwdLimitSwitchClosed() == 1;
     if (homed)
-     intake_position.setSelectedSensorPosition(0);
+     rotator.setSelectedSensorPosition(0);
     return homed;
   }
 
-  private double getIntakeAngle()
+  /** @return Rotator arm angle, degrees. 0 for horizontal, towards 90 for 'up' */
+  public double getAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
 
@@ -71,34 +82,54 @@ public class Intake extends SubsystemBase
     // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
     // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
 
-    return intake_position.getSelectedSensorPosition();
+    return 1.0 * rotator.getSelectedSensorPosition();
   }
 
+  /** @param speed Directly set rotator motor speed for testing */
+  public void setRotatorMotor(final double speed)
+  {
+    // Disable automated controll
+    desired_angle = -1;
+    rotator.set(speed);
+  }
+
+  /** @param kCos Cosine(angle) factor to compensate for gravity
+   *  @param P Proportional gain for angle error
+   */
+  public void configure(final double kCos, final double P)
+  {
+    angle_pid.reset();
+    angle_ff = new ArmFeedforward(0, kCos, 0);
+    angle_pid.setP(P);
+  }
+
+  /** @param angle Set angle for PID-controlled angle rotator, negative to disable */
   public void setIntakeAngle(final double angle)
   {
-    // TODO First connect joystick axis to 'angle' to simply move motor
-    intake_position.setVoltage(angle);
-
-    // Calibrate angle
-    // Then change this to
-    //    intake_position_pid.setSetpoint(angle);
-    // enable PID in periodic() below and tune PID.
-    // Then change to ProfiledPIDController
+    desired_angle = angle;
   }
   
   // TODO Command to lower intake and turn rollers on,
   //      or raise intake with rollers off.
-  public void setIntakeSpeed(final double volt)
-  {
-    intake_motor.setVoltage(-Math.abs(volt)); // TODO find out which way motor spins and only allow intake to spin one direction
-  }
 
+  /** @param on Should intake spinner be on? */
+  public void enableSpinner(final boolean on)
+  {
+    run_spinner = on;
+  }
+  
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
-   
-    // TODO See setIntakeAngle(angle);
-    // intake_motor.setVoltage(intake_position_pid.calculate(getIntakeAngle()));
+    // TODO find out which way motor spins and what's a good speed
+    spinner.setVoltage(run_spinner ? 3.0 : 0.0);
+
+    if (desired_angle >= 0)
+    {
+      final double correction = angle_pid.calculate(getAngle(), desired_angle);
+      final double preset = angle_ff.calculate(getAngle(), 0);
+
+      rotator.setVoltage(preset + correction);
+    }
   }
 }
