@@ -32,11 +32,11 @@ public class RotateWheel extends CommandBase {
 
   /**
    * @param wheel Control wheel to turn
-   * @param times How many times should be turn the wheel?
+   * @param turns How many times should be turn the wheel?
    */
-  public RotateWheel(final ControlWheel wheel, final int times) {
+  public RotateWheel(final ControlWheel wheel, final int turns) {
     this.wheel = wheel;
-    required_sectors = times * 8;
+    required_sectors = turns * 8;
     addRequirements(wheel);
 
     SmartDashboard.putNumber("WheelSectors", required_sectors);
