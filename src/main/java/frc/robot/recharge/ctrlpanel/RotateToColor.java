@@ -16,6 +16,8 @@ public class RotateToColor extends CommandBase
 {
   private final ControlWheel wheel;
 
+  private static final int REDUNDANCY = 3;
+  private int times = 0;
   /** The color that we should find,
    *  or -1 if we don't know where to go.
    */
@@ -86,8 +88,14 @@ public class RotateToColor extends CommandBase
     // Have we reached the expected color?
     if (color == desired_color)
     {
-      is_finished = true;
-      System.out.println("Found " + color.toString());
+      times ++;
+      if (times >= REDUNDANCY)
+      {
+        is_finished = true;
+        System.out.println("Found " + color.toString());
+      }
+      else
+        System.out.println("Verified " + desired_color + " " + times + "  times");
     }
     else
       wheel.fast();
