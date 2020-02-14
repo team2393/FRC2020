@@ -36,6 +36,7 @@ public class RotateToColor extends CommandBase
   public void initialize()
   {
     // Determine which color we should go to
+    times = 0;
     desired_color = getDesiredColor();
     if (desired_color == Segment_Color.Unkown)
       is_finished = true;
@@ -88,8 +89,7 @@ public class RotateToColor extends CommandBase
     // Have we reached the expected color?
     if (color == desired_color)
     {
-      times ++;
-      if (times >= REDUNDANCY)
+      if (++times >= REDUNDANCY)
       {
         is_finished = true;
         System.out.println("Found " + color.toString());
