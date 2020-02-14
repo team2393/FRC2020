@@ -88,7 +88,7 @@ public class Intake extends SubsystemBase
   /** @param speed Directly set rotator motor speed for testing */
   public void setRotatorMotor(final double speed)
   {
-    // Disable automated controll
+    // Disable automated control
     desired_angle = -1;
     rotator.set(speed);
   }
