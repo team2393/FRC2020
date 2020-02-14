@@ -9,11 +9,14 @@ package frc.robot.recharge.ctrlpanel;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.recharge.ctrlpanel.ColorDetector.Segment_Color;
 
 /** Command to rotate wheel N times */
-public class RotateWheel extends CommandBase
-{
-  /** We want to see each color this many times to be certain it's not a fluke reading */
+public class RotateWheel extends CommandBase {
+  /**
+   * We want to see each color this many times to be certain it's not a fluke
+   * reading
+   */
   private static final int REDUNDANCY = 3;
   private final ControlWheel wheel;
   private final int required_sectors;
@@ -25,13 +28,13 @@ public class RotateWheel extends CommandBase
   private int times = 0;
 
   /** Index of the next expected color (that we want to see 'times_left' times) */
-  private int next_color = -1;
+  private Segment_Color next_color = Segment_Color.Unkown;
 
-  /** @param wheel Control wheel to turn
-   *  @param times How many times should be turn the wheel?
+  /**
+   * @param wheel Control wheel to turn
+   * @param times How many times should be turn the wheel?
    */
-  public RotateWheel(final ControlWheel wheel, final int times)
-  {
+  public RotateWheel(final ControlWheel wheel, final int times) {
     this.wheel = wheel;
     required_sectors = times * 8;
     addRequirements(wheel);
@@ -40,20 +43,18 @@ public class RotateWheel extends CommandBase
   }
 
   @Override
-  public void initialize()
-  {
+  public void initialize() {
     sectors = required_sectors;
     SmartDashboard.putNumber("WheelSectors", sectors);
-    next_color = -1;
+    next_color = Segment_Color.Unkown;
     wheel.fast();
   }
 
   @Override
-  public void execute()
-  {
+  public void execute() {
     // Did the camera detect a color?
-    int color = wheel.getColor();
-    if (color < 0)
+    Segment_Color color = wheel.getColor();
+    if (color == Segment_Color.Unkown)
     {
       // System.out.println("Unknown color");
       // Go slow to improve chance of catching that color
@@ -64,12 +65,12 @@ public class RotateWheel extends CommandBase
     wheel.fast();
 
     // Is this the first time we see a color?
-    if (next_color < 0)
+    if (next_color == Segment_Color.Unkown)
     {
-      next_color = (color + 1) % ColorDetector.COLORS.length;
+      next_color = color.next();
       times = 0; 
-      System.out.println("Started on " + ColorDetector.COLORS[color] +
-                         ", looking for " + ColorDetector.COLORS[next_color]);
+      System.out.println("Started on " + color +
+                         ", looking for " + next_color);
       return;
     }
 
@@ -77,7 +78,7 @@ public class RotateWheel extends CommandBase
     if (color == next_color)
     {
       ++times;
-      System.out.println("Detected " + ColorDetector.COLORS[color] + ": " + times + " of " + REDUNDANCY);
+      System.out.println("Detected " + color + ": " + times + " of " + REDUNDANCY);
     }
     // Have we seen the expected color often enough?
     if (times >= REDUNDANCY)
@@ -87,14 +88,14 @@ public class RotateWheel extends CommandBase
       SmartDashboard.putNumber("WheelSectors", sectors);
       if (isFinished())
       {
-        System.out.println("Found " + ColorDetector.COLORS[color] +
+        System.out.println("Found " + color +
                             ", methinks I'm DONE!");
         return;
       }
-      next_color = (color + 1) % ColorDetector.COLORS.length;
+      next_color = (color.next());
       times = 0; 
-      System.out.println("Found " + ColorDetector.COLORS[color] +
-                         ", now looking for " + ColorDetector.COLORS[next_color] +
+      System.out.println("Found " + color +
+                         ", now looking for " + next_color +
                          ", " + sectors + " more sectors");
     }
   }

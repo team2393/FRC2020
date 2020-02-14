@@ -39,7 +39,7 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
     spin(-0.1);
   }
 
-  public int getColor()
+  public Segment_Color getColor()
   {
     return detector.getColor();
   }

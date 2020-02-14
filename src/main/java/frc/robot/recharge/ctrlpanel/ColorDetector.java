@@ -6,12 +6,35 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.ctrlpanel;
 
+import javax.lang.model.util.ElementScanner6;
+
 /** Basic color detector interface */
 public interface ColorDetector
 {
   /** Color names for color index 0, 1, 2, 3 */
-  public static final String[] COLORS = { "Blue", "Green", "Red", "Yellow" };
-  
-  /** @return 0, 1, 2, 3 for color, -1 if we don't know */
-  int getColor();
+  public enum Segment_Color
+  {
+    Unkown,
+    Blue,
+    Green,
+    Red,
+    Yellow;
+
+    public Segment_Color next()
+    {
+      if (this == Blue)
+        return Segment_Color.Green;
+      else if (this == Green)
+        return Segment_Color.Red;
+      else if (this == Red)
+        return Segment_Color.Yellow;
+      else if (this == Yellow)
+        return Segment_Color.Blue;
+      else
+        return Segment_Color.Unkown;
+    }
+  }
+
+  /** @return Color */
+  Segment_Color getColor();
 }

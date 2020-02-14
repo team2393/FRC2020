@@ -11,6 +11,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.recharge.ctrlpanel.ColorDetector.Segment_Color;
 
 /** REV Robotics color sensor
  * 
@@ -40,7 +41,7 @@ public class ColorSensor implements ColorDetector
    *  @return Detector color index or -1
    */
   @Override
-  public int getColor()
+  public Segment_Color getColor()
   {
     final Color color = sensor.getColor();
     // Scale sensor's value range to 0..255
@@ -67,12 +68,12 @@ public class ColorSensor implements ColorDetector
         best_match = i;
       }
     }
-    final String color_name = best_match == -1 ? "Unknown" : ColorDetector.COLORS[best_match];
+    final Segment_Color segment = Segment_Color.values()[best_match+1];
 
     final int dist = sensor.getProximity();
     SmartDashboard.putString("ColorSensor",
-                            color_name + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
+                            segment + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
 
-    return best_match;
+    return segment;
   }
 }

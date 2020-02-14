@@ -9,6 +9,7 @@ package frc.robot.recharge.ctrlpanel;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.recharge.ctrlpanel.ColorDetector.Segment_Color;
 
 /** Command to rotate wheel to desired color */
 public class RotateToColor extends CommandBase
@@ -18,7 +19,7 @@ public class RotateToColor extends CommandBase
   /** The color that we should find,
    *  or -1 if we don't know where to go.
    */
-  private int desired_color;
+  private Segment_Color desired_color;
 
   private boolean is_finished;
 
@@ -34,7 +35,7 @@ public class RotateToColor extends CommandBase
   {
     // Determine which color we should go to
     desired_color = getDesiredColor();
-    if (desired_color < 0)
+    if (desired_color == Segment_Color.Unkown)
       is_finished = true;
     else
     {
@@ -43,7 +44,7 @@ public class RotateToColor extends CommandBase
     }
   }
   
-  private int getDesiredColor()
+  private Segment_Color getDesiredColor()
   {
     /*
       Game Data   Our Position  Our Value
@@ -54,27 +55,27 @@ public class RotateToColor extends CommandBase
     */
     final String gameData = DriverStation.getInstance().getGameSpecificMessage();
     if (gameData.length() < 1)
-      return -1;
+      return Segment_Color.Unkown;
     if (gameData.charAt(0) == 'B')
-      return 2;
+      return Segment_Color.Red;
     if (gameData.charAt(0) == 'G')
-      return 3;
+      return Segment_Color.Yellow;
     if (gameData.charAt(0) == 'R')
-      return 0;
+      return Segment_Color.Blue;
     if (gameData.charAt(0) == 'Y')
-      return 1;
-    return -1;
+      return Segment_Color.Green;
+    return Segment_Color.Unkown;
   }
 
   @Override
   public void execute()
   {
-    if (desired_color < 0)
+    if (desired_color == Segment_Color.Unkown)
       return;
 
     // Did the camera detect a color?
-    int color = wheel.getColor();
-    if (color < 0)
+    Segment_Color color = wheel.getColor();
+    if (color == Segment_Color.Unkown)
     {
       // System.out.println("Unknown color");
       // Go slow to improve chance of catching that color
@@ -86,7 +87,7 @@ public class RotateToColor extends CommandBase
     if (color == desired_color)
     {
       is_finished = true;
-      System.out.println("Found " + ColorDetector.COLORS[color]);
+      System.out.println("Found " + color.toString());
     }
     else
       wheel.fast();
