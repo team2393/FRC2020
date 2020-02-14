@@ -6,8 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.ctrlpanel;
 
-import javax.lang.model.util.ElementScanner6;
-
 /** Basic color detector interface */
 public interface ColorDetector
 {
