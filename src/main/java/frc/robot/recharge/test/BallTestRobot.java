@@ -23,7 +23,7 @@ public class BallTestRobot extends BasicRobot
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putBoolean("Loaded", pca.powerCellReady());
+    SmartDashboard.putBoolean("Ready", pca.powerCellReady());
     SmartDashboard.putBoolean("Fired", pca.powerCellFired());
     SmartDashboard.putNumber("Eject RPM", pca.getShooterRPM());
   }
