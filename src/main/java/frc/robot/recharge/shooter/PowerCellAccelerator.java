@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
@@ -114,8 +113,6 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Eject RPM", getShooterRPM());
-
     // Run ejector if we're asked to do it,
     // or for 2 more seconds after the last shot
     // so it remains running through a series of shots

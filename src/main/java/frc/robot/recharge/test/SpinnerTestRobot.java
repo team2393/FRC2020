@@ -35,7 +35,7 @@ public class SpinnerTestRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // +- 12 Volts
+    // +- 12 Volts based on joystick
     final double voltage = (OI.getSpeed() * 12);
     System.out.println("Voltage: " + (voltage) + " RPM: " + spinner.getRPM());
     spinner.setVoltage(voltage);
