@@ -27,21 +27,23 @@ public class Hood extends SubsystemBase
 {
   // Motors
   // Must have encoder (angle) and limit switch (end position)
-  private final WPI_TalonFX angle_adjustment = new WPI_TalonFX(RobotMap.ANGLE_MOTOR);
+  private final WPI_TalonFX angle_motor = new WPI_TalonFX(RobotMap.ANGLE_MOTOR);
   
   // PID
-  // TODO Tune, then turn into ProfiledPIDController or use ProfiledPIDSubsystem
-  private final PIDController shooter_angle_pid = new PIDController(0, 0, 0);
+  private final PIDController pid = new PIDController(0, 0, 0);
+
+  /** Desired arm/rotator angle. Negative to disable PID */
+  private double desired_angle = -1;
 
   public Hood()
   {
-    PowerCellAccelerator.commonSettings(angle_adjustment, NeutralMode.Brake);
+    PowerCellAccelerator.commonSettings(angle_motor, NeutralMode.Brake);
 
     // Encoder for position (angle)
-    angle_adjustment.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    angle_motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
     // Limit switch at end position
-    angle_adjustment.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    angle_motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
   }
   
   /** Move hood towards 'home' limit switch.
@@ -51,36 +53,39 @@ public class Hood extends SubsystemBase
   {
     // TODO Find voltage for slow movement towards home switch
     // TODO Is home switch the forward or reverse limit switch?
-    angle_adjustment.setVoltage(-0.1);
-    final boolean homed = angle_adjustment.isFwdLimitSwitchClosed() == 1;
+    angle_motor.setVoltage(-0.1);
+    final boolean homed = angle_motor.isFwdLimitSwitchClosed() == 1;
     if (homed)
-     angle_adjustment.setSelectedSensorPosition(0);
+     angle_motor.setSelectedSensorPosition(0);
     return homed;
   }
 
-  private double getHoodAngle()
+  public double getHoodAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
     // TODO Try frc-characterization of 'arm'
-    // An angle of zero (degrees/radians) must be 'horizontal'
-    // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
-    // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
-
-    return angle_adjustment.getSelectedSensorPosition();
+    // An angle of zero (degrees/radians) should be 'horizontal'
+    // in case we want to use ArmFeedforward
+    return 1.0 * angle_motor.getSelectedSensorPosition();
   }
 
+  /** @param speed Directly set motor speed for testing */
+  public void setAngleMotor(final double speed)
+  {
+    // Disable automated control
+    desired_angle = -1;
+    angle_motor.set(speed);
+  }
+
+  public PIDController getPID()
+  {
+    return pid;
+  }
+
+  /** @param angle Set angle for PID-controlled angle rotator, negative to disable */
   public void setHoodAngle(final double angle)
   {
-    // Calculate angle with encoder values and use PID to adjust
-
-    // TODO First connect joystick axis to 'angle' to simply move motor
-    angle_adjustment.setVoltage(angle);
-
-    // Calibrate angle
-    // Then change this to
-    // shooter_angle_pid.setSetpoint(angle);
-    // enable PID in periodic() below and tune PID.
-    // Then change to ProfiledPIDController
+    desired_angle = angle;
   }
 
   @Override
@@ -88,7 +93,10 @@ public class Hood extends SubsystemBase
   {
     SmartDashboard.putNumber("Hood Angle", getHoodAngle());
 
-    // TODO See setHoodAngle(angle);
-    // angle_adjustment.setVoltage(shooter_angle_pid.calculate(getHoodAngle()));
+    if (desired_angle >= 0)
+    {
+      final double correction = pid.calculate(getHoodAngle(), desired_angle);
+      angle_motor.setVoltage(correction);
+    }
   }
 }
