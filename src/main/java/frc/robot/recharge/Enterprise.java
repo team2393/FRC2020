@@ -27,6 +27,9 @@ import frc.robot.recharge.drivetrain.Reset;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.HomeHood;
 import frc.robot.recharge.shooter.HomeIntake;
+import frc.robot.recharge.shooter.Hood;
+import frc.robot.recharge.shooter.HoodFar;
+import frc.robot.recharge.shooter.Intake;
 
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -51,9 +54,12 @@ public class Enterprise extends BasicRobot
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
   private final Rumble rumble = new Rumble();
-
+  // TODO make intake/hood work
+  private final Intake intake = null;
+  private final Hood hood = null;
+  
   private final CommandBase near_settings = new ApplySettings("near.txt");
- private final CommandBase far_settings =  new ApplySettings("far.txt");
+  private final CommandBase far_settings =  new ApplySettings("far.txt");
 
   // TODO Tune drive PIDs with actual robot
   // TODO Command to drive left/right based on vision info (in network tables, set
@@ -118,7 +124,7 @@ public class Enterprise extends BasicRobot
       // Read commands from auto file.
       // Drivebase turns trajectories into ramsete commands.
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
-      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train))
+      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train, intake, hood))
         auto_commands.addOption(moves.getName(), moves);
     }
     catch (Exception ex)

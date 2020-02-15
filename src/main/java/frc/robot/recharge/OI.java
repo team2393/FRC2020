@@ -7,7 +7,6 @@
 
 package frc.robot.recharge;
 
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -65,7 +64,19 @@ public class OI
   /** @return Left/right steering */
   public static double getDirection()
   {
-    return square(getSpeedFactor() * joystick.getX(Hand.kRight));
+    if (joystick.getStickButton(Hand.kRight))
+      return 0;
+    else
+      return square(getSpeedFactor() * joystick.getX(Hand.kRight));
+  }
+
+  /** @return Up/Down for hood */
+  public static double getHoodSpeed()
+  {
+    if (!joystick.getStickButton(Hand.kRight))
+      return 0;
+    else
+      return square(joystick.getX(Hand.kRight));
   }
 
   public static final boolean isToggleHeadingholdPressed()
