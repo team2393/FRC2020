@@ -123,7 +123,7 @@ public class DriveTrain extends SubsystemBase
     motor.setNeutralMode(NeutralMode.Brake);
     // Do not throttle the motors because that impacts the
     // autonomous 'Ramsete' command performance
-    // motor.configOpenloopRamp(1.0);
+    motor.configOpenloopRamp(0.3);
   }
 
   /** Reset all encoders to 0, low gear, ... */
