@@ -66,10 +66,10 @@ public class RobotMap
   // TODO  public final static int SHOOTER_MOTOR_SLAVE = ;
   public final static int CONVEYOR_BOTTOM = 6;
   public final static int CONVEYOR_TOP = 7;
-  public final static int INTAKE_MOTOR = 8;
-  // TODO  public final static int INTAKE_MOTOR_SLAVE = 8;
-  public final static int INTAKE_POSITION = 9;
-  public final static int ANGLE_MOTOR = 10;
+  public final static int INTAKE_SPINNER = 8;
+  public final static int INTAKE_ROTATOR = 9;
+  public final static int INTAKE_ROTATOR_SLAVE = 10;
+  public final static int ANGLE_MOTOR = 11;
 
   // Digital IO Sensors
   public final static int SHOOTER_SENSOR_TOP = 1;

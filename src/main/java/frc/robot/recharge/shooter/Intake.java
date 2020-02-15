@@ -16,7 +16,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
@@ -27,10 +26,11 @@ import frc.robot.recharge.RobotMap;
 public class Intake extends SubsystemBase 
 {
   // Motors
-  private final WPI_VictorSPX spinner = new WPI_VictorSPX(RobotMap.INTAKE_MOTOR);
+  private final WPI_VictorSPX spinner = new WPI_VictorSPX(RobotMap.INTAKE_SPINNER);
   
   // Must have encoder (angle) and limit switch (home)
-  private final WPI_TalonFX rotator = new WPI_TalonFX(RobotMap.INTAKE_POSITION);
+  private final WPI_TalonFX rotator = new WPI_TalonFX(RobotMap.INTAKE_ROTATOR);
+  private final WPI_TalonFX rotator_salve = new WPI_TalonFX(RobotMap.INTAKE_ROTATOR_SLAVE);
 
   // FF & PID
   // https://trickingrockstothink.com/blog_posts/2019/10/26/controls_supp_arm.html
@@ -50,12 +50,17 @@ public class Intake extends SubsystemBase
     spinner.configOpenloopRamp(0.6);
 
     PowerCellAccelerator.commonSettings(rotator, NeutralMode.Brake);
+    PowerCellAccelerator.commonSettings(rotator_salve, NeutralMode.Brake);
 
     // Encoder for position (angle)
     rotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);    
 
     // Limit switch to 'home'
     rotator.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+
+    // TODO Enable when direction etc. have been determined
+    // rotator_salve.setInverted(true);
+    // rotator_salve.follow(rotator);
   }
     
   /** Move intake up towards 'home' switch.
