@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.drivetrain.TurnToHeading;
+import frc.robot.recharge.shooter.Hood;
+import frc.robot.recharge.shooter.HoodClose;
+import frc.robot.recharge.shooter.HoodFar;
 import frc.robot.recharge.shooter.Intake;
 import frc.robot.recharge.shooter.IntakeDown;
 import frc.robot.recharge.shooter.IntakeMid;
@@ -41,7 +44,8 @@ public class AutonomousBuilder
    */
   public static List<SequentialCommandGroup> read(final File filename,
                                                   final DriveTrain drive_train,
-                                                  final Intake intake) throws Exception
+                                                  final Intake intake,
+                                                  final Hood hood) throws Exception
   {
     final BufferedReader file = new BufferedReader(new FileReader(filename));
     final List<SequentialCommandGroup> autos = new ArrayList<>();
@@ -144,6 +148,14 @@ public class AutonomousBuilder
       else if(command.equals("IntakeMid"))
       {
        current_auto.addCommands(new IntakeMid(intake)); 
+      }
+      else if(command.equals("HoodClose"))
+      {
+        current_auto.addCommands(new HoodClose(hood));
+      }
+      else if(command.equals("HoodFar"))
+      {
+        current_auto.addCommands(new HoodFar(hood));
       }
       else
       {

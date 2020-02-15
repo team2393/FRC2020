@@ -23,7 +23,7 @@ public class TestRobot extends BasicRobot
   // private final DigitalInput ball = new DigitalInput(8);
   // private final LEDStrip led = new LEDStrip();
 
-  private final List<TalonFX> instruments = List.of(new TalonFX(1));
+  private final List<TalonFX> instruments = List.of(new TalonFX(1), new TalonFX(2), new TalonFX(3), new TalonFX(4));
   private final Orchestra orch = new Orchestra(instruments);
   private final CommandBase beep = new BeepBipBipBeeeep(instruments);
 
