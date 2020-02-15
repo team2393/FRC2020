@@ -54,6 +54,7 @@ End 0 0 0
 Auto Turn in place
 TurnToHeading 10
 TurnToHeading -10
+Wait 1.5
 TurnToHeading 10
 TurnToHeading -10
 TurnToHeading 10
