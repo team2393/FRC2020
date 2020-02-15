@@ -18,7 +18,7 @@ public class TurnToHeading extends CommandBase
   private final DriveTrain drive_train;
   // Limit profile to 90 deg/sec rotational speed
   private final ProfiledPIDController pid =
-         new ProfiledPIDController(0.025, 0, 0.03,
+         new ProfiledPIDController(0.025, 0.03, 0,
                                    new TrapezoidProfile.Constraints(90.0, 45.0));
   private double kV =  0.0055;
   private final Timer timer = new Timer();
