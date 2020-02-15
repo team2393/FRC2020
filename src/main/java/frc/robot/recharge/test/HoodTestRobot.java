@@ -5,48 +5,48 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
-import frc.robot.recharge.shooter.Spinner;
+import frc.robot.recharge.OI;
+import frc.robot.recharge.shooter.Hood;
 
-/** Robot code for testing spinner */
-public class SpinnerTestRobot extends BasicRobot
+/** Robot code for testing hood */
+public class HoodTestRobot extends BasicRobot
 {
-  private final Spinner spinner = new Spinner();
+  private final Hood hood = new Hood();
   
   @Override
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.setDefaultNumber("kV", 0.0239);
-    SmartDashboard.setDefaultNumber("P", 0.01);
+    SmartDashboard.putData("Hood PID", hood.getPID());
   }
 
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putNumber("RPM", spinner.getRPM());
+    SmartDashboard.putNumber("Hood Angle", hood.getHoodAngle());   
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // +- 12 Volts
-    final double voltage = (OI.getSpeed() * 12);
-    System.out.println("Voltage: " + (voltage) + " RPM: " + spinner.getRPM());
-    spinner.setVoltage(voltage);
+    // Hold A button to 'home'
+    if (OI.joystick.getAButton())
+      hood.homeHood();
+
+    // 'left/right' axis to directly run rotator angle motor
+    hood.setAngleMotor(OI.getDirection());
   }
 
   @Override
   public void autonomousPeriodic()
   {
-    // TODO Tune PID, then pick some reasonable RPM values between which to toggle
-    spinner.configure(SmartDashboard.getNumber("kV", 0),
-                      SmartDashboard.getNumber("P", 0));
+    // Every 3 seconds toggle between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    spinner.setRPM(high ? 2000 : 3000);
+    hood.setHoodAngle(high ? 60 : 30);
   }
 }

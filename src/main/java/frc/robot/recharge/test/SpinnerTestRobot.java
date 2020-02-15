@@ -5,53 +5,49 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
-import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.OI;
+import frc.robot.recharge.shooter.Spinner;
 
-/** Robot code for testing intake */
-public class IntakeTestRobot extends BasicRobot
+/** Robot code for testing spinner */
+public class SpinnerTestRobot extends BasicRobot
 {
-  private final Intake intake = new Intake();
+  private final Spinner spinner = new Spinner();
   
   @Override
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.setDefaultNumber("kCos", 0.0);
-    SmartDashboard.setDefaultNumber("P", 0.0);
+    SmartDashboard.setDefaultNumber("kV", 0.0239);
+    SmartDashboard.setDefaultNumber("P", 0.01);
   }
 
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
+    SmartDashboard.putNumber("RPM", spinner.getRPM());
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // Hold A button to 'home'
-    if (OI.joystick.getAButton())
-      intake.homeIntake();
-
-    // Hold B button to run spinner
-    intake.enableSpinner(OI.joystick.getBButton());
-
-    // 'left/right' axis to directly run rotator angle motor
-    intake.setRotatorMotor(OI.getDirection());
+    // +- 12 Volts
+    final double voltage = (OI.getSpeed() * 12);
+    System.out.println("Voltage: " + (voltage) + " RPM: " + spinner.getRPM());
+    spinner.setVoltage(voltage);
   }
 
   @Override
   public void autonomousPeriodic()
   {
-    intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0));
-    // Every 3 seconds toggle between two angles
+    // TODO Tune PID, then pick some reasonable RPM values between which to toggle
+    spinner.configure(SmartDashboard.getNumber("kV", 0),
+                      SmartDashboard.getNumber("P", 0));
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    intake.setIntakeAngle(high ? 60 : 30);
+    spinner.setRPM(high ? 2000 : 3000);
   }
 }

@@ -5,29 +5,31 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
-import frc.robot.recharge.shooter.Hood;
+import frc.robot.recharge.OI;
+import frc.robot.recharge.shooter.Intake;
 
-/** Robot code for testing hood */
-public class HoodTestRobot extends BasicRobot
+/** Robot code for testing intake */
+public class IntakeTestRobot extends BasicRobot
 {
-  private final Hood hood = new Hood();
+  private final Intake intake = new Intake();
   
   @Override
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.putData("Hood PID", hood.getPID());
+    SmartDashboard.setDefaultNumber("kCos", 0.0);
+    SmartDashboard.setDefaultNumber("P", 0.0);
   }
 
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putNumber("Hood Angle", hood.getHoodAngle());   
+    SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
   }
 
   @Override
@@ -35,17 +37,22 @@ public class HoodTestRobot extends BasicRobot
   {
     // Hold A button to 'home'
     if (OI.joystick.getAButton())
-      hood.homeHood();
+      intake.homeIntake();
+
+    // Hold B button to run spinner
+    intake.enableSpinner(OI.joystick.getBButton());
 
     // 'left/right' axis to directly run rotator angle motor
-    hood.setAngleMotor(OI.getDirection());
+    intake.setRotatorMotor(OI.getDirection());
   }
 
   @Override
   public void autonomousPeriodic()
   {
+    intake.configure(SmartDashboard.getNumber("kCos", 0),
+                     SmartDashboard.getNumber("P", 0));
     // Every 3 seconds toggle between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    hood.setHoodAngle(high ? 60 : 30);
+    intake.setIntakeAngle(high ? 60 : 30);
   }
 }

@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import java.util.List;
 

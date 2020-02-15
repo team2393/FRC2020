@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import java.util.function.Supplier;
 
@@ -19,21 +19,27 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.OI;
 
 /** Based on the robot code created by the python
  *  'frc-characterization'
- *  for a 'simple motor',  for example a flywheel.
+ *  for an 'arm'.
  */
-public class CharacterizationRobotMotor extends BasicRobot
+public class CharacterizationRobotArm extends BasicRobot
 {  
+  // The offset of encoder zero from horizontal, in degrees.
+  // It is CRUCIAL that this be set correctly, or the characterization will not
+  // work!
+  static private double OFFSET = 0;
+  static private double ENCODER_EDGES_PER_REV = 4906;
+  static private double encoderConstant = (1.0 / ENCODER_EDGES_PER_REV) * 360.;
+
+  
   // TODO Select motor, configure encoder
   final WPI_TalonFX motor = new WPI_TalonFX(1);
-
-  static private double ENCODER_EDGES_PER_REV = 4906;
-  static private double encoderConstant = (1.0 / ENCODER_EDGES_PER_REV);
-  
-  final Supplier<Double> encoderPosition = () -> motor.getSelectedSensorPosition() * encoderConstant;
+  final Supplier<Double> encoderPosition = () -> motor.getSelectedSensorPosition() * encoderConstant + OFFSET;
   final Supplier<Double> encoderRate = () -> motor.getSelectedSensorVelocity() * encoderConstant * 10.0;
+
 
   // frc-characterization commands robot via this entry
   final NetworkTableEntry autoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");
@@ -49,8 +55,9 @@ public class CharacterizationRobotMotor extends BasicRobot
     super.robotInit();
 
     motor.setNeutralMode(NeutralMode.Brake);
-
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    motor.setInverted(false);
+    motor.setSensorPhase(false);
 
     // Reset encoders
     motor.setSelectedSensorPosition(0);

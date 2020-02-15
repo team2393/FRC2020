@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge;
+package frc.robot.recharge.test;
 
 import java.util.function.Supplier;
 
@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
+import frc.robot.recharge.OI;
 import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Based on the robot code created by the python
