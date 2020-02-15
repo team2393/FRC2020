@@ -58,6 +58,8 @@ public class Enterprise extends BasicRobot
   private final Intake intake = null;
   private final Hood hood = null;
   
+  // TODO Control hood angle via smart dashboard value,
+  // then include that in the near/far settings?
   private final CommandBase near_settings = new ApplySettings("near.txt");
   private final CommandBase far_settings =  new ApplySettings("far.txt");
 
@@ -69,7 +71,7 @@ public class Enterprise extends BasicRobot
   // TODO IR detector to check if there are any balls in hopper?
   // TODO Connect control wheel commands to buttons
   // TODO Climb: Raise/lower telescope via motor that pulls/gives rope
-  // TODO Climb: Pull climbin rope _in_ (cannot feed out because of ratchet)
+  // TODO Climb: Pull climbing rope _in_ (cannot feed out because of ratchet)
 
   // private final ColorSensor color_sensor = new ColorSensor();
 

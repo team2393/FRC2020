@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Copyright (c) 2020 FIRST Team 2393. All Rights Reserved.                   */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -12,7 +12,6 @@ import frc.robot.recharge.OI;
 
 public class HoodAdjust extends CommandBase 
 {
-
   private final Hood hood;
 
   public HoodAdjust(Hood hood) 
@@ -21,15 +20,6 @@ public class HoodAdjust extends CommandBase
     addRequirements(hood);
   }
 
-  // Called when the command is initially scheduled.
-  // TODO maybe do something here 
-  //@Override
-  // public void initialize() 
-  // {
-
-  // }
-
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
@@ -37,7 +27,6 @@ public class HoodAdjust extends CommandBase
     hood.setAngleMotor(OI.getHoodSpeed());
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
