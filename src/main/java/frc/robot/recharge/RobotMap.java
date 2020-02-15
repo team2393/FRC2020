@@ -15,24 +15,16 @@ public class RobotMap
   // Power Distribution Panel
   //
   // 40 Amp connectors
-  // 1) Drive motor
-  // 2) Drive motor
-  // 3) Drive motor
-  // 4) Drive motor
-  // 5) Shooter motor
-  // 6) Lift-up climber  motor
-  // 7) Intake wheel motor
-  // 8) Intake raise/lower motor 1
+  // Drive motor                   Drive motor
+  // Drive motor                   Drive motor
+  // Hood                          Shooter
+  // Telescope                     Colorspin  
   //
   // Below 40 Amp ports
-  // 1) Horizontal conveyor motor
-  // 2) Vertical conveyor motor
-  // 3) Ejection angle hood motor
-  // 4) Control panel color wheel motor
-  // 5) Telescope raising motor
-  // 6) Camera LED ring
-  // 7) Intake raise/lower motor 2
-  // 8) 3rd prox sensor
+  // Intake Arm                    Intake Arm
+  // Intake Roller                 Conveyor Back
+  // Climb                         Conveyor Horizontal
+  // Color LED                     Camera LED
   //
   // PDP controller port -> RoboRIO
   // PDP PCM port -> PCM, compressor, solenoids
@@ -60,23 +52,32 @@ public class RobotMap
   public final static int RIGHT_MOTOR_MAIN = 2;
   public final static int LEFT_MOTOR_SLAVE = 3;
   public final static int RIGHT_MOTOR_SLAVE = 4;
-
+  
   // Shooter Motors
-  public final static int SHOOTER_MOTOR = 5;
-  // TODO  public final static int SHOOTER_MOTOR_SLAVE = ;
-  public final static int CONVEYOR_BOTTOM = 6;
-  public final static int CONVEYOR_TOP = 7;
-  public final static int INTAKE_SPINNER = 8;
+  public final static int HOOD_MOTOR = 5;
+  public final static int SHOOTER_MOTOR = 6;
+
+  //Telescope-Climb Motor
+  public final static int CLIMBER_MOTOR = 13;
+  public final static int TELESCOPE_MOTOR = 7;
+  
+  // Motor port used for wheel-of-fortune on control panel
+  public final static int CONTROL_PANEL_WHEEL = 8;
+  
+  //Intake Motors
   public final static int INTAKE_ROTATOR = 9;
   public final static int INTAKE_ROTATOR_SLAVE = 10;
-  public final static int ANGLE_MOTOR = 11;
+  public final static int INTAKE_SPINNER = 11;
+  
+  //Conveyor Motors
+  public final static int CONVEYOR_BOTTOM = 12;
+  public final static int CONVEYOR_TOP = 14;
+
 
   // Digital IO Sensors
   public final static int SHOOTER_SENSOR_TOP = 1;
   public final static int SHOOTER_SENSOR_MID = 2;
 
-  // Motor port used for wheel-of-fortune on control panel
-  public final static int CONTROL_PANEL_WHEEL = 9;
 
   // PWM port for LED Strip
   public static final int LED_STRIP = 8;
