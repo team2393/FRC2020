@@ -23,9 +23,14 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.drivetrain.TurnToHeading;
+import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.shooter.IntakeDown;
+import frc.robot.recharge.shooter.IntakeMid;
+import frc.robot.recharge.shooter.IntakeUp;
 
 /** Build auto commands from a file */
 public class AutonomousBuilder
@@ -35,7 +40,8 @@ public class AutonomousBuilder
    *  @throws Exception on error
    */
   public static List<SequentialCommandGroup> read(final File filename,
-                                                  final DriveTrain drive_train) throws Exception
+                                                  final DriveTrain drive_train,
+                                                  final Intake intake) throws Exception
   {
     final BufferedReader file = new BufferedReader(new FileReader(filename));
     final List<SequentialCommandGroup> autos = new ArrayList<>();
@@ -121,6 +127,23 @@ public class AutonomousBuilder
       {
         final double heading = scanner.nextDouble();
         current_auto.addCommands(new TurnToHeading(drive_train, heading));
+      }
+      else if(command.equals("Wait"))
+      {
+        final double time = scanner.nextDouble();
+        current_auto.addCommands(new WaitCommand(time));
+      }
+      else if(command.equals("IntakeUp"))
+      {
+       current_auto.addCommands(new IntakeUp(intake)); 
+      }
+      else if(command.equals("IntakeDown"))
+      {
+       current_auto.addCommands(new IntakeDown(intake)); 
+      }
+      else if(command.equals("IntakeMid"))
+      {
+       current_auto.addCommands(new IntakeMid(intake)); 
       }
       else
       {
