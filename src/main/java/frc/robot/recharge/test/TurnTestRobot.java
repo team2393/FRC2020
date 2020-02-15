@@ -33,6 +33,7 @@ public class TurnTestRobot extends BasicRobot
     SmartDashboard.setDefaultNumber("kV", 0.0055);
     SmartDashboard.setDefaultNumber("P", 0.025);
     SmartDashboard.setDefaultNumber("I", 0.03);
+    SmartDashboard.setDefaultNumber("D", 0.0);
   }
 
   @Override
@@ -64,9 +65,10 @@ public class TurnTestRobot extends BasicRobot
     final double kV = SmartDashboard.getNumber("kV", 0.0);
     final double P = SmartDashboard.getNumber("P", 0.0);
     final double I = SmartDashboard.getNumber("I", 0.0);
+    final double D = SmartDashboard.getNumber("D", 0.0);
 
-    turn1.configure(kV, P, I);
-    turn2.configure(kV, P, I);
+    turn1.configure(kV, P, I, D);
+    turn2.configure(kV, P, I, D);
 
     if (timer.hasPeriodPassed(5.0))
     {

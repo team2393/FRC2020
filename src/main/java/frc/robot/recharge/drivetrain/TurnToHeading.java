@@ -16,37 +16,54 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class TurnToHeading extends CommandBase 
 {
   private final DriveTrain drive_train;
-  private final ProfiledPIDController pid;
-  private double kV =  0;
+  // Limit profile to 90 deg/sec rotational speed
+  private final ProfiledPIDController pid =
+         new ProfiledPIDController(0.025, 0, 0.03,
+                                   new TrapezoidProfile.Constraints(90.0, 45.0));
+  private double kV =  0.0055;
   private final Timer timer = new Timer();
 
   public TurnToHeading(final DriveTrain drive_train, final double heading) 
   {
     this.drive_train = drive_train;
-    // Use heading PID settings, but limit profile to 90 deg/sec rotational speed
-    pid = new ProfiledPIDController(0, 0, 0,
-                                    new TrapezoidProfile.Constraints(90.0, 45.0));
     // Good enough: Within 1 degree, slower than 1 deg/sec
     pid.setTolerance(1.0, 1.0);
     pid.setGoal(heading);
     addRequirements(drive_train);
   }
 
+  /** @param degrees New desired heading */
   public void setDesiredHeading(final double degrees)
   {
     pid.reset(drive_train.getHeadingDegrees());
     pid.setGoal(degrees);
   }
 
-  public void configure(final double kV, final double P, final double I)
+  /** Change settings
+   * 
+   *  @param kV Feed forward gain, Volts per speed
+   *  @param P Proportional
+   *  @param I Integral
+   *  @param D Differential gain
+   */
+  public void configure(final double kV, final double P, final double I, final double D)
   {
     this.kV = kV;
     pid.setP(P);
+    boolean reset = false;
     if (I != pid.getI())
     {
-      pid.reset(drive_train.getHeadingDegrees());
       pid.setI(I);
+      reset = true;
     }
+    if (D != pid.getD())
+    {
+      pid.setD(D);
+      reset = true;
+    }
+    // I or D changes require reset
+    if (reset)
+      pid.reset(drive_train.getHeadingDegrees());
   }
 
   @Override
