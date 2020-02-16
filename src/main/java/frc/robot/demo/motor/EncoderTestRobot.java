@@ -34,11 +34,14 @@ public class EncoderTestRobot extends BasicRobot
     // The default, integrated encoder gives 2048 ticks per revolution
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    // The standalong CTRE mag encoder may support absolute,
+    // The standalong CTRE mag encoder supports absolute position,
     // but the built-in one always reports 0.
     // In any case, even if the absolute mode is supported,
     // for example with a TalonSRX controller connected to the mag encoder,
-    // looks like the absolute encoder only knows its exact position within one revolution.
+    // the absolute encoder only knows its exact position within one revolution.
+    // For details see   
+    // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java/MagEncoder_Absolute/src/main/java/frc/robot/Robot.java
+    //
     // It won't track the absolute position for multiple full revolutions
     // across reboots.
     // motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
