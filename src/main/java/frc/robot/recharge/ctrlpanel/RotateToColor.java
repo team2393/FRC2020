@@ -39,9 +39,13 @@ public class RotateToColor extends CommandBase
     times = 0;
     desired_color = getDesiredColor();
     if (desired_color == Segment_Color.Unkown)
+    {
       is_finished = true;
+      System.err.println("RotateToColor: Desired color is " + desired_color);
+    }
     else
     {
+      System.out.println("RotateToColor: Desired color is " + desired_color);
       wheel.fast();
       is_finished = false;
     }
