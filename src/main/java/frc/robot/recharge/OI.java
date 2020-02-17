@@ -21,10 +21,11 @@ public class OI
 {
   public static final XboxController joystick = new XboxController(0);
 
+  public static final JoystickButton extend_control_wheel = new JoystickButton(joystick, XboxController.Button.kBumperLeft.value);
+  public static final JoystickButton retract_control_wheel = new JoystickButton(joystick, XboxController.Button.kBumperRight.value);
   public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
   public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
   public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
-  
   
   public static final Trigger shift_low = new Trigger(() -> joystick.getTriggerAxis(Hand.kRight) > .5);
   public static final JoystickButton shift_high = new JoystickButton(joystick, XboxController.Button.kBumperRight.value);

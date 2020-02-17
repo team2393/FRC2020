@@ -82,6 +82,7 @@ public class RobotMap
   // PWM port for LED Strip
   public static final int LED_STRIP = 8;
 
-  // PCM port used to solenoids
+  // PCM ports used for solenoids
   public static final int GEAR_SOLENOID = 7;
+  public static final int CONTROL_PANEL_SOLENOID = 6;
 }

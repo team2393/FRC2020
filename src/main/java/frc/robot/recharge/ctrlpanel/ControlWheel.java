@@ -7,6 +7,7 @@
 package frc.robot.recharge.ctrlpanel;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
@@ -15,10 +16,15 @@ import frc.robot.recharge.RobotMap;
 public class ControlWheel extends SubsystemBase implements ColorDetector
 {
   private final Servo motor = new Servo(RobotMap.CONTROL_PANEL_WHEEL);
+  private final Solenoid extender = new Solenoid(RobotMap.CONTROL_PANEL_SOLENOID);
 
-  final ColorDetector 
-  detector = new ColorSensor();
-                                 // new ColorDetectingCamera();
+  private final ColorDetector detector = new ColorSensor();
+
+  /** @param extent Extend the control wheel assembly? */
+  public void extend(final boolean extend)
+  {
+    extender.set(extend);
+  }
 
   /** Turn the wheel
    *  @param speed Speed -1 .. 1

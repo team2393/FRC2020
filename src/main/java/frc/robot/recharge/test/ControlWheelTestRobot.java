@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
+import frc.robot.recharge.ctrlpanel.ExtendControlWheel;
 import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
+import frc.robot.recharge.ctrlpanel.RetractControlWheel;
 import frc.robot.recharge.ctrlpanel.RotateToColor;
 import frc.robot.recharge.ctrlpanel.RotateWheel;
 
@@ -24,6 +26,8 @@ public class ControlWheelTestRobot extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
+    OI.extend_control_wheel.whenPressed(new ExtendControlWheel(wheel));
+    OI.retract_control_wheel.whenPressed(new RetractControlWheel(wheel));
     OI.enable_wheel.whenPressed(new ManualWheelSpeed(wheel));
     OI.autorotate_wheel.whenPressed(new RotateWheel(wheel, 3));
     OI.rotate_to_color.whenPressed(new RotateToColor(wheel));
