@@ -8,10 +8,8 @@
 package frc.robot.recharge.shooter;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
@@ -28,9 +26,9 @@ public class Intake extends SubsystemBase
   // Motors
   private final WPI_VictorSPX spinner = new WPI_VictorSPX(RobotMap.INTAKE_SPINNER);
   
-  // Must have encoder (angle) and limit switch (home)
-  private final WPI_TalonFX rotator = new WPI_TalonFX(RobotMap.INTAKE_ROTATOR);
-  private final WPI_TalonFX rotator_salve = new WPI_TalonFX(RobotMap.INTAKE_ROTATOR_SLAVE);
+  // Main rotator has encoder (angle)
+  private final WPI_TalonSRX rotator = new WPI_TalonSRX(RobotMap.INTAKE_ROTATOR);
+  private final WPI_TalonSRX rotator_salve = new WPI_TalonSRX(RobotMap.INTAKE_ROTATOR_SLAVE);
 
   // FF & PID
   // https://trickingrockstothink.com/blog_posts/2019/10/26/controls_supp_arm.html
@@ -53,41 +51,31 @@ public class Intake extends SubsystemBase
     PowerCellAccelerator.commonSettings(rotator_salve, NeutralMode.Brake);
 
     // Encoder for position (angle)
-    rotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);    
-
-    // Limit switch to 'home'
-    rotator.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    rotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);    
 
     // TODO Enable when direction etc. have been determined
     // rotator_salve.setInverted(true);
     // rotator_salve.follow(rotator);
   }
     
-  /** Move intake up towards 'home' switch.
-   *  @return true if at 'home' position
-   */
-  public boolean homeIntake()
-  {
-    // TODO Find voltage for slow movement towards home switch
-    // TODO Is home switch the forward or reverse limit switch?
-    rotator.setVoltage(-0.1);
-    final boolean homed = rotator.isFwdLimitSwitchClosed() == 1;
-    if (homed)
-     rotator.setSelectedSensorPosition(0);
-    return homed;
-  }
-
   /** @return Rotator arm angle, degrees. 0 for horizontal, towards 90 for 'up' */
   public double getAngle()
-  {
-    // TODO Calibrate conversion from encoder counts to angle
-
+  {    
     // Try frc-characterization for 'arm'.
     // An angle of zero (degrees/radians) must be 'horizontal'
     // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
     // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
+    
+    // TODO Calibrate conversion from encoder counts to angle
 
-    return 1.0 * rotator.getSelectedSensorPosition();
+    // Encoder provides 4096 ticks per 360 degrees
+    final double encoder_angle = 360.0 / 4096;
+    // Gears & chain result in actual arm moving slower than the motor output 
+    final double gearing = 12.0 / 30.0;
+
+    // Offset to get 0 degree == horizontal
+    final double offset = 0.0;
+    return offset + rotator.getSelectedSensorPosition() * encoder_angle * gearing;
   }
 
   /** @param speed Directly set rotator motor speed for testing */

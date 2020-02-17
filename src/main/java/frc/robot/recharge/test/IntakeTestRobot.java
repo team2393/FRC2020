@@ -35,12 +35,8 @@ public class IntakeTestRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // Hold A button to 'home'
-    if (OI.joystick.getAButton())
-      intake.homeIntake();
-
-    // Hold B button to run spinner
-    intake.enableSpinner(OI.joystick.getBButton());
+    // Hold A button to run spinner
+    intake.enableSpinner(OI.joystick.getAButton());
 
     // 'left/right' axis to directly run rotator angle motor
     intake.setRotatorMotor(OI.getDirection());

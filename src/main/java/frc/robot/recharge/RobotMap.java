@@ -65,8 +65,8 @@ public class RobotMap
   public final static int CONTROL_PANEL_WHEEL = 8;
   
   //Intake Motors
-  public final static int INTAKE_ROTATOR = 9;
-  public final static int INTAKE_ROTATOR_SLAVE = 10;
+  public final static int INTAKE_ROTATOR_SLAVE = 9;
+  public final static int INTAKE_ROTATOR = 10;
   public final static int INTAKE_SPINNER = 11;
   
   //Conveyor Motors

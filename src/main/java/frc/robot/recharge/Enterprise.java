@@ -25,10 +25,7 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.Reset;
 import frc.robot.recharge.drivetrain.RotateToTarget;
-import frc.robot.recharge.shooter.HomeHood;
-import frc.robot.recharge.shooter.HomeIntake;
 import frc.robot.recharge.shooter.Hood;
-import frc.robot.recharge.shooter.HoodFar;
 import frc.robot.recharge.shooter.Intake;
 
 /**
