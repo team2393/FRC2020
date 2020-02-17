@@ -64,6 +64,14 @@ TurnToHeading -10
 TurnToHeading 10
 TurnToHeading -10
 
+#------------------------------------------------------
+Auto Adjust Hood
+HoodClose
+HoodFar
+HoodClose
+HoodFar
+HoodClose
+HoodFar
 
 # -----------------------------------------------------
 Auto 0.5 and Back 0.5
