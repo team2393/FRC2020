@@ -34,10 +34,6 @@ public class HoodTestRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // Hold A button to 'home'
-    if (OI.joystick.getAButton())
-      hood.homeHood();
-
     // 'left/right' axis to directly run rotator angle motor
     hood.setAngleMotor(OI.getDirection());
   }

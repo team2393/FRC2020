@@ -8,8 +8,6 @@
 package frc.robot.recharge.shooter;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -22,17 +20,19 @@ import frc.robot.recharge.RobotMap;
  * 
  *  Angle of rotatable hood/shield/deflector adjusts
  *  the angle at which balls are ejected.
+ * 
+ *  Angle is calibrated by resetting encoder at startup,
+ *  i.e. hood must be all the way 'down' when powered on.
  */
 public class Hood extends SubsystemBase
 {
-  // Motors
-  // Must have encoder (angle) and limit switch (end position)
+  // Motor, must have encoder (angle)
   private final WPI_TalonFX hood_motor = new WPI_TalonFX(RobotMap.HOOD_MOTOR);
   
   // PID
   private final PIDController pid = new PIDController(0, 0, 0);
 
-  /** Desired arm/rotator angle. Negative to disable PID */
+  /** Desired angle. Negative to disable PID */
   private double desired_angle = -1;
 
   public Hood()
@@ -40,33 +40,26 @@ public class Hood extends SubsystemBase
     PowerCellAccelerator.commonSettings(hood_motor, NeutralMode.Brake);
 
     // Encoder for position (angle)
-    hood_motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    hood_motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    // Limit switch at end position
-    hood_motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    // Reset to zero on startup
+    hood_motor.setSelectedSensorPosition(0);
   }
   
-  /** Move hood towards 'home' limit switch.
-   *  @return true if at 'home' position
-   */
-  public boolean homeHood()
-  {
-    // TODO Find voltage for slow movement towards home switch
-    // TODO Is home switch the forward or reverse limit switch?
-    hood_motor.setVoltage(-0.1);
-    final boolean homed = hood_motor.isFwdLimitSwitchClosed() == 1;
-    if (homed)
-     hood_motor.setSelectedSensorPosition(0);
-    return homed;
-  }
-
+  /** @return Hood angle, degrees. 0 for horizontal, towards 90 for 'up' */
   public double getHoodAngle()
   {
     // TODO Calibrate conversion from encoder counts to angle
     // TODO Try frc-characterization of 'arm'
+
+    // Falcon encoder sends 2048 ticks per revolution
+    final double encoder_angle = 360.0 / 2048.0;
+    // Gears & chain results in hood moving slower than motor
+    final double gearing = 18.0/42.0;
+
     // An angle of zero (degrees/radians) should be 'horizontal'
-    // in case we want to use ArmFeedforward
-    return 1.0 * hood_motor.getSelectedSensorPosition();
+    final double offset = 0.0;
+    return offset + hood_motor.getSelectedSensorPosition() * encoder_angle * gearing;
   }
 
   /** @param speed Directly set motor speed for testing */
