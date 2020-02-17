@@ -57,19 +57,19 @@ public class RobotMap
   public final static int HOOD_MOTOR = 5;
   public final static int SHOOTER_MOTOR = 6;
 
-  //Telescope-Climb Motor
+  // Telescope-Climb Motor
   public final static int CLIMBER_MOTOR = 13;
   public final static int TELESCOPE_MOTOR = 7;
   
   // Motor port used for wheel-of-fortune on control panel
   public final static int CONTROL_PANEL_WHEEL = 8;
   
-  //Intake Motors
+  // Intake Motors
   public final static int INTAKE_ROTATOR_SLAVE = 9;
   public final static int INTAKE_ROTATOR = 10;
   public final static int INTAKE_SPINNER = 11;
   
-  //Conveyor Motors
+  // Conveyor Motors
   public final static int CONVEYOR_BOTTOM = 12;
   public final static int CONVEYOR_TOP = 14;
 
