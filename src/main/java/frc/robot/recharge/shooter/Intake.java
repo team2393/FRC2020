@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,6 +41,9 @@ public class Intake extends SubsystemBase
 
   /** Desired arm/rotator angle. Negative to disable PID */
   private double desired_angle = -1;
+
+  /** Timer since last change of desired_angle */
+  private final Timer timer = new Timer();
 
   public Intake()
   {
@@ -100,6 +104,7 @@ public class Intake extends SubsystemBase
   public void setIntakeAngle(final double angle)
   {
     desired_angle = angle;
+    timer.start();
   }
   
   // TODO Command to lower intake and turn rollers on,
@@ -119,10 +124,17 @@ public class Intake extends SubsystemBase
 
     if (desired_angle >= 0)
     {
-      final double correction = angle_pid.calculate(getAngle(), desired_angle);
-      final double preset = angle_ff.calculate(getAngle(), 0);
-
-      rotator.setVoltage(preset + correction);
+      // TODO If the angle is low (put arm out), check with timer.
+      // After some time, simply turn motor off to let arm settle onto bumper.
+      // if (desired_angle < 10   &&  timer.get() > 5.0)
+      //   rotator.setVoltage(0);
+      // else
+      {
+        final double correction = angle_pid.calculate(getAngle(), desired_angle);
+        final double preset = angle_ff.calculate(getAngle(), 0);
+  
+        rotator.setVoltage(preset + correction);
+      }
     }
   }
 }
