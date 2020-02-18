@@ -47,6 +47,7 @@ public class RotateToTarget extends CommandBase
     // "Full screen" range would be +- 160
     SmartDashboard.setDefaultNumber("TargetRotThres", 150);
     SmartDashboard.setDefaultNumber("Desired Distance", -500);
+    SmartDashboard.setDefaultNumber("Desired Direction", 0);
   }
 
   @Override
@@ -85,13 +86,19 @@ public class RotateToTarget extends CommandBase
     final double direction = last.direction;
 
     double rotation;
-    // Don't react to target that's too far off to the side
-    if (Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 150))
+    // Don't react when direction is 0/unknown,
+    // or when detected target is too far off to the side
+    if (direction == 0.0  ||
+        Math.abs(direction) > SmartDashboard.getNumber("TargetRotThres", 150))
+    {
       rotation = 0.0;
+    }
     else
     {
+      final double direction_error = direction - SmartDashboard.getNumber("Desired Direction", 0);
+
       // Proportial gain controller with some minimum 
-      rotation = direction * SmartDashboard.getNumber("TargetRotGain", 0.02);
+      rotation = direction_error * SmartDashboard.getNumber("TargetRotGain", 0.02);
       if (direction > 1)
         rotation += 0.1;
       else if (direction < 1)
