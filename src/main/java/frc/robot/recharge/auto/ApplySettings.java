@@ -7,10 +7,14 @@
 
 package frc.robot.recharge.auto;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,32 +23,53 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 /** Apply settings from file to network tables */
 public class ApplySettings extends InstantCommand
 {
-  private final Map<String, Double> settings = new HashMap<>();
-  private final File file;
+  // Value could be Double, Boolean or String
+  private final Map<String, Object> settings = new HashMap<>();
 
   public ApplySettings(final String filename)
   {
-    file = new File(Filesystem.getDeployDirectory(), filename);
-    System.out.println("Settings file: " + filename);
+    final File file = new File(Filesystem.getDeployDirectory(), filename);
+    System.out.println("Settings file: " + file);
     try
     (
-      Scanner scanner = new Scanner(file);
+      final BufferedReader reader = new BufferedReader(new FileReader(file))
     )
     {
       // Read the settings from file
-      scanner.useDelimiter("[ \t\r\n]+");
-      while (scanner.hasNextLine())
+      for (String line = reader.readLine();
+           line != null;
+           line = reader.readLine())
       {
-        String setting = scanner.next();
+        // Remove leading and trailing spaces
+        line = line.trim();
         // Ignore comments
-        if (setting.startsWith("#"))
-          scanner.nextLine();
-        else
+        if (!line.isBlank()  &&  !line.startsWith("#"))
         {
-          double value = scanner.nextDouble();
-          // Remember for later when we execute()
-          settings.put(setting, value);
+          // Chop "Some Name      value"  into "Some Name" and "value"
+          final int sep = line.lastIndexOf(" ");
+          if (sep < 0)
+             continue;
+          final String setting = line.substring(0, sep).trim();
+          final String value = line.substring(sep+1).trim();
           System.out.println("Reading " + setting + " = " + value);
+
+          // Remember for later when we execute()
+          try
+          {
+            double number = Double.parseDouble(value);
+            settings.put(setting, number);
+          }
+          catch (NumberFormatException ex)
+          {
+            // Not a number...
+            // Check if it's a boolean
+            if (value.equalsIgnoreCase("true"))
+              settings.put(setting, Boolean.TRUE);
+            else if (value.equalsIgnoreCase("false"))
+              settings.put(setting, Boolean.FALSE);
+            else // fall back to String
+              settings.put(setting, value);
+          }
         }
       }
     }
@@ -68,8 +93,13 @@ public class ApplySettings extends InstantCommand
     System.out.println("Applying settings:");
     for (String setting : settings.keySet())
     {
-      double value = settings.get(setting);
-      SmartDashboard.putNumber(setting, value);
+      Object value = settings.get(setting);
+      if (value instanceof Double)
+        SmartDashboard.putNumber(setting, (Double) value);
+      else if (value instanceof Boolean)
+        SmartDashboard.putBoolean(setting, (Boolean) value);
+      else
+        SmartDashboard.putString(setting, (String) value);
       System.out.println("Setting " + setting + " to " + value);
     }
   }
