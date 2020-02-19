@@ -14,3 +14,4 @@ AreaMin 0
 AreaMax 7000
 FullnessMin  0
 FullnessMax 50
+Camera Target Mode  true

@@ -59,6 +59,7 @@ public class Enterprise extends BasicRobot
   // then include that in the near/far settings?
   private final CommandBase near_settings = new ApplySettings("near.txt");
   private final CommandBase far_settings =  new ApplySettings("far.txt");
+  private final CommandBase viewable_settings = new ApplySettings("viewable.txt");
 
   // TODO Tune drive PIDs with actual robot
   // TODO Command to drive left/right based on vision info (in network tables, set
@@ -114,6 +115,7 @@ public class Enterprise extends BasicRobot
     // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
     SmartDashboard.putData("Near Settings", near_settings);
     SmartDashboard.putData("Far Settings", far_settings);
+    SmartDashboard.putData("Viewable Settings", viewable_settings);
     
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
