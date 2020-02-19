@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.udp;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Thread that keeps reading from UDPClient, remembering the latest value */

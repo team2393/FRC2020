@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 
 /** Receive a number via UDP */
 public class UDPClient
@@ -48,7 +48,7 @@ public class UDPClient
     while (true)
     {
       final CameraData data = client.read();
-      System.out.println(data);
+      System.out.println(LocalDateTime.now() + " " + data);
     }  
   }
 }
