@@ -5,21 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge.test;
+package frc.robot.recharge.climb;
 
-import frc.robot.BasicRobot;
-import frc.robot.recharge.climb.Climber;
-import frc.robot.recharge.climb.ControlClimber;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Robot code for testing climb */
-public class ClimbTestRobot extends BasicRobot
+/** Turn conveyors etc. off */
+public class ClimbIdle extends CommandBase
 {
-  private final Climber climber = new Climber();
-  private final ControlClimber control_climber = new ControlClimber(climber);
+  private final Climber climber;
+
+  public ClimbIdle(final Climber climber)
+  {
+    this.climber= climber;
+    addRequirements(climber);
+  }
 
   @Override
-  public void teleopInit()
+  public void execute()
   {
-    control_climber.schedule();
+    // As long as they are not being used, set both motors to 0
+    climber.moveTelescope(0);
+    climber.pullUp(0);
   }
 }

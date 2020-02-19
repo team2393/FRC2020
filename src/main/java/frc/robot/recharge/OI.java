@@ -79,6 +79,26 @@ public class OI
     else
       return square(joystick.getX(Hand.kRight));
   }
+  
+  public static double getClimbSpeed()
+  {
+    if (joystick.getXButtonPressed())
+    return 0.5;
+    else
+    return 0;
+  }
+  
+  public static double getTelescopeSpeed()
+  {
+    int pov_position = joystick.getPOV();
+    if (pov_position == 0)
+      return 0.5;
+    else if (pov_position == 180)
+      return -0.5;
+    else
+      return 0;
+  }
+
 
   public static final boolean isToggleHeadingholdPressed()
   {

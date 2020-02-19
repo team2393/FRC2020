@@ -5,32 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.recharge.shooter;
+package frc.robot.recharge.climb;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.recharge.OI;
 
-/** Turn conveyors etc. off */
-public class Idle extends CommandBase
+/** Control Telescope and Climber motor */
+public class ControlClimber extends CommandBase
 {
-  private final PowerCellAccelerator pca;
+  private final Climber climber;
 
-  public Idle(final PowerCellAccelerator pca)
+  public ControlClimber(final Climber climber)
   {
-    this.pca = pca;
-    addRequirements(pca);
-  }
-
-  @Override
-  public void initialize()
-  {
-    pca.eject(false);
+    this.climber= climber;
+    addRequirements(climber);
   }
 
   @Override
   public void execute()
   {
-    // Looks like we're doing nothing, but need to actively set
-    // speeds to 0 for each period to avoid motor safety timeouts.
-    pca.moveConveyor(0);
+    climber.moveTelescope(OI.getTelescopeSpeed());
+    climber.pullUp(OI.getClimbSpeed());
   }
 }
