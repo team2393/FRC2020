@@ -121,8 +121,9 @@ public class DriveTrain extends SubsystemBase
     motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     motor.clearStickyFaults();
     motor.setNeutralMode(NeutralMode.Brake);
-    // Do not throttle the motors because that impacts the
-    // autonomous 'Ramsete' command performance
+    // Throttle the motors a little.
+    // Saw no difference in 'Ramsete' command performance,
+    // but should help lower battery drain
     motor.configOpenloopRamp(0.3);
   }
 
