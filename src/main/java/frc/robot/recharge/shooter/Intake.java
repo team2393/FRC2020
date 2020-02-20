@@ -131,7 +131,7 @@ public class Intake extends SubsystemBase
       // else
       {
         final double correction = angle_pid.calculate(getAngle(), desired_angle);
-        final double preset = angle_ff.calculate(getAngle(), 0);
+        final double preset = angle_ff.calculate(desired_angle, 0);
   
         rotator.setVoltage(preset + correction);
       }
