@@ -29,17 +29,34 @@ public class IntakeTestRobot extends BasicRobot
   public void robotPeriodic()
   {
     super.robotPeriodic();
+    // 2) Verify that angle indicates 0 (all out, 'horizontal')
+    //    to ~90 degrees (all up, 'vertical').
+    //    If not, fix getAngle()
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // Hold A button to run spinner
+    // 1) Hold A button to run spinner (already adjusted via SpinnerTestRobot)
     intake.enableSpinner(OI.joystick.getAButton());
 
-    // 'left/right' axis to directly run rotator angle motor
-    intake.setRotatorMotor(OI.getDirection());
+    if (! OI.joystick.getYButton())
+    {
+      // 3) Check that 'forward' moves intake 'up'
+      //    If not, invert motor and start over at step 1)
+      intake.setRotatorMotor(OI.getSpeed());
+    }
+    else
+    {
+      // 4) Manually move arm to ~45 degrees.
+      //    Hold Y button.
+      //    Adjust kCos to have motor hold it there.
+      //    Adjust P to have motor keep it there.
+      intake.configure(SmartDashboard.getNumber("kCos", 0),
+                       SmartDashboard.getNumber("P", 0));
+      intake.setIntakeAngle(45.0);
+    }
   }
 
   @Override
@@ -47,7 +64,7 @@ public class IntakeTestRobot extends BasicRobot
   {
     intake.configure(SmartDashboard.getNumber("kCos", 0),
                      SmartDashboard.getNumber("P", 0));
-    // Every 3 seconds toggle between two angles
+    // 5) Tweak settings to move between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
     intake.setIntakeAngle(high ? 60 : 30);
   }
