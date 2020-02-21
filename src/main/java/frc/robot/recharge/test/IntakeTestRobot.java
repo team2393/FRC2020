@@ -33,6 +33,9 @@ public class IntakeTestRobot extends BasicRobot
     //    to ~90 degrees (all up, 'vertical').
     //    If not, fix getAngle()
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
+
+    intake.configure(SmartDashboard.getNumber("kCos", 0),
+                     SmartDashboard.getNumber("P", 0));
   }
 
   @Override
@@ -53,8 +56,6 @@ public class IntakeTestRobot extends BasicRobot
       //    Hold Y button.
       //    Adjust kCos to have motor hold it there.
       //    Adjust P to have motor keep it there.
-      intake.configure(SmartDashboard.getNumber("kCos", 0),
-                       SmartDashboard.getNumber("P", 0));
       intake.setIntakeAngle(45.0);
     }
   }
@@ -62,10 +63,14 @@ public class IntakeTestRobot extends BasicRobot
   @Override
   public void autonomousPeriodic()
   {
-    intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0));
     // 5) Tweak settings to move between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
     intake.setIntakeAngle(high ? 60 : 30);
+
+    // 6) Enable the code in Intake.periodic() that
+    //    has motor settle at <10 degrees after 5 seconds.
+    //    Change the two test angles to 0 & 45,
+    //    period to 10 seconds,
+    //    see how it works.
   }
 }
