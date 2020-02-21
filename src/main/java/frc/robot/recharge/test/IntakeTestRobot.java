@@ -43,7 +43,7 @@ public class IntakeTestRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // 1) Hold A button to run spinner (already adjusted via SpinnerTestRobot)
+    // 1) Hold A button to run spinner
     intake.enableSpinner(OI.joystick.getAButton());
 
     if (! OI.joystick.getYButton())

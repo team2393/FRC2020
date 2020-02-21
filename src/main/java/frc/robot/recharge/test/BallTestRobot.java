@@ -23,19 +23,30 @@ public class BallTestRobot extends BasicRobot
   public void robotPeriodic()
   {
     super.robotPeriodic();
-    SmartDashboard.putBoolean("Ready", pca.powerCellReady());
-    SmartDashboard.putBoolean("Fired", pca.powerCellFired());
+    // 2) Check spinner RPM when A is held
     SmartDashboard.putNumber("Eject RPM", pca.getShooterRPM());
+
+    // 5) Attach prox sensor for "Ready" such that it detects
+    //    when ball has been moved up to just-before the ejector
+    SmartDashboard.putBoolean("Ready", pca.powerCellReady());
+    // 6) Attach prox sensor for "Fired" such that it detects
+    //    a ball in the ejector.
+    //    Check this first without running the ejector,
+    //    when with both A and Y held to see if a ball
+    //    is detected during ejection
+    SmartDashboard.putBoolean("Fired", pca.powerCellFired());
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // Run ejector when A is held (plus a little longer)
+    // 1) Test if ejector runs when A is held (plus a little longer)
+    //     (Spinner speed and direction already adjusted via SpinnerTestRobot)
     pca.eject(OI.joystick.getAButton());
 
-    // Hold Y to run conveyor at its 'normal' speed,
-    // or use forward/back to directly control speed
+    // 3) Check if 'forward' moves conveyors in correct direction
+    //    at suitable speed.
+    // 4) Hold Y to run run conveyor at its 'normal' speed
     if (OI.joystick.getYButton())
       pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
     else
