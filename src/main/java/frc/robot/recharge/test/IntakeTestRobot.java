@@ -23,32 +23,56 @@ public class IntakeTestRobot extends BasicRobot
     super.robotInit();
     SmartDashboard.setDefaultNumber("kCos", 0.0);
     SmartDashboard.setDefaultNumber("P", 0.0);
+    SmartDashboard.setDefaultNumber("D", 0.0);
   }
 
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
+    // 2) Verify that angle indicates 0 (all out, 'horizontal')
+    //    to ~90 degrees (all up, 'vertical').
+    //    If not, fix getAngle()
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
+
+    intake.configure(SmartDashboard.getNumber("kCos", 0),
+                     SmartDashboard.getNumber("P", 0),
+                     SmartDashboard.getNumber("D", 0));
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // Hold A button to run spinner
+    // 1) Hold A button to run spinner
     intake.enableSpinner(OI.joystick.getAButton());
 
-    // 'left/right' axis to directly run rotator angle motor
-    intake.setRotatorMotor(OI.getDirection());
+    if (! OI.joystick.getYButton())
+    {
+      // 3) Check that 'forward' moves intake 'up'
+      //    If not, invert motor and start over at step 1)
+      intake.setRotatorMotor(OI.getSpeed());
+    }
+    else
+    {
+      // 4) Manually move arm to ~45 degrees.
+      //    Hold Y button.
+      //    Adjust kCos to have motor hold it there.
+      //    Adjust P to have motor keep it there.
+      intake.setIntakeAngle(45.0);
+    }
   }
 
   @Override
   public void autonomousPeriodic()
   {
-    intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0));
-    // Every 3 seconds toggle between two angles
+    // 5) Tweak settings to move between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
     intake.setIntakeAngle(high ? 60 : 30);
+
+    // 6) Enable the code in Intake.periodic() that
+    //    has motor settle at <10 degrees after 5 seconds.
+    //    Change the two test angles to 0 & 45,
+    //    period to 10 seconds,
+    //    see how it works.
   }
 }

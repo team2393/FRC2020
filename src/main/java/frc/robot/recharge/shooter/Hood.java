@@ -42,6 +42,8 @@ public class Hood extends SubsystemBase
     // Encoder for position (angle)
     hood_motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
+    hood_motor.setInverted(false);
+
     // Reset to zero on startup
     hood_motor.setSelectedSensorPosition(0);
   }
@@ -58,6 +60,8 @@ public class Hood extends SubsystemBase
     final double gearing = 18.0/42.0;
 
     // An angle of zero (degrees/radians) should be 'horizontal'
+    //   90 deg = 'up'
+    // ~120 deg = start position, fully retracted
     final double offset = 0.0;
     return offset + hood_motor.getSelectedSensorPosition() * encoder_angle * gearing;
   }

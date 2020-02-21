@@ -92,19 +92,29 @@ public class Intake extends SubsystemBase
 
   /** @param kCos Cosine(angle) factor to compensate for gravity
    *  @param P Proportional gain for angle error
+   *  @param D Differential gain for angle error
    */
-  public void configure(final double kCos, final double P)
+  public void configure(final double kCos, final double P, final double D)
   {
-    angle_pid.reset();
-    angle_ff = new ArmFeedforward(0, kCos, 0);
-    angle_pid.setP(P);
+    if (angle_ff.kcos != kCos)
+      angle_ff = new ArmFeedforward(0, kCos, 0);
+    
+    if (P != angle_pid.getP()  ||  D != angle_pid.getD())
+    {
+      angle_pid.reset();
+      angle_pid.setP(P);
+      angle_pid.setD(D);
+    }
   }
 
   /** @param angle Set angle for PID-controlled angle rotator, negative to disable */
   public void setIntakeAngle(final double angle)
   {
-    desired_angle = angle;
-    timer.start();
+    if (desired_angle != angle)
+    {
+      desired_angle = angle;
+      timer.start();
+    }
   }
   
   // TODO Command to lower intake and turn rollers on,
@@ -131,7 +141,7 @@ public class Intake extends SubsystemBase
       // else
       {
         final double correction = angle_pid.calculate(getAngle(), desired_angle);
-        final double preset = angle_ff.calculate(desired_angle, 0);
+        final double preset = angle_ff.calculate(Math.toRadians(desired_angle), 0);
   
         rotator.setVoltage(preset + correction);
       }
