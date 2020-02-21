@@ -17,12 +17,13 @@ public class IntakeTestRobot extends BasicRobot
 {
   private final Intake intake = new Intake();
   
+  
   @Override
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.setDefaultNumber("kCos", 0.0);
-    SmartDashboard.setDefaultNumber("P", 0.0);
+    SmartDashboard.setDefaultNumber("kCos", 1.0);
+    SmartDashboard.setDefaultNumber("P", 0.3);
     SmartDashboard.setDefaultNumber("D", 0.0);
   }
 
@@ -36,7 +37,7 @@ public class IntakeTestRobot extends BasicRobot
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
 
     intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0),
+                     SmartDashboard.getNumber("P", 0.3),
                      SmartDashboard.getNumber("D", 0));
   }
 
@@ -66,8 +67,11 @@ public class IntakeTestRobot extends BasicRobot
   public void autonomousPeriodic()
   {
     // 5) Tweak settings to move between two angles
-    final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    intake.setIntakeAngle(high ? 60 : 30);
+    final boolean high = (System.currentTimeMillis() / 5000) % 2 == 0;
+    int setpoint = high ? 5 : 60;
+    intake.setIntakeAngle(setpoint);
+    SmartDashboard.putNumber("Target Angle", setpoint);
+      // intake.setIntakeAngle(45);
 
     // 6) Enable the code in Intake.periodic() that
     //    has motor settle at <10 degrees after 5 seconds.
