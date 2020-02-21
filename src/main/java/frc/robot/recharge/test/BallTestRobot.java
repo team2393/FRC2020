@@ -50,6 +50,9 @@ public class BallTestRobot extends BasicRobot
     if (OI.joystick.getYButton())
       pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
     else
+    {
       pca.moveConveyor(12*OI.getSpeed());
+      System.out.println("Voltage " + 12*OI.getSpeed());
+    }
   }
 }

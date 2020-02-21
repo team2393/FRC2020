@@ -10,6 +10,7 @@ package frc.robot.recharge.shooter;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -34,20 +35,21 @@ public class PowerCellAccelerator extends SubsystemBase
   private final Spinner shooter = new Spinner();
 
   // Must have encoder (speed)
-  private final WPI_TalonFX conveyor_top = new WPI_TalonFX(RobotMap.CONVEYOR_TOP);
-  private final WPI_TalonFX conveyor_bottom = new WPI_TalonFX(RobotMap.CONVEYOR_BOTTOM); 
+  private final WPI_VictorSPX conveyor_top = new WPI_VictorSPX(RobotMap.CONVEYOR_TOP);
+  private final WPI_VictorSPX conveyor_bottom = new WPI_VictorSPX(RobotMap.CONVEYOR_BOTTOM); 
   
   // Sensors
   private final DigitalInput shooter_sensor_mid = new DigitalInput(RobotMap.SHOOTER_SENSOR_MID);
   private final DigitalInput shooter_sensor_top = new DigitalInput(RobotMap.SHOOTER_SENSOR_TOP);
 
-  public final static double CONVEYOR_VOLTAGE = 5.0;
+  public final static double CONVEYOR_VOLTAGE = 11.0;
 
-  public final static double SHOOTER_RPM = 3000;
+  public final static double SHOOTER_RPM = 5000;
 
-  public final static double MINIMUM_SHOOTER_RPM = 5000;
+  public final static double MINIMUM_SHOOTER_RPM = 4500;
 
   private final Timer keep_running_timer = new Timer();
+  private boolean timer_on = false;
   private boolean shoot = false;
 
   public PowerCellAccelerator()
@@ -64,6 +66,7 @@ public class PowerCellAccelerator extends SubsystemBase
     motor.configFactoryDefault();
     motor.clearStickyFaults();
     motor.setNeutralMode(mode);
+    motor.setInverted(true);
   }
   
   public void moveConveyor(final double volt)
@@ -92,7 +95,11 @@ public class PowerCellAccelerator extends SubsystemBase
     // If shooter was on and is now requested off,
     // start timer so it keeps running for a little longer
     if (shoot == true  &&  on_off == false)
+    {
       keep_running_timer.start();
+      timer_on = true;
+    }
+    
     
     shoot = on_off;
   }
@@ -113,12 +120,15 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
-    // Run ejector if we're asked to do it,
+     // Run ejector if we're asked to do it,
     // or for 2 more seconds after the last shot
     // so it remains running through a series of shots
-    if (shoot || keep_running_timer.get() < 2.0)
+    if (shoot || (timer_on && keep_running_timer.get() < 2.0))
       shooter.setRPM(SHOOTER_RPM);
     else
+    {
       shooter.setVoltage(0);
+      timer_on = false;
+    }
   }
 }
