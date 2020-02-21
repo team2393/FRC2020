@@ -22,4 +22,7 @@ public class ClimbTestRobot extends BasicRobot
   {
     control_climber.schedule();
   }
+
+  // 1) Check if telescope moves up and down
+  // 2) Check if 'pulling up'is correct direction
 }
