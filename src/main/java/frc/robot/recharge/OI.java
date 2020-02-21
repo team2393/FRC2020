@@ -82,19 +82,19 @@ public class OI
   
   public static double getClimbSpeed()
   {
-    if (joystick.getXButtonPressed())
-    return 0.5;
+    if (joystick.getXButton())
+      return 0.5;
     else
-    return 0;
+      return 0;
   }
   
   public static double getTelescopeSpeed()
   {
     int pov_position = joystick.getPOV();
     if (pov_position == 0)
-      return 0.5;
+      return -0.25;
     else if (pov_position == 180)
-      return -0.5;
+      return 0.25;
     else
       return 0;
   }
