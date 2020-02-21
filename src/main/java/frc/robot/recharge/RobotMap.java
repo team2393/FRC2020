@@ -48,10 +48,10 @@ public class RobotMap
 
   // Talon CAN IDs =================================
   // Drivetrain motors
-  public final static int LEFT_MOTOR_MAIN = 1;
-  public final static int RIGHT_MOTOR_MAIN = 2;
-  public final static int LEFT_MOTOR_SLAVE = 3;
-  public final static int RIGHT_MOTOR_SLAVE = 4;
+  public final static int LEFT_MOTOR_MAIN = 4;
+  public final static int RIGHT_MOTOR_MAIN = 3;
+  public final static int LEFT_MOTOR_SLAVE = 2;
+  public final static int RIGHT_MOTOR_SLAVE = 1;  
   
   // Shooter Motors
   public final static int HOOD_MOTOR = 5;
