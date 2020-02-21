@@ -23,6 +23,7 @@ public class IntakeTestRobot extends BasicRobot
     super.robotInit();
     SmartDashboard.setDefaultNumber("kCos", 0.0);
     SmartDashboard.setDefaultNumber("P", 0.0);
+    SmartDashboard.setDefaultNumber("D", 0.0);
   }
 
   @Override
@@ -35,7 +36,8 @@ public class IntakeTestRobot extends BasicRobot
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
 
     intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0));
+                     SmartDashboard.getNumber("P", 0),
+                     SmartDashboard.getNumber("D", 0));
   }
 
   @Override

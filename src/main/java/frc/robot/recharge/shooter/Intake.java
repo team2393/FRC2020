@@ -92,16 +92,18 @@ public class Intake extends SubsystemBase
 
   /** @param kCos Cosine(angle) factor to compensate for gravity
    *  @param P Proportional gain for angle error
+   *  @param D Differential gain for angle error
    */
-  public void configure(final double kCos, final double P)
+  public void configure(final double kCos, final double P, final double D)
   {
     if (angle_ff.kcos != kCos)
       angle_ff = new ArmFeedforward(0, kCos, 0);
     
-    if (P != angle_pid.getP())
+    if (P != angle_pid.getP()  ||  D != angle_pid.getD())
     {
       angle_pid.reset();
       angle_pid.setP(P);
+      angle_pid.setD(D);
     }
   }
 
