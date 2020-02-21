@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
 
 /** Power cell handling: Ejector hood
@@ -30,7 +31,7 @@ public class Hood extends SubsystemBase
   private final WPI_TalonFX hood_motor = new WPI_TalonFX(RobotMap.HOOD_MOTOR);
   
   // PID
-  private final PIDController pid = new PIDController(0, 0, 0);
+  private final PIDController pid = new PIDController(0.35, 0, 0.001);
 
   /** Desired angle. Negative to disable PID */
   private double desired_angle = -1;
@@ -38,6 +39,7 @@ public class Hood extends SubsystemBase
   public Hood()
   {
     PowerCellAccelerator.commonSettings(hood_motor, NeutralMode.Brake);
+    hood_motor.configOpenloopRamp(0.25);
 
     // Encoder for position (angle)
     hood_motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -54,15 +56,15 @@ public class Hood extends SubsystemBase
     // TODO Calibrate conversion from encoder counts to angle
     // TODO Try frc-characterization of 'arm'
 
-    // Falcon encoder sends 2048 ticks per revolution
-    final double encoder_angle = 360.0 / 2048.0;
+    // Falcon encoder sends 2048 ticks per revolution, plus 1:10 gear box
+    final double encoder_angle = 36.0 / 2048.0;
     // Gears & chain results in hood moving slower than motor
     final double gearing = 18.0/42.0;
 
     // An angle of zero (degrees/radians) should be 'horizontal'
     //   90 deg = 'up'
     // ~120 deg = start position, fully retracted
-    final double offset = 0.0;
+    final double offset = 150.0;
     return offset + hood_motor.getSelectedSensorPosition() * encoder_angle * gearing;
   }
 
@@ -93,7 +95,7 @@ public class Hood extends SubsystemBase
     if (desired_angle >= 0)
     {
       final double correction = pid.calculate(getHoodAngle(), desired_angle);
-      hood_motor.setVoltage(correction);
+      hood_motor.setVoltage(MathUtil.clamp(correction, -2, 2));
     }
   }
 }

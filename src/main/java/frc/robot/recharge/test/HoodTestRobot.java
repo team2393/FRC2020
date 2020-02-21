@@ -31,7 +31,7 @@ public class HoodTestRobot extends BasicRobot
     // 1) Move hood manually,check angle:
     //      0 degree = horizontal, out (more than ever used in practice)
     //     90 degree = vertical, up
-    //   ~120 degree = Retracted all the way, "start" position
+    //   ~150 degree = Retracted all the way, "start" position
     SmartDashboard.putNumber("Hood Angle", hood.getHoodAngle());   
   }
 
