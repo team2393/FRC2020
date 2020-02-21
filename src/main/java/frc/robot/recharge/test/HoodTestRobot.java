@@ -28,19 +28,28 @@ public class HoodTestRobot extends BasicRobot
   public void robotPeriodic()
   {
     super.robotPeriodic();
+    // 1) Move hood manually,check angle:
+    //      0 degree = horizontal, out (more than ever used in practice)
+    //     90 degree = vertical, up
+    //   ~120 degree = Retracted all the way, "start" position
     SmartDashboard.putNumber("Hood Angle", hood.getHoodAngle());   
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // 'left/right' axis to directly run rotator angle motor
-    hood.setAngleMotor(OI.getDirection());
+    // 2) 'forward' should move 'in',
+    //    from fully out/horizontal towards the 'start' position.
+    //    If not, motor.setInverted(true) and start over at step 1
+    hood.setAngleMotor(OI.getSpeed());
   }
 
   @Override
   public void autonomousPeriodic()
   {
+    // 3) Tune P, then D
+    //    First with angles like 30, 60 which have the hood 'outside'.
+    //    Then with angles like 110, 90 which are more realistic match angles.
     // Every 3 seconds toggle between two angles
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
     hood.setHoodAngle(high ? 60 : 30);
