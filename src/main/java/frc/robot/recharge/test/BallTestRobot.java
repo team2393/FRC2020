@@ -65,7 +65,7 @@ public class BallTestRobot extends BasicRobot
   @Override
   public void autonomousInit() 
   {
-      load.schedule();
+    load.schedule();
   }
 
   @Override

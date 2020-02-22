@@ -34,7 +34,6 @@ public class Eject extends CommandBase
     // Turn on the ejector
     pca.eject(true);
     state = State.SPINUP;
-    System.out.println(state);
   }
 
   @Override
@@ -45,20 +44,19 @@ public class Eject extends CommandBase
     {
       state = State.EJECT;
       timer.start();
-      System.out.println(state);
     }
     
     // Are we shooting? If so, move a ball out
     if (state == State.EJECT)
       pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-    // else
-    // {
-    //   // Prepare for next shot by loading another ball
-    //   if (pca.powerCellReady())
-    //     pca.moveConveyor(0);
-    //   else
-    //     pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-    // }
+    else
+    {
+      // Prepare for next shot by loading another ball
+      if (pca.powerCellReady())
+        pca.moveConveyor(0);
+      else
+        pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    }
 
     // If there is a separate sensor at end of horizontal conveyor,
     // keep horiz. belt moving until ball is in there.
