@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,7 +33,6 @@ public class Intake extends SubsystemBase
 
   // FF & PID
   // https://trickingrockstothink.com/blog_posts/2019/10/26/controls_supp_arm.html
-  // TODO Tune, then turn into ProfiledPIDController?
   private ArmFeedforward angle_ff = new ArmFeedforward(0.0, 1.0, 0.0);
   private final PIDController angle_pid = new PIDController(0.3, 0, 0);
 
@@ -55,7 +53,7 @@ public class Intake extends SubsystemBase
     // Encoder for position (angle)
     rotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);    
 
-    // TODO Enable when direction etc. have been determined
+    // Second motor follows the one that we control
     rotator_slave.setInverted(false);
     rotator_slave.follow(rotator);
   }

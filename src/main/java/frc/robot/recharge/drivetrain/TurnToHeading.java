@@ -91,7 +91,7 @@ public class TurnToHeading extends CommandBase
   @Override
   public boolean isFinished()
   {
-    if (timer.get() > 5.0)
+    if (timer.hasElapsed(5.0))
     {
       System.err.println("TurnToHeading gives up (timeout)");
       return true;

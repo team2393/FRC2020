@@ -35,13 +35,12 @@ public class Rumble extends CommandBase
   @Override
   public boolean isFinished()
   {
-    return timer.hasPeriodPassed(time);
+    return timer.hasElapsed(time);
   }
 
   @Override
   public void end(boolean interrupted)
   {
-    timer.stop();
     OI.joystick.setRumble(RumbleType.kLeftRumble, 0);
     OI.joystick.setRumble(RumbleType.kRightRumble, 0);
   }

@@ -117,10 +117,10 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
-     // Run ejector if we're asked to do it,
+    // Run ejector if we're asked to do it,
     // or for 2 more seconds after the last shot
     // so it remains running through a series of shots
-    if (shoot || (timer_on && keep_running_timer.get() < 2.0))
+    if (shoot  ||  (timer_on && !keep_running_timer.hasElapsed(2.0)))
       shooter.setRPM(SHOOTER_RPM);
     else
     {
