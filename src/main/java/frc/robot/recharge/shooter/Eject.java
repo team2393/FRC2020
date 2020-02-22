@@ -10,7 +10,11 @@ package frc.robot.recharge.shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Eject one power cell */
+/** Eject one power cell.
+ *  Since ejector keeps running a little longer,
+ *  rescheduling this command right away keeps
+ *  the cells flowing.
+ */
 public class Eject extends CommandBase
 {
   private final PowerCellAccelerator pca;
@@ -39,27 +43,29 @@ public class Eject extends CommandBase
   @Override
   public void execute()
   {
-    // Once it's fast enough, SHOOT!!
-    if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
+    if (state == State.SPINUP)
     {
-      state = State.EJECT;
-      timer.start();
-    }
-    
-    // Are we shooting? If so, move a ball out
-    if (state == State.EJECT)
-      pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-    else
-    {
-      // Prepare for next shot by loading another ball
+      // Prepare for shot by loading a ball
       if (pca.powerCellReady())
         pca.moveConveyor(0);
       else
         pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+      
+      // Once it's fast enough, SHOOT!!
+      if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
+      {
+        state = State.EJECT;
+        timer.start();
+      }
     }
 
+    // Are we shooting? If so, move a ball out
+    if (state == State.EJECT)   
+      pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+
     // If there is a separate sensor at end of horizontal conveyor,
-    // keep horiz. belt moving until ball is in there.
+    // keep horiz. belt moving until ball is in there,
+    // regardless of what the vertical conveyor and ejector are doing.
     // if (pca.powerCellAtEndOfHorizontal())
     //   pca.moveHorizontalConveyor(0);
     // else
@@ -70,7 +76,8 @@ public class Eject extends CommandBase
   public boolean isFinished()
   {
     // Stop when a ball is seen coming out, or we've tried for e few seconds
-    return pca.powerCellFired(); //   ||  timer.get() > 2.0;
+    return state == State.EJECT &&
+           (pca.powerCellFired()  ||  timer.get() > 2.0);
   }
 
   @Override

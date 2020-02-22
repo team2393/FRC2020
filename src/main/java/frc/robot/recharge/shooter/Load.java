@@ -9,7 +9,10 @@ package frc.robot.recharge.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** Load power cell(s) */
+/** Load power cell(s),
+ *  Finishes when one power cell is 'ready',
+ *  but can restarted.
+ */
 public class Load extends CommandBase
 {
   private final PowerCellAccelerator pca;
@@ -49,7 +52,11 @@ public class Load extends CommandBase
     }
   }
 
-  // isFinished(): false, keep turning on/off based on ball state
+  @Override
+  public boolean isFinished()
+  {
+    return pca.powerCellReady();
+  }
 
   @Override
   public void end(final boolean interrupted)

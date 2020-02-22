@@ -9,6 +9,7 @@ package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
 import frc.robot.recharge.shooter.Eject;
@@ -59,19 +60,15 @@ public class BallTestRobot extends BasicRobot
     }
   }
 
-  private final CommandBase load = new Load(pca);
-  private final CommandBase eject = new Eject(pca);
-
+  
   @Override
   public void autonomousInit() 
   {
-    load.schedule();
-  }
-
-  @Override
-  public void autonomousPeriodic()
-  {
-    if (pca.powerCellReady())
-      eject.schedule();
+    CommandBase sequence = new SequentialCommandGroup(
+                                new Load(pca),
+                                new Eject(pca),
+                                new Eject(pca),
+                                new Eject(pca));
+    sequence.schedule();
   }
 }

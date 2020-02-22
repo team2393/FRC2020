@@ -25,8 +25,10 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.Reset;
 import frc.robot.recharge.drivetrain.RotateToTarget;
+import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -51,25 +53,23 @@ public class Enterprise extends BasicRobot
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
   private final Rumble rumble = new Rumble();
+
   // TODO make intake/hood work
   private final Intake intake = null;
-  private final Hood hood = null;
-  
   // TODO Control hood angle via smart dashboard value,
   // then include that in the near/far settings?
+  private final Hood hood = null;
+
+  private final PowerCellAccelerator pca = new PowerCellAccelerator();
+  private final CommandBase eject = new Eject(pca);
+
   private final CommandBase near_settings = new ApplySettings("near.txt");
   private final CommandBase far_settings =  new ApplySettings("far.txt");
   private final CommandBase viewable_settings = new ApplySettings("viewable.txt");
 
   // TODO Tune drive PIDs with actual robot
-  // TODO Command to drive left/right based on vision info (in network tables, set
-  // by pi)
-  // TODO Control motor w/ encoder for lowering/raising intake
-  // TODO Control motors for intake, conveyor belt, shooter
   // TODO IR detector to check if there are any balls in hopper?
   // TODO Connect control wheel commands to buttons
-  // TODO Climb: Raise/lower telescope via motor that pulls/gives rope
-  // TODO Climb: Pull climbing rope _in_ (cannot feed out because of ratchet)
 
   // private final ColorSensor color_sensor = new ColorSensor();
 
@@ -138,23 +138,10 @@ public class Enterprise extends BasicRobot
     near_settings.schedule();
   }
 
-  private void homeWhatNeedsHoming()
-  {
-    if (! homed)
-    {
-      // TODO Home the various subsystems as they become available
-      // new HomeHood(hood).schedule();
-      // new HomeIntake(intake).schedule();
-      homed = true;
-    }
-  }
-
   @Override
   public void teleopInit()
   {
     super.teleopInit();
-
-    homeWhatNeedsHoming();
 
     auto_shift.schedule();
     drive_mode.schedule();
@@ -184,6 +171,10 @@ public class Enterprise extends BasicRobot
         drive_mode = heading_hold;
       }
       drive_mode.schedule();
+
+      // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
+      if (OI.isShootHeld())
+        eject.schedule();
     }
 
     // Align on target?
@@ -204,8 +195,6 @@ public class Enterprise extends BasicRobot
   public void autonomousInit()
   {
     super.autonomousInit();
-
-    homeWhatNeedsHoming();
 
     // Run the selected command.
     drive_train.reset();

@@ -9,7 +9,6 @@ package frc.robot.recharge.shooter;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,7 +18,7 @@ import frc.robot.recharge.RobotMap;
 
 /** Power cell handling: Conveyor and ejector
  * 
- *  'Fuel cell' balls from from hopper onto horizontal conveyor belt.
+ *  'Fuel cell' balls drop from hopper onto horizontal conveyor belt.
  *  Horizontal belt moves them to vertical conveyor,
  *  which feeds them to ejector/shooter.
  * 
@@ -30,11 +29,7 @@ import frc.robot.recharge.RobotMap;
 public class PowerCellAccelerator extends SubsystemBase 
 {
   // Motors
-  // TODO figure out what type of motor controllers will actually be used -- Tony was leaning towards falcons for most
-
   private final Spinner shooter = new Spinner();
-
-  // Must have encoder (speed)
   private final WPI_VictorSPX conveyor_top = new WPI_VictorSPX(RobotMap.CONVEYOR_TOP);
   private final WPI_VictorSPX conveyor_bottom = new WPI_VictorSPX(RobotMap.CONVEYOR_BOTTOM); 
   
@@ -42,15 +37,21 @@ public class PowerCellAccelerator extends SubsystemBase
   private final DigitalInput shooter_sensor_ready = new DigitalInput(RobotMap.SHOOTER_SENSOR_READY);
   private final DigitalInput shooter_sensor_eject = new DigitalInput(RobotMap.SHOOTER_SENSOR_EJECT);
 
+  /** Normal voltage for moving conveyors */
   public final static double CONVEYOR_VOLTAGE = 11.0;
 
+  /** Ejector spinner setpoint */
   public final static double SHOOTER_RPM = 5000;
 
+  /** Minimum speed for shooting a ball */
   public final static double MINIMUM_SHOOTER_RPM = 4500;
 
-  private final Timer keep_running_timer = new Timer();
-  private boolean timer_on = false;
+  /** Should we shoot? */
   private boolean shoot = false;
+  /** Timer started when 'shoot' clears to keep the ejector running */
+  private final Timer keep_running_timer = new Timer();
+  /** Is the timer running? */
+  private boolean timer_on = false;
 
   public PowerCellAccelerator()
   {
@@ -71,7 +72,6 @@ public class PowerCellAccelerator extends SubsystemBase
   
   public void moveConveyor(final double volt)
   {
-    // Should the conveyor have the ability to move backwards or should it only be "on" or "off"
     // Conveyors should probably be moved seperately
     conveyor_bottom.setVoltage(volt);
     conveyor_top.setVoltage(volt);
@@ -99,8 +99,7 @@ public class PowerCellAccelerator extends SubsystemBase
       keep_running_timer.start();
       timer_on = true;
     }
-    
-    
+        
     shoot = on_off;
   }
 
@@ -114,8 +113,6 @@ public class PowerCellAccelerator extends SubsystemBase
   {
     return !shooter_sensor_eject.get();
   }
-
-  // TODO Maybe have a way to report the amount of balls in storage depending on sensor layout
 
   @Override
   public void periodic()
