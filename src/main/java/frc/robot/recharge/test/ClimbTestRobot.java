@@ -7,8 +7,6 @@
 
 package frc.robot.recharge.test;
 
-import java.time.Period;
-
 import frc.robot.BasicRobot;
 import frc.robot.recharge.climb.Climber;
 import frc.robot.recharge.climb.ControlClimber;
