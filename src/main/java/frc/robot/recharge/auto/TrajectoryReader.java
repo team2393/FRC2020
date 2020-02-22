@@ -66,29 +66,30 @@ public class TrajectoryReader
       if (line.isBlank()  ||  line.startsWith("#"))
         continue;
   
-      Scanner scanner = new Scanner(line);
-      final String command = scanner.next();
-      if (command.equals("Point"))
-      { // Point X Y (absolute)
-        pos = new Translation2d(scanner.nextDouble(),
-                                scanner.nextDouble());
-        waypoints.add(pos);                     
+      try (Scanner scanner = new Scanner(line))
+      {
+        final String command = scanner.next();
+        if (command.equals("Point"))
+        { // Point X Y (absolute)
+          pos = new Translation2d(scanner.nextDouble(),
+                                  scanner.nextDouble());
+          waypoints.add(pos);                     
+        }
+        else if (command.equals("RPoint"))
+        { // RelativePoint X Y
+          pos = pos.plus(new Translation2d(scanner.nextDouble(),
+                                           scanner.nextDouble()));
+          waypoints.add(pos);                     
+        }
+        else if (command.equals("End"))
+        { // End X Y Heading
+          end = new Pose2d(scanner.nextDouble(),
+                           scanner.nextDouble(),
+                           Rotation2d.fromDegrees(scanner.nextDouble()));
+        }
+        else
+          throw new Exception("Unknown trajectory command:" + line);
       }
-      else if (command.equals("RPoint"))
-      { // RelativePoint X Y
-        pos = pos.plus(new Translation2d(scanner.nextDouble(),
-                                         scanner.nextDouble()));
-        waypoints.add(pos);                     
-      }
-      else if (command.equals("End"))
-      { // End X Y Heading
-        end = new Pose2d(scanner.nextDouble(),
-                         scanner.nextDouble(),
-                         Rotation2d.fromDegrees(scanner.nextDouble()));
-      }
-      else
-        throw new Exception("Unknown trajectory command:" + line);
-      scanner.close();
     }
 
     if (end == null)
@@ -125,20 +126,21 @@ public class TrajectoryReader
       if (line.isBlank()  ||  line.startsWith("#"))
         continue;
   
-      Scanner scanner = new Scanner(line);
-      final String command = scanner.next();
-      if (command.equals("Pose")  ||  command.equals("End"))
-      { // Point X Y (absolute)
-        final Pose2d pose = new Pose2d(scanner.nextDouble(),
-                                       scanner.nextDouble(),
-                                       Rotation2d.fromDegrees(scanner.nextDouble()));
-        points.add(pose);
-        if (command.equals("End"))
-          end = pose;
+      try (Scanner scanner = new Scanner(line))
+      {
+        final String command = scanner.next();
+        if (command.equals("Pose")  ||  command.equals("End"))
+        { // Point X Y (absolute)
+          final Pose2d pose = new Pose2d(scanner.nextDouble(),
+                                        scanner.nextDouble(),
+                                        Rotation2d.fromDegrees(scanner.nextDouble()));
+          points.add(pose);
+          if (command.equals("End"))
+            end = pose;
+        }
+        else
+          throw new Exception("Unknown trajectory command:" + line);
       }
-      else
-        throw new Exception("Unknown trajectory command:" + line);
-      scanner.close();
     }
 
     if (end == null)
