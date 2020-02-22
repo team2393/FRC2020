@@ -146,8 +146,7 @@ public class Enterprise extends BasicRobot
   public void teleopPeriodic()
   {
     // TODO Indicate direction to target on LED
-    // final double direction = OI.getDirection();
-    final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
+    // final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     // TODO Filter direction sent by Raspberry/camera via
     // https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/median-filter.html
     // led_strip.indicateDirection(direction);
