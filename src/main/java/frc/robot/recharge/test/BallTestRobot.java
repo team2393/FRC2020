@@ -24,6 +24,14 @@ public class BallTestRobot extends BasicRobot
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
 
   @Override
+  public void robotInit()
+  {
+    super.robotInit();
+    // TODO Lower RPM for tests to be gentle on ears and equipment
+    // PowerCellAccelerator.SHOOTER_RPM = 2000; 
+  }
+
+  @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
@@ -60,15 +68,14 @@ public class BallTestRobot extends BasicRobot
     }
   }
 
-  
   @Override
   public void autonomousInit() 
   {
-    CommandBase sequence = new SequentialCommandGroup(
-                                new Load(pca),
-                                new Eject(pca),
-                                new Eject(pca),
-                                new Eject(pca));
+    SequentialCommandGroup sequence = new SequentialCommandGroup();
+    sequence.addCommands(new Load(pca));
+    sequence.addCommands(new Eject(pca));
+    sequence.addCommands(new Eject(pca));
+    sequence.addCommands(new Eject(pca));
     sequence.schedule();
   }
 }

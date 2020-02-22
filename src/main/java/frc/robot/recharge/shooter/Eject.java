@@ -20,8 +20,10 @@ public class Eject extends CommandBase
   private final PowerCellAccelerator pca;
   private enum State
   {
-    SPINUP,
-    EJECT
+    SPINUP,    // Spinning up, waiting for correct RPM
+    EJECT,     // Trying feed a ball to ejector
+    SUCCESS,   // Saw a ball shoot out
+    TIMEOUT    // Give up, no ball seen flying out
   };
   private State state;
   private final Timer timer = new Timer();
@@ -60,8 +62,17 @@ public class Eject extends CommandBase
     }
 
     // Are we shooting? If so, move a ball out
-    if (state == State.EJECT)   
+    if (state == State.EJECT)
+    {
       pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+
+      // Ideally, we soon detect a ball flying out
+      if (pca.powerCellFired())
+        state = State.SUCCESS;
+      // In reality, we might not, so stop after a few seconds
+      else if (timer.hasElapsed(2.0))
+        state = State.TIMEOUT;
+    }
 
     // If there is a separate sensor at end of horizontal conveyor,
     // keep horiz. belt moving until ball is in there,
@@ -75,15 +86,19 @@ public class Eject extends CommandBase
   @Override
   public boolean isFinished()
   {
-    // Stop when a ball is seen coming out, or we've tried for e few seconds
-    return state == State.EJECT &&
-           (pca.powerCellFired()  ||  timer.get() > 2.0);
+    return state == State.SUCCESS  ||  state == State.TIMEOUT;
   }
 
   @Override
   public void end(final boolean interrupted)
   {
+    // Turn ejector off
+    // (but it keeps running for a while in case we want to shoot again, soon)
     pca.eject(false);
+    
+    // Turn conveyor off to prevent another ball from shooting out.
+    // To shoot another ball, run this command again,
+    // so it'll check the RPM, then feed another ball. 
     pca.moveConveyor(0);
     //   pca.moveHorizontalConveyor(0);
   }

@@ -41,7 +41,7 @@ public class PowerCellAccelerator extends SubsystemBase
   public final static double CONVEYOR_VOLTAGE = 11.0;
 
   /** Ejector spinner setpoint */
-  public final static double SHOOTER_RPM = 5000;
+  public static double SHOOTER_RPM = 5000;
 
   /** Minimum speed for shooting a ball as fraction of SHOOTER_RPM */
   public final static double MINIMUM_RPM_FRACTION = 0.9;
