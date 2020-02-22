@@ -18,6 +18,14 @@ public class Climber extends SubsystemBase
 {
   private final WPI_TalonFX telescope = new WPI_TalonFX(RobotMap.TELESCOPE_MOTOR);
   private final WPI_TalonSRX climb = new WPI_TalonSRX(RobotMap.CLIMBER_MOTOR);
+  public static final int max_height = 151704;
+
+  public Climber()
+  {
+    telescope.configFactoryDefault();
+    climb.configFactoryDefault();
+    telescope.setSelectedSensorPosition(0);
+  }
 
   /** Move telescoping arm up/down
    *  @param direction 1: Full speed up, -1: Full speed down
@@ -37,5 +45,10 @@ public class Climber extends SubsystemBase
     else
       climb.set(0);
     // Ratched prevents us from going back down.
+  }
+
+  public double getHeight()
+  {
+    return -telescope.getSelectedSensorPosition();
   }
 }

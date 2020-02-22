@@ -24,7 +24,12 @@ public class ControlClimber extends CommandBase
   @Override
   public void execute()
   {
-    climber.moveTelescope(OI.getTelescopeSpeed());
+    double speed = OI.getTelescopeSpeed();
+    if (speed < 0 && climber.getHeight() >= Climber.max_height)
+      climber.moveTelescope(0);
+    else
+      climber.moveTelescope(speed);
+    
     climber.pullUp(OI.getClimbSpeed());
   }
 }
