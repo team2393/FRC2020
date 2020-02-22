@@ -39,8 +39,8 @@ public class PowerCellAccelerator extends SubsystemBase
   private final WPI_VictorSPX conveyor_bottom = new WPI_VictorSPX(RobotMap.CONVEYOR_BOTTOM); 
   
   // Sensors
-  private final DigitalInput shooter_sensor_mid = new DigitalInput(RobotMap.SHOOTER_SENSOR_MID);
-  private final DigitalInput shooter_sensor_top = new DigitalInput(RobotMap.SHOOTER_SENSOR_TOP);
+  private final DigitalInput shooter_sensor_ready = new DigitalInput(RobotMap.SHOOTER_SENSOR_READY);
+  private final DigitalInput shooter_sensor_eject = new DigitalInput(RobotMap.SHOOTER_SENSOR_EJECT);
 
   public final static double CONVEYOR_VOLTAGE = 11.0;
 
@@ -80,7 +80,7 @@ public class PowerCellAccelerator extends SubsystemBase
   /** Returns true if power cell is in "ready" position at end of vertical conveyor */
   public boolean powerCellReady()
   {
-    return !shooter_sensor_mid.get();
+    return !shooter_sensor_ready.get();
   }
 
   /** Turn shooter 'on' or 'off'.
@@ -112,7 +112,7 @@ public class PowerCellAccelerator extends SubsystemBase
   /** Returns true if a power cell is being shot */
   public boolean powerCellFired()
   {
-    return !shooter_sensor_top.get();
+    return !shooter_sensor_eject.get();
   }
 
   // TODO Maybe have a way to report the amount of balls in storage depending on sensor layout

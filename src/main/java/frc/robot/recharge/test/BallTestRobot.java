@@ -8,8 +8,11 @@
 package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
+import frc.robot.recharge.shooter.Eject;
+import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /** Robot code for testing ball handling
@@ -54,5 +57,21 @@ public class BallTestRobot extends BasicRobot
       pca.moveConveyor(12*OI.getSpeed());
       System.out.println("Voltage " + 12*OI.getSpeed());
     }
+  }
+
+  private final CommandBase load = new Load(pca);
+  private final CommandBase eject = new Eject(pca);
+
+  @Override
+  public void autonomousInit() 
+  {
+      load.schedule();
+  }
+
+  @Override
+  public void autonomousPeriodic()
+  {
+    if (pca.powerCellReady())
+      eject.schedule();
   }
 }

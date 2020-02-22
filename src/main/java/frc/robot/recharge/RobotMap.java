@@ -75,8 +75,8 @@ public class RobotMap
 
 
   // Digital IO Sensors
-  public final static int SHOOTER_SENSOR_TOP = 1;
-  public final static int SHOOTER_SENSOR_MID = 2;
+  public final static int SHOOTER_SENSOR_READY = 1;
+  public final static int SHOOTER_SENSOR_EJECT = 2;
 
 
   // PWM port for LED Strip
