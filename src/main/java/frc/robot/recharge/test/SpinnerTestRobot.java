@@ -45,7 +45,7 @@ public class SpinnerTestRobot extends BasicRobot
   @Override
   public void autonomousPeriodic()
   {
-    // TODO Tune PID, then pick some reasonable RPM values between which to toggle
+    // Tune PID, then pick some reasonable RPM values between which to toggle
     spinner.configure(SmartDashboard.getNumber("kV", 0),
                       SmartDashboard.getNumber("P", 0));
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;

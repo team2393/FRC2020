@@ -7,7 +7,6 @@
 
 package frc.robot.recharge.shooter;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -19,7 +18,7 @@ public class Spinner
 {
   private final WPI_TalonFX motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
 
-  /** TODO Encoder ticks for one turn of the wheel */
+  /** Encoder ticks for one turn of the wheel */
   private final static double TICK_PER_REVOLUTION = 3310 * 220/360;
   
   // FF & PID for shooter motor to set RPM
@@ -27,12 +26,11 @@ public class Spinner
 
   /** Feed-forward velocity constant: Volts per RPM
    *  Voltage: 11.444091796875 RPM: 5253.412462908012
-   * Voltage: 11.6279296875 RPM: 5696.142433234421
-
+   *  Voltage: 11.6279296875 RPM: 5696.142433234421
    */
   private double kV = 0.00200;
 
-  /** TODO P gain */
+  /** P gain */
   private final PIDController pid = new PIDController(0.005, 0, 0);
 
   public Spinner()

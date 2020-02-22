@@ -27,7 +27,7 @@ import frc.robot.recharge.OI;
  */
 public class CharacterizationRobotMotor extends BasicRobot
 {  
-  // TODO Select motor, configure encoder
+  // Select motor, configure encoder
   final WPI_TalonFX motor = new WPI_TalonFX(1);
 
   static private double ENCODER_EDGES_PER_REV = 4906;

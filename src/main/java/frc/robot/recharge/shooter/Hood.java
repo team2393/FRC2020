@@ -53,9 +53,6 @@ public class Hood extends SubsystemBase
   /** @return Hood angle, degrees. 0 for horizontal, towards 90 for 'up' */
   public double getHoodAngle()
   {
-    // TODO Calibrate conversion from encoder counts to angle
-    // TODO Try frc-characterization of 'arm'
-
     // Falcon encoder sends 2048 ticks per revolution, plus 1:10 gear box
     final double encoder_angle = 36.0 / 2048.0;
     // Gears & chain results in hood moving slower than motor

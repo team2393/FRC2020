@@ -7,10 +7,10 @@
 package frc.robot.demo.motor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+// import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+// import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.XboxController;
@@ -46,7 +46,7 @@ public class LimitSwitchTestRobot extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // TODO Allow moving beyond limit switch
+    // Allow moving beyond limit switch
     // motor.overrideLimitSwitchesEnable(joystick.getAButton());
 
     // Manually control motor speed via joystick

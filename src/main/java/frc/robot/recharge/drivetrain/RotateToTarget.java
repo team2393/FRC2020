@@ -7,8 +7,6 @@
 
 package frc.robot.recharge.drivetrain;
 
-import java.time.LocalTime;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;

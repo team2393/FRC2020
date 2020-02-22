@@ -67,8 +67,6 @@ public class Enterprise extends BasicRobot
   private final CommandBase far_settings =  new ApplySettings("far.txt");
   private final CommandBase viewable_settings = new ApplySettings("viewable.txt");
 
-  // TODO Tune drive PIDs with actual robot
-  // TODO IR detector to check if there are any balls in hopper?
   // TODO Connect control wheel commands to buttons
 
   // private final ColorSensor color_sensor = new ColorSensor();
@@ -81,9 +79,6 @@ public class Enterprise extends BasicRobot
   // private final LEDStrip led_strip = new LEDStrip();
 
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
-
-  // Have we homed what needs homing?
-  private boolean homed = false;
 
   @Override
   public void robotInit()
