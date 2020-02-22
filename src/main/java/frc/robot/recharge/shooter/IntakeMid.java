@@ -23,7 +23,7 @@ public class IntakeMid extends  CommandBase
   public void initialize() 
   {
     intake.enableSpinner(false);
-    intake.setIntakeAngle(60);
+    intake.setIntakeAngle(45);
   }
 
   @Override

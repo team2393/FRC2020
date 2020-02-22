@@ -43,9 +43,6 @@ public class Intake extends SubsystemBase
   /** Desired arm/rotator angle. Negative to disable PID */
   private double desired_angle = -1;
 
-  /** Timer since last change of desired_angle */
-  private final Timer timer = new Timer();
-
   public Intake()
   {
     PowerCellAccelerator.commonSettings(spinner, NeutralMode.Coast);
@@ -110,15 +107,9 @@ public class Intake extends SubsystemBase
   public void setIntakeAngle(final double angle)
   {
     if (desired_angle != angle)
-    {
       desired_angle = angle;
-      timer.start();
-    }
   }
   
-  // TODO Command to lower intake and turn rollers on,
-  //      or raise intake with rollers off.
-
   /** @param on Should intake spinner be on? */
   public void enableSpinner(final boolean on)
   {
@@ -133,15 +124,15 @@ public class Intake extends SubsystemBase
 
     if (desired_angle >= 0)
     {
-      // If the angle is low (put arm out), check with timer.
-      // After some time, simply turn motor off to let arm settle onto bumper.
-      if (desired_angle < 10   &&  timer.get() > 2.0)
+      // If the desired angle is low (put arm out),
+      // and the actual angle is as well,
+      // simply turn motor off to let arm settle onto bumper.
+      if (desired_angle < 10   &&  getAngle() < 10)
         rotator.setVoltage(0);
       else
       {
         final double correction = angle_pid.calculate(getAngle(), desired_angle);
         final double preset = angle_ff.calculate(Math.toRadians(desired_angle), 0);
-  
         rotator.setVoltage(MathUtil.clamp((preset + correction), -3, 3));
       }
     }

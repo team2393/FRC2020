@@ -9,6 +9,7 @@ package frc.robot.recharge.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+/** Lower intake and turn spinner wheels on */
 public class IntakeDown extends  CommandBase 
 {
   private final Intake intake;
@@ -23,7 +24,7 @@ public class IntakeDown extends  CommandBase
   public void initialize() 
   {
     intake.enableSpinner(true);
-    intake.setIntakeAngle(0);
+    intake.setIntakeAngle(5);
   }
 
   @Override

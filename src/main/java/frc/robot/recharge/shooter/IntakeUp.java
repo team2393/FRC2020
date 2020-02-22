@@ -23,7 +23,7 @@ public class IntakeUp extends CommandBase
   public void initialize() 
   {
     intake.enableSpinner(false);
-    intake.setIntakeAngle(90);
+    intake.setIntakeAngle(60);
   }
 
   @Override
