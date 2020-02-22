@@ -52,7 +52,7 @@ public class Eject extends CommandBase
         pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       
       // Once it's fast enough, SHOOT!!
-      if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_SHOOTER_RPM)
+      if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
         timer.start();
