@@ -28,6 +28,7 @@ import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /**
@@ -61,6 +62,7 @@ public class Enterprise extends BasicRobot
   private final Hood hood = null;
 
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
+  private final CommandBase load = new Load(pca);
   private final CommandBase eject = new Eject(pca);
 
   private final CommandBase near_settings = new ApplySettings("near.txt");
@@ -170,6 +172,9 @@ public class Enterprise extends BasicRobot
       // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
       if (OI.isShootHeld())
         eject.schedule();
+      // Otherwise we allow ongoing 'eject' to finish, then keep 'load'ing
+      else if (eject.isFinished())
+        load.schedule();
     }
 
     // Align on target?
