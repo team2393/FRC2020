@@ -27,6 +27,7 @@ public class Eject extends CommandBase
   };
   private State state = State.SPINUP;
   private final Timer timer = new Timer();
+  private final Timer wait = new Timer();
 
   public Eject(final PowerCellAccelerator pca)
   {
@@ -40,6 +41,7 @@ public class Eject extends CommandBase
     // Turn on the ejector
     pca.eject(true);
     state = State.SPINUP;
+    wait.start();
   }
 
   @Override
@@ -52,6 +54,7 @@ public class Eject extends CommandBase
       {
         state = State.EJECT;
         timer.start();
+        wait.stop();
       }
       else
       {
@@ -72,7 +75,7 @@ public class Eject extends CommandBase
       if (pca.powerCellFired())
         state = State.SUCCESS;
       // In reality, we might not, so stop after a few seconds
-      else if (timer.hasElapsed(2.0))
+      else if (timer.hasElapsed(10.0))
         state = State.TIMEOUT;
     }
 
@@ -103,5 +106,7 @@ public class Eject extends CommandBase
     // so it'll check the RPM, then feed another ball. 
     pca.moveConveyor(0);
     //   pca.moveHorizontalConveyor(0);
+
+    System.out.println("Spinup delay: " + wait.get() + " seconds");
   }
 }

@@ -27,7 +27,7 @@ public class BallTestRobot extends BasicRobot
   {
     super.robotInit();
     // Lower RPM for tests to be gentle on ears and equipment
-    PowerCellAccelerator.SHOOTER_RPM = 2000; 
+    // PowerCellAccelerator.SHOOTER_RPM = 2000; 
   }
 
   @Override
