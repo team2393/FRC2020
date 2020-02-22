@@ -44,40 +44,34 @@ public class Enterprise extends BasicRobot
   // Commands that require the drive train, i.e. starting any of these commands
   // will cancel whatever else was running and required the drive train
   private final CommandBase reset_drivetrain = new Reset(drive_train);
-
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
   private final HeadingHold heading_hold = new HeadingHold(drive_train);
   /** Most recent drive mode, either drive_by_joystick or heading_hold */
   private CommandBase drive_mode = heading_hold;
+  // After align_on_target, return to current drive_mode
   private final CommandBase align_on_target = new RotateToTarget(drive_train);
+  // Indicate heading_hold vs. drive_by_joystick
+  private final Rumble rumble = new Rumble();
   
   // Shift commands can run concurrently with other commands that require the
   // drive train
   private final CommandBase shift_low = new InstantCommand(() -> drive_train.setGear(false));
   private final CommandBase shift_high = new InstantCommand(() -> drive_train.setGear(true));
   private final CommandBase auto_shift = new AutoShift(drive_train);
-  private final Rumble rumble = new Rumble();
 
-  // TODO make intake/hood work
+  // Ball handling
   private final Intake intake = new Intake();
   private final CommandBase intake_up = new IntakeUp(intake);
   private final CommandBase intake_down = new IntakeDown(intake);
   private final CommandBase intake_mid = new IntakeMid(intake);
 
-  // TODO Control hood angle via smart dashboard value,
-  // then include that in the near/far settings?
-  private final Hood hood = null;
-
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
   private final CommandBase load = new Load(pca);
   private final CommandBase eject = new Eject(pca);
-
-  private final CommandBase near_settings = new ApplySettings("near.txt");
-  private final CommandBase far_settings =  new ApplySettings("far.txt");
-  private final CommandBase viewable_settings = new ApplySettings("viewable.txt");
+  
+  private final Hood hood = new Hood();
 
   // TODO Connect control wheel commands to buttons
-
   // private final ColorSensor color_sensor = new ColorSensor();
 
   // private final ControlWheel fortune = new ControlWheel();
@@ -94,8 +88,16 @@ public class Enterprise extends BasicRobot
   {
     super.robotInit();
 
+    // TODO Remove test settings
     PowerCellAccelerator.SHOOTER_RPM = 2000;
     // pcm.clearAllPCMStickyFaults();
+
+    // Manual shifting
+    // Note that DriveByJoystick will automatically shift,
+    // so while we can invoke 'shift_high' via button,
+    // we would automatically shift back low when standing still.
+    OI.shift_low.whenActive(shift_low);
+    OI.shift_high.whenPressed(shift_high);
 
     // Bind buttons to actions (only active in teleop)
     // Pressing 'A' enables manual wheel control (and stops auto rotation)
@@ -107,33 +109,25 @@ public class Enterprise extends BasicRobot
     // OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() ->
     // manual_wheel.schedule()));
 
-    // Manual shifting
-    // Note that DriveByJoystick will automatically shift,
-    // so while we can invoke 'shift_high' via button,
-    // we would automatically shift back low when standing still.
-    OI.shift_low.whenActive(shift_low);
-    OI.shift_high.whenPressed(shift_high);
 
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
     // SmartDashboard.putData("Heading Hold", heading_hold);
     // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
-    SmartDashboard.putData("Near Settings", near_settings);
-    SmartDashboard.putData("Far Settings", far_settings);
-    SmartDashboard.putData("Viewable Settings", viewable_settings);
     
     SmartDashboard.putData("Intake Up", intake_up);
     SmartDashboard.putData("Intake Down", intake_down);
     SmartDashboard.putData("Intake Mid", intake_mid);
-    
+
+    SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
+
+
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
-    // Add moves from auto.txt
     try
     {
-      // Read commands from auto file.
-      // Drivebase turns trajectories into ramsete commands.
+      // Add moves from auto.txt
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
       for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train, intake, hood))
         auto_commands.addOption(moves.getName(), moves);
@@ -145,7 +139,23 @@ public class Enterprise extends BasicRobot
     }
     SmartDashboard.putData("Autonomous", auto_commands);
 
-    near_settings.schedule();
+    // Allow selecting settings for different scenarios
+
+    // Settings for different scenarios
+    final CommandBase default_settings;
+    SmartDashboard.putData("Near Settings", default_settings = new ApplySettings("near.txt"));
+    SmartDashboard.putData("Far Settings", new ApplySettings("far.txt"));
+    SmartDashboard.putData("Viewable Settings", new ApplySettings("viewable.txt"));
+    default_settings.schedule();
+  }
+
+  @Override
+  public void robotPeriodic()
+  {
+    super.robotPeriodic();
+
+    // Control hood angle via manual entry on dashboard or ApplySettings()
+    hood.setHoodAngle(SmartDashboard.getNumber("Hood Setpoint", -1));
   }
 
   @Override
@@ -211,7 +221,7 @@ public class Enterprise extends BasicRobot
     // Run the selected command.
     drive_train.reset();
     auto_commands.getSelected().schedule();
-}
+  }
 
   @Override
   public void autonomousPeriodic()
