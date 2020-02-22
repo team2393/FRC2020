@@ -47,17 +47,19 @@ public class Eject extends CommandBase
   {
     if (state == State.SPINUP)
     {
-      // Prepare for shot by loading a ball
-      if (pca.powerCellReady())
-        pca.moveConveyor(0);
-      else
-        pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-      
       // Once it's fast enough, SHOOT!!
       if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
         timer.start();
+      }
+      else
+      {
+        // Not fast enough. If there's a ball ready, keep it there
+        if (pca.powerCellReady())
+          pca.moveConveyor(0);
+        else // Otherwise load a ball
+          pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       }
     }
 
