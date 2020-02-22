@@ -28,6 +28,10 @@ import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.shooter.IntakeDown;
+import frc.robot.recharge.shooter.IntakeMid;
+import frc.robot.recharge.shooter.IntakeUp;
+import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /**
@@ -55,12 +59,17 @@ public class Enterprise extends BasicRobot
   private final Rumble rumble = new Rumble();
 
   // TODO make intake/hood work
-  private final Intake intake = null;
+  private final Intake intake = new Intake();
+  private final CommandBase intake_up = new IntakeUp(intake);
+  private final CommandBase intake_down = new IntakeDown(intake);
+  private final CommandBase intake_mid = new IntakeMid(intake);
+
   // TODO Control hood angle via smart dashboard value,
   // then include that in the near/far settings?
   private final Hood hood = null;
 
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
+  private final CommandBase load = new Load(pca);
   private final CommandBase eject = new Eject(pca);
 
   private final CommandBase near_settings = new ApplySettings("near.txt");
@@ -84,6 +93,8 @@ public class Enterprise extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
+
+    PowerCellAccelerator.SHOOTER_RPM = 2000;
     // pcm.clearAllPCMStickyFaults();
 
     // Bind buttons to actions (only active in teleop)
@@ -111,6 +122,10 @@ public class Enterprise extends BasicRobot
     SmartDashboard.putData("Near Settings", near_settings);
     SmartDashboard.putData("Far Settings", far_settings);
     SmartDashboard.putData("Viewable Settings", viewable_settings);
+    
+    SmartDashboard.putData("Intake Up", intake_up);
+    SmartDashboard.putData("Intake Down", intake_down);
+    SmartDashboard.putData("Intake Mid", intake_mid);
     
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -165,11 +180,14 @@ public class Enterprise extends BasicRobot
         drive_mode = heading_hold;
       }
       drive_mode.schedule();
-
-      // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
-      if (OI.isShootHeld())
-        eject.schedule();
     }
+
+    // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
+    if (OI.isShootHeld())
+      eject.schedule();
+    // Otherwise we allow ongoing 'eject' to finish, then keep 'load'ing
+    else if (eject.isFinished())
+      load.schedule();
 
     // Align on target?
     if (OI.isAlignOnTargetHeld())

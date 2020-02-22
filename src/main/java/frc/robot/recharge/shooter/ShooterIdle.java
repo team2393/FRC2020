@@ -31,6 +31,7 @@ public class ShooterIdle extends CommandBase
   {
     // Looks like we're doing nothing, but need to actively set
     // speeds to 0 for each period to avoid motor safety timeouts.
-    pca.moveConveyor(0);
+    pca.moveBottom(0);
+    pca.moveTop(0);
   }
 }

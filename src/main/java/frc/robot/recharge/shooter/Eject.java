@@ -25,8 +25,9 @@ public class Eject extends CommandBase
     SUCCESS,   // Saw a ball shoot out
     TIMEOUT    // Give up, no ball seen flying out
   };
-  private State state;
+  private State state = State.SPINUP;
   private final Timer timer = new Timer();
+  private final Timer wait = new Timer();
 
   public Eject(final PowerCellAccelerator pca)
   {
@@ -40,6 +41,7 @@ public class Eject extends CommandBase
     // Turn on the ejector
     pca.eject(true);
     state = State.SPINUP;
+    wait.start();
   }
 
   @Override
@@ -47,40 +49,41 @@ public class Eject extends CommandBase
   {
     if (state == State.SPINUP)
     {
-      // Prepare for shot by loading a ball
-      if (pca.powerCellReady())
-        pca.moveConveyor(0);
-      else
-        pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-      
       // Once it's fast enough, SHOOT!!
       if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
         timer.start();
+        wait.stop();
+      }
+      else
+      {
+        // Not fast enough. If there's a ball ready, keep it there
+        if (pca.powerCellReady())
+          pca.moveTop(0);
+        else // Otherwise load a ball
+          pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       }
     }
 
     // Are we shooting? If so, move a ball out
     if (state == State.EJECT)
     {
-      pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-
+      pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       // Ideally, we soon detect a ball flying out
       if (pca.powerCellFired())
         state = State.SUCCESS;
       // In reality, we might not, so stop after a few seconds
-      else if (timer.hasElapsed(2.0))
+      else if (timer.hasElapsed(10.0))
         state = State.TIMEOUT;
     }
 
-    // If there is a separate sensor at end of horizontal conveyor,
-    // keep horiz. belt moving until ball is in there,
+    // Keep horiz. belt moving until ball is in there,
     // regardless of what the vertical conveyor and ejector are doing.
-    // if (pca.powerCellAtEndOfHorizontal())
-    //   pca.moveHorizontalConveyor(0);
-    // else
-    //   pca.moveHorizontalConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    if (! pca.lowConveyorFull()  ||  ! pca.powerCellReady())
+       pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    else
+      pca.moveBottom(0);
   }
 
   @Override
@@ -99,7 +102,9 @@ public class Eject extends CommandBase
     // Turn conveyor off to prevent another ball from shooting out.
     // To shoot another ball, run this command again,
     // so it'll check the RPM, then feed another ball. 
-    pca.moveConveyor(0);
-    //   pca.moveHorizontalConveyor(0);
+    pca.moveTop(0);
+    pca.moveBottom(0);
+
+    System.out.println("Spinup delay: " + wait.get() + " seconds");
   }
 }

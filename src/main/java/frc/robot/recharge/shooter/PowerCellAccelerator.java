@@ -36,6 +36,8 @@ public class PowerCellAccelerator extends SubsystemBase
   // Sensors
   private final DigitalInput shooter_sensor_ready = new DigitalInput(RobotMap.SHOOTER_SENSOR_READY);
   private final DigitalInput shooter_sensor_eject = new DigitalInput(RobotMap.SHOOTER_SENSOR_EJECT);
+  private final DigitalInput shooter_sensor_low_conveyor = new DigitalInput(RobotMap.SHOOTER_SENSOR_LOW_CONVEYOR);
+
 
   /** Normal voltage for moving conveyors */
   public final static double CONVEYOR_VOLTAGE = 11.0;
@@ -70,17 +72,27 @@ public class PowerCellAccelerator extends SubsystemBase
     motor.setInverted(true);
   }
   
-  public void moveConveyor(final double volt)
+  public void moveTop(final double volt)
   {
-    // Conveyors should probably be moved seperately
-    conveyor_bottom.setVoltage(volt);
+    // Move top conveyor
     conveyor_top.setVoltage(volt);
+  }
+  
+  public void moveBottom(final double volt)
+  {
+    //Move bottom conveyor
+    conveyor_bottom.setVoltage(volt);
   }
   
   /** Returns true if power cell is in "ready" position at end of vertical conveyor */
   public boolean powerCellReady()
   {
     return !shooter_sensor_ready.get();
+  }
+
+  public boolean lowConveyorFull()
+  {
+    return !shooter_sensor_low_conveyor.get();
   }
 
   /** Turn shooter 'on' or 'off'.

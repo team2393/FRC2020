@@ -7,6 +7,8 @@
 
 package frc.robot.recharge.test;
 
+import java.time.Period;
+
 import frc.robot.BasicRobot;
 import frc.robot.recharge.climb.Climber;
 import frc.robot.recharge.climb.ControlClimber;
@@ -23,6 +25,12 @@ public class ClimbTestRobot extends BasicRobot
     control_climber.schedule();
   }
 
+  @Override
+  public void teleopPeriodic() 
+  {
+    super.teleopPeriodic();
+    System.out.println("Height " + climber.getHeight());
+  }
   // 1) Check if telescope moves up and down
   // 2) Check if 'pulling up'is correct direction
 }
