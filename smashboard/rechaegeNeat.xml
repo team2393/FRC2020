@@ -1,5 +1,20 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Intake Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="849" y="139"/>
+	</widget>
+	<widget field="D" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="50"/>
+	</widget>
+	<widget field="Intake Mid" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="691" y="295"/>
+	</widget>
+	<widget field="Intake Down" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="683" y="330"/>
+	</widget>
+	<widget field="Intake Up" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="689" y="265"/>
+	</widget>
 	<widget field="Heading Hold" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
 		<location x="14" y="98"/>
 	</widget>
@@ -55,7 +70,7 @@
 		<location x="1" y="70"/>
 	</widget>
 	<widget field="Auto Shift" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="32" y="43"/>
+		<location x="42" y="-3"/>
 	</widget>
 	<widget field="Autonomous" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="23" y="461"/>
@@ -145,105 +160,42 @@
 		<location x="484" y="349"/>
 		<width>140</width>
 	</widget>
+	<widget field="Low Conveyor Full" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="735" y="98"/>
+		<width>115</width>
+		<height>35</height>
+	</widget>
+	<widget field="Fired" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="734" y="140"/>
+		<width>53</width>
+		<height>31</height>
+	</widget>
+	<widget field="Ready" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="734" y="175"/>
+		<width>66</width>
+		<height>35</height>
+	</widget>
+	<widget field="P" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="901" y="112"/>
+	</widget>
+	<widget field="Hood Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="851" y="87"/>
+	</widget>
+	<widget field="kCos" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="709" y="237"/>
+	</widget>
+	<widget field="Hood" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="714" y="43"/>
+	</widget>
+	<widget field="Climber" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="674" y="17"/>
+	</widget>
 </dashboard>
 <live-window>
-	<widget field="DriveTrain" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
-		<location x="0" y="22"/>
-	</widget>
-	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
-		<widget field="PIDController[9]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="15"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[12]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="164"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[1]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="313"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="ADXRS450_Gyro[0]" type="Gyro" class="edu.wpi.first.smartdashboard.gui.elements.Compass">
-			<location x="6" y="462"/>
-			<height>150</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[6]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="612"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="Talon FX [1]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
-			<location x="6" y="761"/>
-			<height>45</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[2]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="806"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[11]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="955"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[8]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1104"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[13]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1253"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="Talon FX [2]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
-			<location x="6" y="1402"/>
-			<height>45</height>
-			<width>295</width>
-		</widget>
-		<widget field="Solenoid[0,7]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
-			<location x="93" y="1447"/>
-			<height>21</height>
-			<width>121</width>
-		</widget>
-		<widget field="PIDController[14]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1468"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[3]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1617"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[7]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1766"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[4]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="1915"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[5]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="2064"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<widget field="PIDController[10]" type="PIDController" class="edu.wpi.first.smartdashboard.gui.elements.PIDEditor">
-			<location x="6" y="2213"/>
-			<height>149</height>
-			<width>295</width>
-		</widget>
-		<location x="0" y="0"/>
-		<width>307</width>
-		<height>2368</height>
+	<widget field="Intake" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="308" y="22"/>
 	</widget>
 </live-window>
+	<hidden field="Eject RPM"/>
+	<hidden field="RPM"/>
 </xml>

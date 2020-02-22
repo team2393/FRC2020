@@ -28,6 +28,9 @@ import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
+import frc.robot.recharge.shooter.IntakeDown;
+import frc.robot.recharge.shooter.IntakeMid;
+import frc.robot.recharge.shooter.IntakeUp;
 import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 
@@ -56,7 +59,11 @@ public class Enterprise extends BasicRobot
   private final Rumble rumble = new Rumble();
 
   // TODO make intake/hood work
-  private final Intake intake = null;
+  private final Intake intake = new Intake();
+  private final CommandBase intake_up = new IntakeUp(intake);
+  private final CommandBase intake_down = new IntakeDown(intake);
+  private final CommandBase intake_mid = new IntakeMid(intake);
+
   // TODO Control hood angle via smart dashboard value,
   // then include that in the near/far settings?
   private final Hood hood = null;
@@ -115,6 +122,10 @@ public class Enterprise extends BasicRobot
     SmartDashboard.putData("Near Settings", near_settings);
     SmartDashboard.putData("Far Settings", far_settings);
     SmartDashboard.putData("Viewable Settings", viewable_settings);
+    
+    SmartDashboard.putData("Intake Up", intake_up);
+    SmartDashboard.putData("Intake Down", intake_down);
+    SmartDashboard.putData("Intake Mid", intake_mid);
     
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
