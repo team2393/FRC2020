@@ -27,7 +27,7 @@ public class BallTestRobot extends BasicRobot
   {
     super.robotInit();
     // Lower RPM for tests to be gentle on ears and equipment
-    // PowerCellAccelerator.SHOOTER_RPM = 2000; 
+    PowerCellAccelerator.SHOOTER_RPM = 2000; 
   }
 
   @Override
@@ -46,6 +46,8 @@ public class BallTestRobot extends BasicRobot
     //    when with both A and Y held to see if a ball
     //    is detected during ejection
     SmartDashboard.putBoolean("Fired", pca.powerCellFired());
+
+    SmartDashboard.putBoolean("Low Conveyor Full", pca.lowConveyorFull());
   }
 
   @Override
@@ -59,11 +61,15 @@ public class BallTestRobot extends BasicRobot
     //    at suitable speed.
     // 4) Hold Y to run run conveyor at its 'normal' speed
     if (OI.joystick.getYButton())
-      pca.moveConveyor(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-    else
+    { 
+      pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+      pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+    }
+      else
     {
-      pca.moveConveyor(12*OI.getSpeed());
-      System.out.println("Voltage " + 12*OI.getSpeed());
+      pca.moveTop(12*OI.getSpeed());
+      pca.moveBottom(12*OI.getDirection());
+      System.out.println("Voltage Top " + 12*OI.getSpeed() + "Voltage Bottom" + 12*OI.getDirection());
     }
   }
 

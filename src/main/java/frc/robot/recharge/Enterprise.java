@@ -86,6 +86,8 @@ public class Enterprise extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
+
+    PowerCellAccelerator.SHOOTER_RPM = 2000;
     // pcm.clearAllPCMStickyFaults();
 
     // Bind buttons to actions (only active in teleop)
@@ -168,14 +170,14 @@ public class Enterprise extends BasicRobot
         drive_mode = heading_hold;
       }
       drive_mode.schedule();
-
-      // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
-      if (OI.isShootHeld())
-        eject.schedule();
-      // Otherwise we allow ongoing 'eject' to finish, then keep 'load'ing
-      else if (eject.isFinished())
-        load.schedule();
     }
+
+    // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
+    if (OI.isShootHeld())
+      eject.schedule();
+    // Otherwise we allow ongoing 'eject' to finish, then keep 'load'ing
+    else if (eject.isFinished())
+      load.schedule();
 
     // Align on target?
     if (OI.isAlignOnTargetHeld())

@@ -16,6 +16,6 @@ public final class Main
 {
   public static void main(String... args)
   {
-    RobotBase.startRobot(BallTestRobot::new);
+    RobotBase.startRobot(Enterprise::new);
   }
 }
