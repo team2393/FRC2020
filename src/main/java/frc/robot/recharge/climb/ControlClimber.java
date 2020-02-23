@@ -24,11 +24,16 @@ public class ControlClimber extends CommandBase
   @Override
   public void execute()
   {
-    double speed = OI.getTelescopeSpeed();
-    if (speed < 0 && climber.getHeight() >= Climber.max_height)
-      climber.moveTelescope(0);
+    // Slow down
+    double speed = OI.getTelescopeSpeed() * 0.25;
+    double height = climber.getHeight();
+    // Only allow going 'up' when below max,
+    // or 'down' when above 0
+    if ( (speed > 0  &&  height < Climber.max_height)  ||
+         (speed < 0  &&  height > 0))
+        climber.moveTelescope(speed);
     else
-      climber.moveTelescope(speed);
+      climber.moveTelescope(0);
     
     climber.pullUp(OI.getClimbSpeed());
   }

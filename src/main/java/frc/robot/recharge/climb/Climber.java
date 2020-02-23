@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase
    */
   public void moveTelescope(double direction)
   {
-    telescope.set(direction);
+    telescope.set(-direction);
   }
 
   /** Pull up

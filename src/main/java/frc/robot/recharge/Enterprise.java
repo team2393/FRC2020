@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.auto.ApplySettings;
 import frc.robot.recharge.auto.AutonomousBuilder;
+import frc.robot.recharge.climb.ClimbIdle;
+import frc.robot.recharge.climb.Climber;
+import frc.robot.recharge.climb.ControlClimber;
 import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveTrain;
@@ -33,6 +36,7 @@ import frc.robot.recharge.shooter.IntakeMid;
 import frc.robot.recharge.shooter.IntakeUp;
 import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
+import frc.robot.recharge.shooter.ShooterIdle;
 
 /**
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
@@ -66,6 +70,7 @@ public class Enterprise extends BasicRobot
   private final CommandBase intake_mid = new IntakeMid(intake);
 
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
+  private final CommandBase shooter_idle = new ShooterIdle(pca);
   private final CommandBase load = new Load(pca);
   private final CommandBase eject = new Eject(pca);
   
@@ -79,9 +84,25 @@ public class Enterprise extends BasicRobot
   // private final Command rotate_wheel = new RotateWheel(fortune, 3);
   // private final Command rotate_to_color = new RotateToColor(fortune);
 
+  private Climber climber = new Climber();
+  private CommandBase climb_idle = new ClimbIdle(climber);
+  private CommandBase control_climb = new ControlClimber(climber);
+
   // private final LEDStrip led_strip = new LEDStrip();
 
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
+
+  // Teleop modes
+  private enum TeleopMode
+  {
+    Drive,
+    // Wheel, ??
+    Climb,
+  };
+
+  private TeleopMode teleop_mode = TeleopMode.Drive;
+  private final CommandBase select_teleop_drive = new InstantCommand(() -> teleop_mode = TeleopMode.Drive); 
+  private final CommandBase select_teleop_climb = new InstantCommand(() -> teleop_mode = TeleopMode.Climb); 
 
   @Override
   public void robotInit()
@@ -91,24 +112,6 @@ public class Enterprise extends BasicRobot
     // TODO Remove test settings
     PowerCellAccelerator.SHOOTER_RPM = 2000;
     // pcm.clearAllPCMStickyFaults();
-
-    // Manual shifting
-    // Note that DriveByJoystick will automatically shift,
-    // so while we can invoke 'shift_high' via button,
-    // we would automatically shift back low when standing still.
-    OI.shift_low.whenActive(shift_low);
-    OI.shift_high.whenPressed(shift_high);
-
-    // Bind buttons to actions (only active in teleop)
-    // Pressing 'A' enables manual wheel control (and stops auto rotation)
-    // OI.enable_wheel.whenPressed(manual_wheel);
-    // // Pressing 'B' turns wheel automatically, then re-enables manual control
-    // OI.autorotate_wheel.whenPressed(rotate_wheel.andThen(() ->
-    // manual_wheel.schedule()));
-    // // Pressing 'X' turns wheel to the desired color
-    // OI.rotate_to_color.whenPressed(rotate_to_color.andThen(() ->
-    // manual_wheel.schedule()));
-
 
     // Place some commands on dashboard
     SmartDashboard.putData("Reset Drive", reset_drivetrain);
@@ -138,6 +141,11 @@ public class Enterprise extends BasicRobot
       ex.printStackTrace();
     }
     SmartDashboard.putData("Autonomous", auto_commands);
+
+    // Dashboard buttons to select drive mode
+    // TODO Remove, use joystick or button board?
+    SmartDashboard.putData("Drive", select_teleop_drive);
+    SmartDashboard.putData("Climb", select_teleop_climb);
 
     // Allow selecting settings for different scenarios
 
@@ -170,13 +178,35 @@ public class Enterprise extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
+    SmartDashboard.putString("Teleop Mode", teleop_mode.toString());
+    if (teleop_mode == TeleopMode.Drive)
+      teleop_drive();
+    else if (teleop_mode == TeleopMode.Climb)
+      teleop_climb();
+  }
+
+  private void teleop_drive()
+  {
     // TODO Indicate direction to target on LED
     // final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     // TODO Filter direction sent by Raspberry/camera via
     // https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/median-filter.html
     // led_strip.indicateDirection(direction);
 
+    // Disable climb control
+    climb_idle.schedule();
+
+    if (! auto_shift.isScheduled())
+    {
+      // Manual shifting
+      if (OI.isLowGearRequested())
+        shift_low.schedule();
+      else if (OI.isHighGearRequested())
+        shift_high.schedule();
+    }
+    
     // Toggle between drive_by_joystick and heading_hold
+    OI.force_low_speed = false;
     if (OI.isToggleHeadingholdPressed())
     {
       if (drive_mode == heading_hold)
@@ -192,6 +222,18 @@ public class Enterprise extends BasicRobot
       drive_mode.schedule();
     }
 
+    if (OI.isIntakeDownRequested())
+      intake_down.schedule();
+    else if (OI.isIntakeUpRequested())
+    {
+      // First, get to 'mid' angle.
+      // If already there, go 'up'
+      if (intake.getAngle() < 15)
+        intake_mid.schedule();
+      else
+        intake_up.schedule();
+    }
+
     // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
     if (OI.isShootHeld())
       eject.schedule();
@@ -201,16 +243,25 @@ public class Enterprise extends BasicRobot
 
     // Align on target?
     if (OI.isAlignOnTargetHeld())
-    {
-      if (! align_on_target.isScheduled())
         align_on_target.schedule();
-    }
     else
     {
         // Re-enable original drive mode, which cancels alignment
-        if (! drive_mode.isScheduled())
-          drive_mode.schedule();
+        drive_mode.schedule();
     }
+  }
+
+  private void teleop_climb()
+  {
+    intake_up.schedule();
+    shooter_idle.schedule();
+
+    auto_shift.cancel();
+    shift_low.schedule();
+    OI.force_low_speed = true;
+    drive_by_joystick.schedule();
+    
+    control_climb.schedule();
   }
 
   @Override
