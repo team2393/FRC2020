@@ -122,7 +122,7 @@ public class Enterprise extends BasicRobot
     // SmartDashboard.putData("Intake Mid", intake_mid);
 
     SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
-
+    SmartDashboard.setDefaultNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
 
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -157,6 +157,7 @@ public class Enterprise extends BasicRobot
 
     // Control hood angle via manual entry on dashboard or ApplySettings()
     hood.setHoodAngle(SmartDashboard.getNumber("Hood Setpoint", -1));
+    PowerCellAccelerator.SHOOTER_RPM = SmartDashboard.getNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
   }
 
   @Override

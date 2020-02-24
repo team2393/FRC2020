@@ -14,4 +14,5 @@ AreaMin 0
 AreaMax 7000
 FullnessMin  0
 FullnessMax 50
+Shooter RPM 5000
 Camera Target Mode  true
