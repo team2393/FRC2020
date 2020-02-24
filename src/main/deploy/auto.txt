@@ -46,7 +46,7 @@ TurnToHeading -10
 #------------------------------------------------------
 Auto PickupAndShoot
 IntakeDown
-HoodClose
+Hood 145
 Wait 1
 Hood 140
 Wait 1

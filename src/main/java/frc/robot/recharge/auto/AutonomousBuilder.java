@@ -62,98 +62,106 @@ public class AutonomousBuilder
       if (line.isBlank()  ||  line.startsWith("#"))
         continue;
   
-      Scanner scanner = new Scanner(line);
-      final String command = scanner.next();
-      if (command.equals("Auto"))
-      { // Auto Name-of-this-sequence:
-        // Start new auto
-        current_auto = new SequentialCommandGroup();
-        current_auto.setName(scanner.nextLine());
-        autos.add(current_auto);
-        // Initial position at start of autonomous
-        nominal = new Pose2d();
-        System.out.println("Reading Auto '" + current_auto.getName() + "''");
-      }
-      else if (command.equals("Trajectory") ||
-               command.equals("ReverseTrajectory"))
-      { // Trajectory:
-        // Read trajectory info
-        Trajectory trajectory = TrajectoryReader.readPoints(file, command.equals("ReverseTrajectory"));
-        // Make it start at the assumed position
-        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
-        // .. and then we expect to be where the trajectory ends
-        nominal = TrajectoryHelper.getEndPose(trajectory);
-
-        // Turn into command, which may be a 'print' or a 'ramsete' that follows it
-        current_auto.addCommands(drive_train.createRamsete(trajectory));
-        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
-      }
-      else if (command.equals("Poses") ||
-               command.equals("ReversePoses"))
-      { // Trajectory:
-        // Read trajectory info
-        Trajectory trajectory = TrajectoryReader.readPoses(file, command.equals("ReversePoses"));
-        // Make it start at the assumed position
-        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
-        // .. and then we expect to be where the trajectory ends
-        nominal = TrajectoryHelper.getEndPose(trajectory);
-
-        // Turn into command, which may be a 'print' or a 'ramsete' that follows it
-        current_auto.addCommands(drive_train.createRamsete(trajectory));
-        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
-      }
-      else if (command.equals("PathWeaver")  ||
-               command.equals("ReverseWeaver"))
-      { // Read trajectory from PathWeaver file
-        final File pwfile = new File(Filesystem.getDeployDirectory(), scanner.next());
-        System.out.println(pwfile);
-        Trajectory trajectory = TrajectoryReader.readPath(pwfile);
-        if (command.equals("ReverseWeaver"))
-          trajectory = TrajectoryHelper.reverse(trajectory);
-        // Make it start at the assumed position
-        System.out.println("Move start point to " + nominal);
-        trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
-        // .. and then we expect to be where the trajectory ends
-        nominal = TrajectoryHelper.getEndPose(trajectory);
-
-        for (State state : trajectory.getStates())
-          System.out.println(state);
-
-        current_auto.addCommands(drive_train.createRamsete(trajectory));
-        System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
-      }
-      else if(command.equals("RotateToTarget"))
-          current_auto.addCommands(new RotateToTarget(drive_train));
-      else if(command.equals("TurnToHeading"))
+      try
+      (
+        Scanner scanner = new Scanner(line);
+      )
       {
-        final double heading = scanner.nextDouble();
-        current_auto.addCommands(new TurnToHeading(drive_train, heading));
-      }
-      else if(command.equals("Wait"))
-      {
-        final double time = scanner.nextDouble();
-        current_auto.addCommands(new WaitCommand(time));
-      }
-      else if(command.equals("IntakeUp"))
-       current_auto.addCommands(new IntakeUp(intake)); 
-      else if(command.equals("IntakeDown"))
-       current_auto.addCommands(new IntakeDown(intake)); 
-      else if(command.equals("IntakeMid"))
-       current_auto.addCommands(new IntakeMid(intake)); 
-      else if(command.equals("Hood"))
-      {
-        final double angle = scanner.nextDouble();
-        current_auto.addCommands(new HoodAngle(hood, angle));
-      }
-      else if(command.equals("Shoot"))
-        current_auto.addCommands(new Eject(pca));
-      else
-      {
-        scanner.close();
-        throw new Exception("Unknown autonomouse command: " + line);
-      }
+        final String command = scanner.next();
+        if (command.equals("Auto"))
+        { // Auto Name-of-this-sequence:
+          // Start new auto
+          current_auto = new SequentialCommandGroup();
+          current_auto.setName(scanner.nextLine());
+          autos.add(current_auto);
+          // Initial position at start of autonomous
+          nominal = new Pose2d();
+          System.out.println("Reading Auto '" + current_auto.getName() + "''");
+        }
+        else if (command.equals("Trajectory") ||
+                command.equals("ReverseTrajectory"))
+        { // Trajectory:
+          // Read trajectory info
+          Trajectory trajectory = TrajectoryReader.readPoints(file, command.equals("ReverseTrajectory"));
+          // Make it start at the assumed position
+          trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+          // .. and then we expect to be where the trajectory ends
+          nominal = TrajectoryHelper.getEndPose(trajectory);
 
-      scanner.close();
+          // Turn into command, which may be a 'print' or a 'ramsete' that follows it
+          current_auto.addCommands(drive_train.createRamsete(trajectory));
+          System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
+        }
+        else if (command.equals("Poses") ||
+                command.equals("ReversePoses"))
+        { // Trajectory:
+          // Read trajectory info
+          Trajectory trajectory = TrajectoryReader.readPoses(file, command.equals("ReversePoses"));
+          // Make it start at the assumed position
+          trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+          // .. and then we expect to be where the trajectory ends
+          nominal = TrajectoryHelper.getEndPose(trajectory);
+
+          // Turn into command, which may be a 'print' or a 'ramsete' that follows it
+          current_auto.addCommands(drive_train.createRamsete(trajectory));
+          System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
+        }
+        else if (command.equals("PathWeaver")  ||
+                command.equals("ReverseWeaver"))
+        { // Read trajectory from PathWeaver file
+          final File pwfile = new File(Filesystem.getDeployDirectory(), scanner.next());
+          System.out.println(pwfile);
+          Trajectory trajectory = TrajectoryReader.readPath(pwfile);
+          if (command.equals("ReverseWeaver"))
+            trajectory = TrajectoryHelper.reverse(trajectory);
+          // Make it start at the assumed position
+          System.out.println("Move start point to " + nominal);
+          trajectory = TrajectoryHelper.makeTrajectoryStartAt(trajectory,  nominal);
+          // .. and then we expect to be where the trajectory ends
+          nominal = TrajectoryHelper.getEndPose(trajectory);
+
+          for (State state : trajectory.getStates())
+            System.out.println(state);
+
+          current_auto.addCommands(drive_train.createRamsete(trajectory));
+          System.out.format("Added %s (%.1f seconds)\n", command, trajectory.getTotalTimeSeconds());
+        }
+        else if(command.equals("RotateToTarget"))
+            current_auto.addCommands(new RotateToTarget(drive_train));
+        else if(command.equals("TurnToHeading"))
+        {
+          final double heading = scanner.nextDouble();
+          current_auto.addCommands(new TurnToHeading(drive_train, heading));
+        }
+        else if(command.equals("Wait"))
+        {
+          final double time = scanner.nextDouble();
+          current_auto.addCommands(new WaitCommand(time));
+        }
+        else if(command.equals("IntakeUp"))
+        current_auto.addCommands(new IntakeUp(intake)); 
+        else if(command.equals("IntakeDown"))
+        current_auto.addCommands(new IntakeDown(intake)); 
+        else if(command.equals("IntakeMid"))
+        current_auto.addCommands(new IntakeMid(intake)); 
+        else if(command.equals("Hood"))
+        {
+          final double angle = scanner.nextDouble();
+          current_auto.addCommands(new HoodAngle(hood, angle));
+        }
+        else if(command.equals("Shoot"))
+        {
+          int times = 1;
+          if (scanner.hasNextInt())
+            times = scanner.nextInt();
+          if (times < 1   ||  times > 5)
+            throw new Exception("Invalid shot count: " + line);
+          while (times-- > 0)
+            current_auto.addCommands(new Eject(pca));
+        }
+        else
+          throw new Exception("Unknown autonomouse command: " + line);
+      }
     }
 
     return autos;

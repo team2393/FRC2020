@@ -10,6 +10,7 @@ package frc.robot.recharge;
 import java.io.File;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -135,8 +136,11 @@ public class Enterprise extends BasicRobot
     }
     catch (Exception ex)
     {
-      System.err.println("Error in auto.txt:");
+      System.out.println("Error in auto.txt:");
       ex.printStackTrace();
+      System.out.println("========================\n\n\n");
+
+      Timer.delay(10.0);
     }
     SmartDashboard.putData("Autonomous", auto_commands);
 
