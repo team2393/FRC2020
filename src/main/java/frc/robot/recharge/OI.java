@@ -35,7 +35,7 @@ public class OI
     // we were disabled, and then suddenly things start to happen
     // as we enable..
     // --> Read each 'pressed' state once to clear it
-    for (int i=0; i<=10; ++i)
+    for (int i=1; i<=10; ++i)
       joystick.getRawButtonPressed(i);
   }
 

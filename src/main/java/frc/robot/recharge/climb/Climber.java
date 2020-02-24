@@ -23,8 +23,9 @@ public class Climber extends SubsystemBase
   public Climber()
   {
     telescope.configFactoryDefault();
-    climb.configFactoryDefault();
     telescope.setSelectedSensorPosition(0);
+    climb.configFactoryDefault();
+    climb.setInverted(true);
   }
 
   /** Move telescoping arm up/down
