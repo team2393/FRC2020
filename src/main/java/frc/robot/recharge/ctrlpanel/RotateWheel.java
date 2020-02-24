@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.recharge.ctrlpanel.ColorDetector.Segment_Color;
 
 /** Command to rotate wheel N times */
-public class RotateWheel extends CommandBase {
+public class RotateWheel extends CommandBase
+{
   /**
    * We want to see each color this many times to be certain it's not a fluke
    * reading
@@ -34,16 +35,24 @@ public class RotateWheel extends CommandBase {
    * @param wheel Control wheel to turn
    * @param turns How many times should be turn the wheel?
    */
-  public RotateWheel(final ControlWheel wheel, final int turns) {
+  public RotateWheel(final ControlWheel wheel, final int turns)
+  {
     this.wheel = wheel;
-    required_sectors = turns * 8;
+    // Wheel has 8 segments.
+    // We typically need to rotate for at least 3 turns,
+    // but not more than 5.
+    // Just in case the field's color sensor is already on a 'full' color
+    // while our sensor happens to start at the boundary between two colors,
+    // turn for one more segment to prevent turning too little.
+    required_sectors = turns * 8 + 1;
     addRequirements(wheel);
 
     SmartDashboard.putNumber("WheelSectors", required_sectors);
   }
 
   @Override
-  public void initialize() {
+  public void initialize()
+  {
     sectors = required_sectors;
     SmartDashboard.putNumber("WheelSectors", sectors);
     next_color = Segment_Color.Unkown;
@@ -51,7 +60,8 @@ public class RotateWheel extends CommandBase {
   }
 
   @Override
-  public void execute() {
+  public void execute()
+  {
     // Did the camera detect a color?
     Segment_Color color = wheel.getColor();
     if (color == Segment_Color.Unkown)
