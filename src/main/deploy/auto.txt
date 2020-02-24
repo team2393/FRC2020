@@ -48,6 +48,10 @@ Auto PickupAndShoot
 IntakeDown
 HoodClose
 Wait 1
+Hood 140
+Wait 1
+Hood 130
+Wait 1
 IntakeMid
 Shoot
 
