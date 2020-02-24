@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.recharge.drivetrain.DriveTrain;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.drivetrain.TurnToHeading;
+import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.HoodClose;
 import frc.robot.recharge.shooter.HoodFar;
@@ -29,6 +30,7 @@ import frc.robot.recharge.shooter.Intake;
 import frc.robot.recharge.shooter.IntakeDown;
 import frc.robot.recharge.shooter.IntakeMid;
 import frc.robot.recharge.shooter.IntakeUp;
+import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /** Build auto commands from a file */
 public class AutonomousBuilder
@@ -40,6 +42,7 @@ public class AutonomousBuilder
   public static List<SequentialCommandGroup> read(final File filename,
                                                   final DriveTrain drive_train,
                                                   final Intake intake,
+                                                  final PowerCellAccelerator pca,
                                                   final Hood hood) throws Exception
   {
     final BufferedReader file = new BufferedReader(new FileReader(filename));
@@ -133,25 +136,17 @@ public class AutonomousBuilder
         current_auto.addCommands(new WaitCommand(time));
       }
       else if(command.equals("IntakeUp"))
-      {
        current_auto.addCommands(new IntakeUp(intake)); 
-      }
       else if(command.equals("IntakeDown"))
-      {
        current_auto.addCommands(new IntakeDown(intake)); 
-      }
       else if(command.equals("IntakeMid"))
-      {
        current_auto.addCommands(new IntakeMid(intake)); 
-      }
       else if(command.equals("HoodClose"))
-      {
         current_auto.addCommands(new HoodClose(hood));
-      }
       else if(command.equals("HoodFar"))
-      {
         current_auto.addCommands(new HoodFar(hood));
-      }
+      else if(command.equals("Shoot"))
+        current_auto.addCommands(new Eject(pca));
       else
       {
         scanner.close();

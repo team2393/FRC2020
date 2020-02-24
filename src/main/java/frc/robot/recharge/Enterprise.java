@@ -101,8 +101,6 @@ public class Enterprise extends BasicRobot
   };
 
   private TeleopMode teleop_mode = TeleopMode.Drive;
-  private final CommandBase select_teleop_drive = new InstantCommand(() -> teleop_mode = TeleopMode.Drive); 
-  private final CommandBase select_teleop_climb = new InstantCommand(() -> teleop_mode = TeleopMode.Climb); 
 
   @Override
   public void robotInit()
@@ -119,9 +117,9 @@ public class Enterprise extends BasicRobot
     // SmartDashboard.putData("Heading Hold", heading_hold);
     // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
     
-    SmartDashboard.putData("Intake Up", intake_up);
-    SmartDashboard.putData("Intake Down", intake_down);
-    SmartDashboard.putData("Intake Mid", intake_mid);
+    // SmartDashboard.putData("Intake Up", intake_up);
+    // SmartDashboard.putData("Intake Down", intake_down);
+    // SmartDashboard.putData("Intake Mid", intake_mid);
 
     SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
 
@@ -132,7 +130,7 @@ public class Enterprise extends BasicRobot
     {
       // Add moves from auto.txt
       final File auto_file = new File(Filesystem.getDeployDirectory(), "auto.txt");
-      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train, intake, hood))
+      for (CommandBase moves : AutonomousBuilder.read(auto_file, drive_train, intake, pca, hood))
         auto_commands.addOption(moves.getName(), moves);
     }
     catch (Exception ex)
@@ -141,11 +139,6 @@ public class Enterprise extends BasicRobot
       ex.printStackTrace();
     }
     SmartDashboard.putData("Autonomous", auto_commands);
-
-    // Dashboard buttons to select drive mode
-    // TODO Remove, use joystick or button board?
-    SmartDashboard.putData("Drive", select_teleop_drive);
-    SmartDashboard.putData("Climb", select_teleop_climb);
 
     // Allow selecting settings for different scenarios
 
@@ -170,7 +163,7 @@ public class Enterprise extends BasicRobot
   public void teleopInit()
   {
     super.teleopInit();
-
+    OI.reset();
     auto_shift.schedule();
     drive_mode.schedule();
   }
@@ -187,6 +180,11 @@ public class Enterprise extends BasicRobot
 
   private void teleop_drive()
   {
+    if (OI.selectClimbMode())
+    {
+      teleop_mode = TeleopMode.Climb;
+      return;
+    }
     // TODO Indicate direction to target on LED
     // final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
     // TODO Filter direction sent by Raspberry/camera via
@@ -253,6 +251,12 @@ public class Enterprise extends BasicRobot
 
   private void teleop_climb()
   {
+    if (OI.selectDriveMode())
+    {
+      teleop_mode = TeleopMode.Drive;
+      return;
+    }
+
     intake_up.schedule();
     shooter_idle.schedule();
 
@@ -269,6 +273,7 @@ public class Enterprise extends BasicRobot
   {
     super.autonomousInit();
 
+    OI.reset();
     // Run the selected command.
     drive_train.reset();
     auto_commands.getSelected().schedule();

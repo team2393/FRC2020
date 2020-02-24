@@ -10,12 +10,6 @@ End 0.5 0 0
 
 
 # -----------------------------------------------------
-Auto Curve Right
-Trajectory
-End 1 -1 -90
-
-
-# -----------------------------------------------------
 Auto Smurftrack
 # Poses are a list of X Y Heading
 Poses
@@ -38,18 +32,6 @@ Pose -0.5 -0.5 90
 End 0 0 0
 
 
-
-# -----------------------------------------------------
-Auto Longtrack
-Poses
-Pose 3 0 0
-Pose 3.5 -0.5 -90
-Pose 3 -1.0 -180
-Pose 0 -1.0 -180
-Pose -0.5 -0.5 90
-End 0 0 0
-
-
 # -----------------------------------------------------
 Auto Turn in place
 TurnToHeading 10
@@ -59,19 +41,15 @@ TurnToHeading 10
 TurnToHeading -10
 TurnToHeading 10
 TurnToHeading -10
-TurnToHeading 10
-TurnToHeading -10
-TurnToHeading 10
-TurnToHeading -10
+
 
 #------------------------------------------------------
-Auto Adjust Hood
+Auto PickupAndShoot
+IntakeDown
 HoodClose
-HoodFar
-HoodClose
-HoodFar
-HoodClose
-HoodFar
+Wait 1
+IntakeMid
+Shoot
 
 # -----------------------------------------------------
 Auto 0.5 and Back 0.5
@@ -96,17 +74,12 @@ PathWeaver PathWeaver/Paths/Test.path
 
 # -----------------------------------------------------
 Auto Pick 2 and shoot
-# OpenIntake
+# IntakeDown
 ReversePoses
 End -4 0 0
-# CloseIntake
+# IntakeMid
 Poses
 Pose 2 0 0
 End 4 0.5 30
 # RotateToTarget
 # Shoot
-
-
-# -----------------------------------------------------
-Auto Rotate to target
-RotateToTarget

@@ -25,7 +25,31 @@ public class OI
   public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
   public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
   public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
-  
+
+  /** Reset joystick memory */
+  public static void reset()
+  {
+    // The 'getXXXPressed' methods remember if a button was
+    // pressed, even just briefly.
+    // Trouble is this includes times when it was pressed while
+    // we were disabled, and then suddenly things start to happen
+    // as we enable..
+    // --> Read each 'pressed' state once to clear it
+    for (int i=0; i<=10; ++i)
+      joystick.getRawButtonPressed(i);
+  }
+
+  public static boolean selectDriveMode()
+  {
+    return joystick.getRawButton(XboxController.Button.kBack.value);
+  }
+
+  public static boolean selectClimbMode()
+  {
+    return joystick.getRawButton(XboxController.Button.kStart.value);
+  }
+
+
   public static boolean isLowGearRequested()
   {
     return joystick.getTriggerAxis(Hand.kRight) > .5;
