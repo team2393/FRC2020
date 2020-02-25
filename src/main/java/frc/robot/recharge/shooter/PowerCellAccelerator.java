@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
@@ -38,6 +39,9 @@ public class PowerCellAccelerator extends SubsystemBase
   private final DigitalInput shooter_sensor_eject = new DigitalInput(RobotMap.SHOOTER_SENSOR_EJECT);
   private final DigitalInput shooter_sensor_low_conveyor = new DigitalInput(RobotMap.SHOOTER_SENSOR_LOW_CONVEYOR);
 
+  //Solenoids
+  private final Solenoid agitator = new Solenoid(RobotMap.INTAKE_AGITATOR);
+
 
   /** Normal voltage for moving conveyors */
   public final static double CONVEYOR_VOLTAGE = 11.0;
@@ -52,6 +56,10 @@ public class PowerCellAccelerator extends SubsystemBase
   private boolean shoot = false;
   /** Timer started when 'shoot' clears to keep the ejector running */
   private final Timer keep_running_timer = new Timer();
+
+  /** Timer for moving agitator up and down */
+  private final Timer agitator_timer = new Timer();
+
   /** Is the timer running? */
   private boolean timer_on = false;
 
@@ -59,6 +67,7 @@ public class PowerCellAccelerator extends SubsystemBase
   {
     commonSettings(conveyor_top, NeutralMode.Brake);
     commonSettings(conveyor_bottom, NeutralMode.Brake);
+    agitator_timer.start();
   }
   
   /** @param motor Motor to configure with common settings
@@ -81,6 +90,13 @@ public class PowerCellAccelerator extends SubsystemBase
   /** Move bottom conveyor */
   public void moveBottom(final double volt)
   {
+    if (volt == 0)
+      agitator.set(false);
+    else
+    {
+      if (agitator_timer.hasPeriodPassed(0.75))
+        agitator.set(!agitator.get());
+    }
     conveyor_bottom.setVoltage(volt);
   }
   

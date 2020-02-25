@@ -23,6 +23,12 @@ import frc.robot.recharge.auto.AutonomousBuilder;
 import frc.robot.recharge.climb.ClimbIdle;
 import frc.robot.recharge.climb.Climber;
 import frc.robot.recharge.climb.ControlClimber;
+import frc.robot.recharge.ctrlpanel.ControlWheel;
+import frc.robot.recharge.ctrlpanel.ExtendControlWheel;
+import frc.robot.recharge.ctrlpanel.ManualWheelSpeed;
+import frc.robot.recharge.ctrlpanel.RetractControlWheel;
+import frc.robot.recharge.ctrlpanel.RotateToColor;
+import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveTrain;
@@ -79,13 +85,12 @@ public class Enterprise extends BasicRobot
   
   private final Hood hood = new Hood();
 
-  // TODO Connect control wheel commands to buttons
-  // private final ColorSensor color_sensor = new ColorSensor();
-
-  // private final ControlWheel fortune = new ControlWheel();
-  // private final Command manual_wheel = new ManualWheelSpeed(fortune);
-  // private final Command rotate_wheel = new RotateWheel(fortune, 3);
-  // private final Command rotate_to_color = new RotateToColor(fortune);
+  private final ControlWheel fortune = new ControlWheel();
+  private final CommandBase extend_wheel = new ExtendControlWheel(fortune);
+  private final CommandBase retract_wheel = new RetractControlWheel(fortune);
+  private final CommandBase manual_wheel = new ManualWheelSpeed(fortune);
+  private final CommandBase rotate_wheel = new RotateWheel(fortune, 3);
+  private final CommandBase rotate_to_color = new RotateToColor(fortune);
 
   private Climber climber = new Climber();
   private CommandBase climb_idle = new ClimbIdle(climber);
@@ -99,11 +104,17 @@ public class Enterprise extends BasicRobot
   private enum TeleopMode
   {
     Drive,
-    // Wheel, ??
     Climb,
+    Wheel
   };
 
   private TeleopMode teleop_mode = TeleopMode.Drive;
+
+  private CommandBase select_teleop_wheel = new InstantCommand(() ->
+  {
+     teleop_mode = TeleopMode.Wheel;
+     extend_wheel.schedule();
+  });
 
   @Override
   public void robotInit()
@@ -126,6 +137,9 @@ public class Enterprise extends BasicRobot
 
     SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
     SmartDashboard.setDefaultNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
+
+    SmartDashboard.putData("Wheel Mode", select_teleop_wheel);
+
 
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -183,6 +197,8 @@ public class Enterprise extends BasicRobot
       teleop_drive();
     else if (teleop_mode == TeleopMode.Climb)
       teleop_climb();
+    else if (teleop_mode == TeleopMode.Wheel)
+      teleop_wheel();
   }
 
   private void teleop_drive()
@@ -274,6 +290,32 @@ public class Enterprise extends BasicRobot
     
     control_climb.schedule();
   }
+
+  private void teleop_wheel()
+  {
+    if (OI.selectDriveMode())
+    {
+      teleop_mode = TeleopMode.Drive;
+      retract_wheel.schedule();
+      return;
+    }
+
+    intake_up.schedule();
+    shooter_idle.schedule();
+
+    auto_shift.cancel();
+    shift_low.schedule();
+    OI.force_low_speed = true;
+    drive_by_joystick.schedule();
+    
+    if (OI.enable_wheel.get())
+         manual_wheel.schedule();
+    else if (OI.autorotate_wheel.get())
+        rotate_wheel.schedule();
+    else if (OI.rotate_to_color.get())
+        rotate_to_color.schedule();
+  }
+
 
   @Override
   public void autonomousInit()

@@ -24,6 +24,9 @@ public class Climber extends SubsystemBase
   {
     telescope.configFactoryDefault();
     telescope.setSelectedSensorPosition(0);
+    
+    //Avoid ripping telescope cord
+    telescope.configOpenloopRamp(0.5);
     climb.configFactoryDefault();
     climb.setInverted(true);
   }

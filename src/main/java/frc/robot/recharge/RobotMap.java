@@ -83,6 +83,7 @@ public class RobotMap
   public static final int LED_STRIP = 8;
 
   // PCM ports used for solenoids
-  public static final int GEAR_SOLENOID = 7;
   public static final int CONTROL_PANEL_SOLENOID = 6;
+  public static final int GEAR_SOLENOID = 7;
+  public static final int INTAKE_AGITATOR = 8;
 }
