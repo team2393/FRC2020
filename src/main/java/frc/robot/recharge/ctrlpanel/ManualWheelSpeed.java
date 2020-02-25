@@ -15,7 +15,6 @@ public class ManualWheelSpeed extends CommandBase
 {
   private final ControlWheel wheel;
 
-  // TODO Drive slightly forward to keep contact with control wheel
   public ManualWheelSpeed(final ControlWheel wheel)
   {
     this.wheel = wheel;

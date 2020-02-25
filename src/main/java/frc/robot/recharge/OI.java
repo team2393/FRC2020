@@ -69,10 +69,7 @@ public class OI
     else
       return 1;
   }
-
-  // TODO Wait 1/4 second to reach full speed? Same for rotation?
-  // private static final SlewRateLimiter speed_limiter = new SlewRateLimiter(4);
-
+  
   /** 'Signed square' to get more sensitivity around joystick center
    *  
    *  Same idea as in DifferentialDrive.arcadeDrive,

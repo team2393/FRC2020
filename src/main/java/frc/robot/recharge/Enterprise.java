@@ -49,9 +49,7 @@ import frc.robot.recharge.shooter.ShooterIdle;
  * Robot for 'Infinite Recharge' - R!$E2geTHeR#2020
  */
 public class Enterprise extends BasicRobot
-{
-  // TODO Check CAN bus utilization
-  
+{ 
   private final DriveTrain drive_train = new DriveTrain();
 
   // Commands that require the drive train, i.e. starting any of these commands
@@ -121,8 +119,6 @@ public class Enterprise extends BasicRobot
   {
     super.robotInit();
 
-    // TODO Remove test settings
-    PowerCellAccelerator.SHOOTER_RPM = 2000;
     // pcm.clearAllPCMStickyFaults();
 
     // Place some commands on dashboard
@@ -208,11 +204,6 @@ public class Enterprise extends BasicRobot
       teleop_mode = TeleopMode.Climb;
       return;
     }
-    // TODO Indicate direction to target on LED
-    // final double direction = SmartDashboard.getNumber("Direction", 0) / 160;
-    // TODO Filter direction sent by Raspberry/camera via
-    // https://docs.wpilib.org/en/latest/docs/software/advanced-control/filters/median-filter.html
-    // led_strip.indicateDirection(direction);
 
     // Disable climb control
     climb_idle.schedule();
@@ -328,9 +319,4 @@ public class Enterprise extends BasicRobot
     auto_commands.getSelected().schedule();
   }
 
-  @Override
-  public void autonomousPeriodic()
-  {
-    // TODO led_strip.rainbow();? Also indicate direction to target to debug what the robot sees?  
-  }
 }
