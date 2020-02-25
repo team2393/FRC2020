@@ -25,7 +25,7 @@ public class Eject extends CommandBase
     SUCCESS,   // Saw a ball shoot out
     TIMEOUT    // Give up, no ball seen flying out
   };
-  private State state = State.SPINUP;
+  private State state = State.SUCCESS;
   private final Timer timer = new Timer();
   private final Timer wait = new Timer();
 
