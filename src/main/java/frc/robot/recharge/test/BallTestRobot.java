@@ -39,7 +39,7 @@ public class BallTestRobot extends BasicRobot
 
     // 5) Attach prox sensor for "Ready" such that it detects
     //    when ball has been moved up to just-before the ejector
-    SmartDashboard.putBoolean("Ready", pca.powerCellReady());
+    SmartDashboard.putBoolean("Ready", pca.isPowerCellReady());
     // 6) Attach prox sensor for "Fired" such that it detects
     //    a ball in the ejector.
     //    Check this first without running the ejector,
@@ -47,7 +47,7 @@ public class BallTestRobot extends BasicRobot
     //    is detected during ejection
     SmartDashboard.putBoolean("Fired", pca.powerCellFired());
 
-    SmartDashboard.putBoolean("Low Conveyor Full", pca.lowConveyorFull());
+    SmartDashboard.putBoolean("Low Conveyor Full", pca.isLowConveyorFull());
   }
 
   @Override

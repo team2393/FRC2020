@@ -59,7 +59,7 @@ public class Eject extends CommandBase
       else
       {
         // Not fast enough. If there's a ball ready, keep it there
-        if (pca.powerCellReady())
+        if (pca.isPowerCellReady())
           pca.moveTop(0);
         else // Otherwise load a ball
           pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
@@ -80,7 +80,7 @@ public class Eject extends CommandBase
 
     // Keep horiz. belt moving until ball is in there,
     // regardless of what the vertical conveyor and ejector are doing.
-    if (! pca.lowConveyorFull()  ||  ! pca.powerCellReady())
+    if (! pca.isLowConveyorFull()  ||  ! pca.isPowerCellReady())
        pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
     else
       pca.moveBottom(0);

@@ -33,7 +33,7 @@ public class Load extends CommandBase
   @Override
   public void execute()
   {
-    if (!pca.powerCellReady())
+    if (!pca.isPowerCellReady())
     {
       pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
@@ -42,7 +42,7 @@ public class Load extends CommandBase
     {
       pca.moveTop(0);
     
-      if (!pca.lowConveyorFull())
+      if (!pca.isLowConveyorFull())
         pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       else
         pca.moveBottom(0);
@@ -52,7 +52,7 @@ public class Load extends CommandBase
   @Override
   public boolean isFinished()
   {
-    return pca.powerCellReady() && pca.lowConveyorFull();
+    return pca.isPowerCellReady() && pca.isLowConveyorFull();
   }
 
   @Override

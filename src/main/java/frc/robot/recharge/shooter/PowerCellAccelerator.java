@@ -72,25 +72,26 @@ public class PowerCellAccelerator extends SubsystemBase
     motor.setInverted(true);
   }
   
+  /** Move top conveyor */
   public void moveTop(final double volt)
   {
-    // Move top conveyor
     conveyor_top.setVoltage(volt);
   }
   
+  /** Move bottom conveyor */
   public void moveBottom(final double volt)
   {
-    //Move bottom conveyor
     conveyor_bottom.setVoltage(volt);
   }
   
-  /** Returns true if power cell is in "ready" position at end of vertical conveyor */
-  public boolean powerCellReady()
+  /** @return Is cell in "ready" position at end of vertical conveyor? */
+  public boolean isPowerCellReady()
   {
     return !shooter_sensor_ready.get();
   }
 
-  public boolean lowConveyorFull()
+  /** @return Is there a cell at the end of the horizontal conveyor? */
+  public boolean isLowConveyorFull()
   {
     return !shooter_sensor_low_conveyor.get();
   }
