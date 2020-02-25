@@ -44,6 +44,8 @@ import frc.robot.recharge.shooter.ShooterIdle;
  */
 public class Enterprise extends BasicRobot
 {
+  // TODO Check CAN bus utilization
+  
   private final DriveTrain drive_train = new DriveTrain();
 
   // Commands that require the drive train, i.e. starting any of these commands
