@@ -49,7 +49,6 @@ public class OI
     return joystick.getRawButton(XboxController.Button.kStart.value);
   }
 
-
   public static boolean isLowGearRequested()
   {
     return joystick.getTriggerAxis(Hand.kRight) > .5;
