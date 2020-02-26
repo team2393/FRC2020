@@ -70,9 +70,16 @@ public class ColorSensor implements ColorDetector
     final Segment_Color segment = Segment_Color.values()[best_match+1];
 
     final int dist = sensor.getProximity();
-    SmartDashboard.putString("ColorSensor",
-                            segment + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
+    if (closest_dist > 400)
+    {
+      SmartDashboard.putString("ColorSensor",
+                               "Ignore " + segment + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
+      return Segment_Color.Unkown;
+    }
 
+    SmartDashboard.putString("ColorSensor",
+                             segment + " (match " + closest_dist + ") RGB: " + red + ", " + green + ", " + blue + " at " + dist);
+      
     return segment;
   }
 }
