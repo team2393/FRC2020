@@ -9,6 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.recharge.Enterprise;
+import frc.robot.recharge.ctrlpanel.ControlWheel;
+import frc.robot.recharge.test.ControlWheelTestRobot;
 
 /** 'main' class, selects which robot to run */
 public final class Main

@@ -6,19 +6,27 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.ctrlpanel;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
+import frc.robot.recharge.test.ControlWheelTestRobot;
 
 /** Control panel wheel */
 public class ControlWheel extends SubsystemBase implements ColorDetector
 {
-  private final Servo motor = new Servo(RobotMap.CONTROL_PANEL_WHEEL);
+  private final WPI_TalonFX motor = new WPI_TalonFX(RobotMap.CONTROL_PANEL_WHEEL);
   private final Solenoid extender = new Solenoid(RobotMap.CONTROL_PANEL_SOLENOID);
 
   private final ColorDetector detector = new ColorSensor();
+
+  public ControlWheel()
+  {
+    motor.configFactoryDefault();
+  }
 
   /** @param extent Extend the control wheel assembly? */
   public void extend(final boolean extend)
@@ -31,22 +39,28 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
    */
   public void spin(final double speed)
   {
-    // Convert -1..1 range into 0..1 range
-    motor.set((MathUtil.clamp(speed, -1.0, 1.0) + 1.0) / 2.0);
+    motor.set(speed);
+    motor.setInverted(true);
   }
 
   public void slow()
   {
-    spin(-0.01);
+    spin(0.01);
   }
 
   public void fast()
   {
-    spin(-0.1);
+    spin(0.1);
   }
 
   public Segment_Color getColor()
   {
     return detector.getColor();
+  }
+
+  @Override
+  public void periodic()
+  {
+    System.out.println("Color: " + getColor());
   }
 }

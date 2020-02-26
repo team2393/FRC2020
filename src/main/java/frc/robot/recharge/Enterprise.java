@@ -299,12 +299,13 @@ public class Enterprise extends BasicRobot
     OI.force_low_speed = true;
     drive_by_joystick.schedule();
     
-    if (OI.enable_wheel.get())
-         manual_wheel.schedule();
-    else if (OI.autorotate_wheel.get())
-        rotate_wheel.schedule();
+    if (OI.autorotate_wheel.get())
+      rotate_wheel.schedule();
     else if (OI.rotate_to_color.get())
-        rotate_to_color.schedule();
+      rotate_to_color.schedule();
+
+    if (!rotate_to_color.isScheduled()  &&   !rotate_wheel.isScheduled())
+      manual_wheel.schedule();
   }
 
 

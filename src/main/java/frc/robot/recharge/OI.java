@@ -139,7 +139,7 @@ public class OI
   {
     // Each trigger returns value 0..1
     // Combine them into -1 .. 1 range
-    double value = - joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
+    double value = -joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
     // Slow down
     return value/3;
   }
