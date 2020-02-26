@@ -23,6 +23,7 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
   public ControlWheel()
   {
     motor.configFactoryDefault();
+    motor.setInverted(true);
   }
 
   /** @param extent Extend the control wheel assembly? */
@@ -37,7 +38,6 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
   public void spin(final double speed)
   {
     motor.set(speed);
-    motor.setInverted(true);
   }
 
   public void slow()
@@ -58,6 +58,7 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
   @Override
   public void periodic()
   {
+    // TODO To debug, poll color which causes it to show on the dashboard
     getColor();
   }
 }
