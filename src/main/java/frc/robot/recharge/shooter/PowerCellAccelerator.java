@@ -59,6 +59,7 @@ public class PowerCellAccelerator extends SubsystemBase
 
   /** Timer for moving agitator up and down */
   private final Timer agitator_timer = new Timer();
+  private boolean agitator_running = false;
 
   /** Is the timer running? */
   private boolean timer_on = false;
@@ -91,9 +92,17 @@ public class PowerCellAccelerator extends SubsystemBase
   public void moveBottom(final double volt)
   {
     if (volt == 0)
+    {
+      agitator_running = false;
       agitator.set(false);
+    }
     else
     {
+      if (! agitator_running)
+        agitator_timer.start();
+
+      agitator_running = true;
+
       boolean agitator_up = agitator.get();
       if (agitator_timer.hasPeriodPassed(1))
         agitator.set(!agitator_up);
