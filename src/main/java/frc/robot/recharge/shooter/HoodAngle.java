@@ -17,6 +17,7 @@ public class HoodAngle extends CommandBase
 
   public HoodAngle(Hood hood, double angle) 
   {
+    this.angle = angle;
     this.hood = hood;
     addRequirements(hood);
   }
