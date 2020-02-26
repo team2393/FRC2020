@@ -8,12 +8,9 @@ package frc.robot.recharge.ctrlpanel;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
-import frc.robot.recharge.test.ControlWheelTestRobot;
 
 /** Control panel wheel */
 public class ControlWheel extends SubsystemBase implements ColorDetector
@@ -61,6 +58,6 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
   @Override
   public void periodic()
   {
-    System.out.println("Color: " + getColor());
+    getColor();
   }
 }
