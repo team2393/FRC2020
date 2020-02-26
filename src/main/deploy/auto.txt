@@ -45,14 +45,18 @@ TurnToHeading -10
 
 #------------------------------------------------------
 Auto PickupAndShoot
-IntakeDown
-Hood 145
-Wait 1
-Hood 140
-Wait 1
-Hood 130
-Wait 1
-IntakeMid
+# IntakeDown
+#Hood 145
+#Wait 1
+#Hood 140
+#Wait 1
+#Hood 130
+#Wait 1
+#IntakeMid
+Shoot
+Wait 2
+# IntakeUp
+Shoot
 Shoot
 
 # -----------------------------------------------------
