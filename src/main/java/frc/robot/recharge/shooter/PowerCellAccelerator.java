@@ -95,11 +95,14 @@ public class PowerCellAccelerator extends SubsystemBase
     else
     {
       boolean agitator_up = agitator.get();
+      if (agitator_timer.hasPeriodPassed(1))
+        agitator.set(!agitator_up);
 
-      if (!agitator_up && agitator_timer.hasPeriodPassed(1.5))
-        agitator.set(true);
-      else if (agitator_up && agitator_timer.hasPeriodPassed(0.2))
-        agitator.set(false);
+      // TODO figure out why this doesn't work
+      // if (!agitator_up && agitator_timer.hasPeriodPassed(1.5))
+      //   agitator.set(true);
+      // else if (agitator_up && agitator_timer.hasPeriodPassed(0.2))
+      //   agitator.set(false);
     }
     conveyor_bottom.setVoltage(volt);
   }
