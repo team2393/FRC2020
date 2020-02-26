@@ -171,11 +171,10 @@ public class Enterprise extends BasicRobot
   {
     super.robotPeriodic();
 
-    // Control hood angle via manual entry on dashboard or ApplySettings()
-    hood.setHoodAngle(SmartDashboard.getNumber("Hood Setpoint", -1));
     PowerCellAccelerator.SHOOTER_RPM = SmartDashboard.getNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
+    SmartDashboard.putString("Teleop Mode", teleop_mode.toString());
   }
-
+  
   @Override
   public void teleopInit()
   {
@@ -184,11 +183,12 @@ public class Enterprise extends BasicRobot
     auto_shift.schedule();
     drive_mode.schedule();
   }
-
+  
   @Override
   public void teleopPeriodic()
   {
-    SmartDashboard.putString("Teleop Mode", teleop_mode.toString());
+    // Control hood angle via manual entry on dashboard or ApplySettings()
+    hood.setHoodAngle(SmartDashboard.getNumber("Hood Setpoint", -1));
     if (teleop_mode == TeleopMode.Drive)
       teleop_drive();
     else if (teleop_mode == TeleopMode.Climb)
