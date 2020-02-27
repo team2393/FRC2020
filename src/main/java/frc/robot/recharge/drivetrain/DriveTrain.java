@@ -6,6 +6,8 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.recharge.drivetrain;
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -279,11 +281,19 @@ public class DriveTrain extends SubsystemBase
    */
   public CommandBase createRamsete(final Trajectory trajectory)
   {
+    final BiConsumer<Double, Double> setSpeedsButCarefully = (left_speed, right_speed) ->
+    {
+      if (Math.abs(left_speed) > 1.5  ||
+          Math.abs(right_speed) > 1.5)
+          System.out.println("Ramsete asks us to go at " + left_speed + " resp. " + right_speed + "m/s");
+      driveSpeed(left_speed, right_speed);
+    };
+
     return new RamseteCommand(trajectory,
                               odometry::getPoseMeters,
                               new RamseteController(2.0, 0.7),
                               kinematics,
-                              this::driveSpeed,
+                              setSpeedsButCarefully,
                               this);
   }
 

@@ -317,8 +317,7 @@ public class Enterprise extends BasicRobot
     OI.reset();
     hood.reset();
     drive_train.reset();
-    load.schedule();
-    shooter_idle.schedule();
+    
     // Run the selected command.
     auto_commands.getSelected().schedule();
   }
