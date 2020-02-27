@@ -42,6 +42,7 @@ public class Eject extends CommandBase
     pca.eject(true);
     state = State.SPINUP;
     wait.start();
+    System.out.println("EJECT: " + state);
   }
 
   @Override
@@ -49,15 +50,18 @@ public class Eject extends CommandBase
   {
     if (state == State.SPINUP)
     {
+      double rpm = pca.getShooterRPM();
       // Once it's fast enough, SHOOT!!
-      if (pca.getShooterRPM() >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
+      if (rpm >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
+        System.out.println("EJECT: " + state);
         timer.start();
         wait.stop();
       }
       else
       {
+        System.out.println("EJECT: Low rpm " + rpm);
         // Not fast enough. If there's a ball ready, keep it there
         if (pca.isPowerCellReady())
           pca.moveTop(0);
@@ -74,7 +78,7 @@ public class Eject extends CommandBase
       if (pca.powerCellFired())
         state = State.SUCCESS;
       // In reality, we might not, so stop after a few seconds
-      else if (timer.hasElapsed(10.0))
+      else if (timer.hasElapsed(5.0))
         state = State.TIMEOUT;
     }
 
@@ -95,6 +99,7 @@ public class Eject extends CommandBase
   @Override
   public void end(final boolean interrupted)
   {
+    System.out.println("EJECT: " + state);
     // Turn ejector off
     // (but it keeps running for a while in case we want to shoot again, soon)
     pca.eject(false);

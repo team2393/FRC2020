@@ -49,7 +49,6 @@ public class OI
     return joystick.getRawButton(XboxController.Button.kStart.value);
   }
 
-
   public static boolean isLowGearRequested()
   {
     return joystick.getTriggerAxis(Hand.kRight) > .5;
@@ -158,9 +157,9 @@ public class OI
     // Holding one bumber to climb, both to climb faster
     double speed = 0.0;
     if (joystick.getBumper(Hand.kLeft))
-      speed += 0.3;
+      speed += 0.5;
     if (joystick.getBumper(Hand.kRight))  
-      speed += 0.3;
+      speed += 0.5;
     return speed;  
   }   
 }
