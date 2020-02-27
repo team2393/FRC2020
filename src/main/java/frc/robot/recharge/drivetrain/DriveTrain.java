@@ -283,8 +283,8 @@ public class DriveTrain extends SubsystemBase
   {
     final BiConsumer<Double, Double> setSpeedsButCarefully = (left_speed, right_speed) ->
     {
-      if (Math.abs(left_speed) > 1.5  ||
-          Math.abs(right_speed) > 1.5)
+      if (Math.abs(left_speed) > 0.9  ||
+          Math.abs(right_speed) > 0.9)
           System.out.println("Ramsete asks us to go at " + left_speed + " resp. " + right_speed + "m/s");
       driveSpeed(left_speed, right_speed);
     };
