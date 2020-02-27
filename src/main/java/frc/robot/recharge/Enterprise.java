@@ -315,9 +315,19 @@ public class Enterprise extends BasicRobot
     super.autonomousInit();
 
     OI.reset();
-    // Run the selected command.
+    hood.reset();
     drive_train.reset();
+    load.schedule();
+    shooter_idle.schedule();
+    // Run the selected command.
     auto_commands.getSelected().schedule();
   }
 
+  @Override
+  public void autonomousPeriodic()
+  {
+    // If nothing else is using the shooter: Load
+    if (pca.getCurrentCommand() == null)
+      load.schedule();
+  }
 }

@@ -47,6 +47,12 @@ public class Hood extends SubsystemBase
     hood_motor.setInverted(false);
 
     // Reset to zero on startup
+    reset();
+  }
+  
+  /** Reset hood position to '150' */
+  public void reset()
+  {
     hood_motor.setSelectedSensorPosition(0);
   }
   
@@ -60,7 +66,7 @@ public class Hood extends SubsystemBase
 
     // An angle of zero (degrees/radians) should be 'horizontal'
     //   90 deg = 'up'
-    // ~120 deg = start position, fully retracted
+    // ~150 deg = start position, fully retracted
     final double offset = 150.0;
     return offset + hood_motor.getSelectedSensorPosition() * encoder_angle * gearing;
   }
