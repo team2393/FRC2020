@@ -114,7 +114,7 @@ public class RotateToTarget extends CommandBase
       speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.02);
     }
     
-    final double max = 0.35;   
+    final double max = 0.25;
     drive_train.drive(MathUtil.clamp(speed, -max, max), MathUtil.clamp(rotation, -max, max));
 
     if (Math.abs(direction) < 2 && Math.abs(position_error) < 2)
