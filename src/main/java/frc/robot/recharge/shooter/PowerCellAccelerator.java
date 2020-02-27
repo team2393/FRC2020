@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
 
@@ -50,7 +51,7 @@ public class PowerCellAccelerator extends SubsystemBase
   public static double SHOOTER_RPM = 5000;
 
   /** Minimum speed for shooting a ball as fraction of SHOOTER_RPM */
-  public final static double MINIMUM_RPM_FRACTION = 0.9;
+  public final static double MINIMUM_RPM_FRACTION = 0.95;
 
   /** Should we shoot? */
   private boolean shoot = false;
@@ -172,5 +173,6 @@ public class PowerCellAccelerator extends SubsystemBase
       shooter.setVoltage(0);
       timer_on = false;
     }
+    SmartDashboard.putNumber("RPM", getShooterRPM());
   }
 }

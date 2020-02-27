@@ -78,7 +78,7 @@ public class Eject extends CommandBase
       if (pca.powerCellFired())
         state = State.SUCCESS;
       // In reality, we might not, so stop after a few seconds
-      else if (timer.hasElapsed(10.0))
+      else if (timer.hasElapsed(5.0))
         state = State.TIMEOUT;
     }
 

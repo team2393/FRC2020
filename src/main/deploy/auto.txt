@@ -82,12 +82,24 @@ PathWeaver PathWeaver/Paths/Test.path
 
 # -----------------------------------------------------
 Auto Pick 2 and shoot
-# IntakeDown
+Hood 140
+Shoot
+Wait 0.5
+Shoot
+IntakeDown
 ReversePoses
-End -4 0 0
-# IntakeMid
+Pose -1.4 -1 47
+Pose -2.2 -1.7 13
+End -4 -1.8 0
+IntakeMid
 Poses
-Pose 2 0 0
-End 4 0.5 30
-# RotateToTarget
-# Shoot
+End  4 1.8 0
+Shoot
+Wait 0.5
+Shoot
+Wait 0.5
+Shoot
+Wait 0.5
+Shoot
+Wait 0.5
+Shoot

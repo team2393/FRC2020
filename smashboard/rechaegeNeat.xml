@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="RPM" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="704" y="116"/>
+	</widget>
+	<widget field="Steering" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="9" y="1"/>
+	</widget>
 	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="659" y="285"/>
 	</widget>
