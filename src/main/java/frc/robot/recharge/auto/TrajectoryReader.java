@@ -28,7 +28,7 @@ public class TrajectoryReader
   /** Trajectory config & constraints to use when turning
    *  poses & points into a trajectory
    */
-  public static TrajectoryConfig config = new TrajectoryConfig(1, 1.0)
+  public static TrajectoryConfig config = new TrajectoryConfig(1.2, 1.0)
                                           .addConstraint(new CurvatureConstraint(45.0))
                                           .setKinematics(DriveTrain.kinematics)
                                           ;
