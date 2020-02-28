@@ -139,6 +139,15 @@ public class DriveTrain extends SubsystemBase
     setGear(false);
   }
 
+  public void lock(boolean lock)
+  {
+    final NeutralMode mode = lock ? NeutralMode.Brake : NeutralMode.Coast;
+    left_main.setNeutralMode(mode);
+    right_main.setNeutralMode(mode);
+    left_slave.setNeutralMode(mode);
+    right_slave.setNeutralMode(mode);
+  }
+
   /** @return Is gear in high speed? */
   public boolean isHighSpeed()
   {
