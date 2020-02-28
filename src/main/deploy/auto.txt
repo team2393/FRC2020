@@ -16,7 +16,9 @@ End 0 0 0
 Auto Target Pickup Target
 Hood 140
 Shoot
-Wait 0.5
+Wait 0.1
+Shoot
+Wait 0.1
 Shoot
 IntakeDown
 ReversePoses
@@ -26,15 +28,13 @@ End -4 -1.8 0
 IntakeMid
 Poses
 End  4 1.8 0
+RotateToTarget
 Shoot
-Wait 0.5
+Wait 0.1
 Shoot
-Wait 0.5
+Wait 0.1
 Shoot
-Wait 0.5
-Shoot
-Wait 0.5
-Shoot
+
 
 
 
