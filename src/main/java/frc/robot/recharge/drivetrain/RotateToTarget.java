@@ -41,7 +41,7 @@ public class RotateToTarget extends CommandBase
     this.drive_train = drive_train;
     addRequirements(drive_train);
 
-    SmartDashboard.setDefaultNumber("TargetRotGain", 0.02);
+    SmartDashboard.setDefaultNumber("TargetRotGain", 0.0035000);
     // "Full screen" range would be +- 160
     SmartDashboard.setDefaultNumber("TargetRotThres", 150);
     SmartDashboard.setDefaultNumber("Desired Distance", -500);
@@ -96,11 +96,11 @@ public class RotateToTarget extends CommandBase
       final double direction_error = direction - SmartDashboard.getNumber("Desired Direction", 0);
 
       // Proportial gain controller with some minimum 
-      rotation = direction_error * SmartDashboard.getNumber("TargetRotGain", 0.02);
+      rotation = direction_error * SmartDashboard.getNumber("TargetRotGain", 0.0035);
       if (direction > 1)
-        rotation += 0.1;
+        rotation += 0.01;
       else if (direction < 1)
-        rotation -= 0.1;
+        rotation -= 0.01;
     }
 
     double desired_distance = SmartDashboard.getNumber("Desired Distance", -500); 
@@ -111,10 +111,10 @@ public class RotateToTarget extends CommandBase
     if (desired_distance > -120 && desired_distance < 120)
     {
       position_error = (last.distance == 0)  ?  0  :  (desired_distance - last.distance);
-      speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.02);
+      speed = position_error * 10 * SmartDashboard.getNumber("TargetRotGain", 0.001000);
     }
     
-    final double max = 0.25;
+    final double max = 0.1;
     drive_train.drive(MathUtil.clamp(speed, -max, max), MathUtil.clamp(rotation, -max, max));
 
     if (Math.abs(direction) < 2 && Math.abs(position_error) < 2)
