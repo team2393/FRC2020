@@ -160,12 +160,18 @@ public class Enterprise extends BasicRobot
 
     // Settings for different scenarios
     final CommandBase default_settings;
-    SmartDashboard.putData("Near Settings", default_settings = new ApplySettings("near.txt"));
-    SmartDashboard.putData("Far Settings", new ApplySettings("far.txt"));
+    SmartDashboard.putData("Near Settings", new ApplySettings("near.txt"));
+    SmartDashboard.putData("Far Settings", default_settings = new ApplySettings("far.txt"));
     SmartDashboard.putData("Viewable Settings", new ApplySettings("viewable.txt"));
     default_settings.schedule();
   }
 
+  @Override
+  public void disabledInit()
+  {
+    drive_train.lock(false);
+  }
+  
   @Override
   public void robotPeriodic()
   {
@@ -179,9 +185,11 @@ public class Enterprise extends BasicRobot
   public void teleopInit()
   {
     super.teleopInit();
+    drive_train.lock(true);
     OI.reset();
     auto_shift.schedule();
     drive_mode.schedule();
+    load.schedule();
   }
   
   @Override
@@ -317,6 +325,7 @@ public class Enterprise extends BasicRobot
     OI.reset();
     hood.reset();
     drive_train.reset();
+    drive_train.lock(true);
     
     // Run the selected command.
     auto_commands.getSelected().schedule();
