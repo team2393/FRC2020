@@ -157,10 +157,12 @@ public class OI
   /** @return telescope speed -1 (down) to 1 (up) */
   public static double getTelescopeSpeed()
   {
-    // Triggers return 0..1
-    // Right trigger for 'up', left trigger 'down'
-    return joystick.getTriggerAxis(Hand.kRight) -
-           joystick.getTriggerAxis(Hand.kLeft);
+    if (buttonboard.getRawButton(1))
+      return -0.5;
+    else if (buttonboard.getRawButton(2))
+      return 0.5;
+    else 
+      return 0;
   }
 
   private static Timer climb_timer = new Timer();

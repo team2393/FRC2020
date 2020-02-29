@@ -72,7 +72,7 @@ public class Intake extends SubsystemBase
     final double gearing = 12.0 / 30.0;
 
     // Offset to get 0 degree == horizontal
-    final double offset = 90.0;
+    final double offset = 162.7;
     return offset - rotator.getSelectedSensorPosition() * encoder_angle * gearing;
   }
 

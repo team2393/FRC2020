@@ -102,7 +102,8 @@ public class Enterprise extends BasicRobot
   {
     Drive,
     Climb,
-    Wheel
+    Wheel,
+    SetUp
   };
 
   private TeleopMode teleop_mode = TeleopMode.Drive;
@@ -122,6 +123,8 @@ public class Enterprise extends BasicRobot
     // SmartDashboard.putData("Intake Up", intake_up);
     // SmartDashboard.putData("Intake Down", intake_down);
     // SmartDashboard.putData("Intake Mid", intake_mid);
+
+    SmartDashboard.putData("Setup Mode", new InstantCommand(()-> teleop_mode = TeleopMode.SetUp));
 
     SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
     SmartDashboard.setDefaultNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
@@ -196,6 +199,8 @@ public class Enterprise extends BasicRobot
       teleop_climb();
     else if (teleop_mode == TeleopMode.Wheel)
       teleop_wheel();
+    else if (teleop_mode == TeleopMode.SetUp)
+      teleop_setup();
   }
 
   private void teleop_drive()
@@ -313,6 +318,14 @@ public class Enterprise extends BasicRobot
 
     if (!rotate_to_color.isScheduled()  &&   !rotate_wheel.isScheduled())
       manual_wheel.schedule();
+  }
+
+  private void teleop_setup()
+  {
+    intake.setRotatorMotor(OI.getSpeed());
+
+    if (OI.selectDriveMode())
+      teleop_mode = TeleopMode.Drive;
   }
 
   @Override

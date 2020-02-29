@@ -7,6 +7,7 @@
 
 package frc.robot.recharge.test;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
@@ -45,7 +46,7 @@ public class IntakeTestRobot extends BasicRobot
   public void teleopPeriodic()
   {
     // 1) Hold A button to run spinner (already adjusted in SpinnerTestRobot)
-    intake.enableSpinner(OI.isShootHeld());
+    // intake.enableSpinner(OI.isShootHeld());
 
     if (! OI.joystick.getYButton())
     {
