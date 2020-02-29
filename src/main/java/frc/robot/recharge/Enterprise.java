@@ -126,7 +126,8 @@ public class Enterprise extends BasicRobot
 
     SmartDashboard.putData("Setup Mode", new InstantCommand(()-> teleop_mode = TeleopMode.SetUp));
 
-    SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
+    SmartDashboard.setDefaultNumber("Teleop Hood Setpoint", -1);
+
     SmartDashboard.setDefaultNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
 
     // Auto options: Start with fixed options
@@ -191,8 +192,9 @@ public class Enterprise extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-    // Control hood angle via manual entry on dashboard or ApplySettings()
-    hood.setHoodAngle(SmartDashboard.getNumber("Hood Setpoint", -1));
+      // Control hood angle via manual entry on dashboard or ApplySettings()
+      hood.setHoodAngle(SmartDashboard.getNumber("Teleop Hood Setpoint", -1));
+
     if (teleop_mode == TeleopMode.Drive)
       teleop_drive();
     else if (teleop_mode == TeleopMode.Climb)
@@ -282,7 +284,12 @@ public class Enterprise extends BasicRobot
       teleop_mode = TeleopMode.Drive;
       return;
     }
-
+    else if (OI.selectWheelMode())
+    {
+      teleop_mode = TeleopMode.Wheel;
+      extend_wheel.schedule();
+      return;
+    }
     intake_up.schedule();
     shooter_idle.schedule();
 
@@ -302,7 +309,12 @@ public class Enterprise extends BasicRobot
       retract_wheel.schedule();
       return;
     }
-
+    else if (OI.selectClimbMode())
+    {
+      teleop_mode = TeleopMode.Climb;
+      retract_wheel.schedule();
+      return;
+    }
     intake_up.schedule();
     shooter_idle.schedule();
 
@@ -322,8 +334,8 @@ public class Enterprise extends BasicRobot
 
   private void teleop_setup()
   {
+    drive_mode.cancel();
     intake.setRotatorMotor(OI.getSpeed());
-
     if (OI.selectDriveMode())
       teleop_mode = TeleopMode.Drive;
   }
@@ -334,6 +346,8 @@ public class Enterprise extends BasicRobot
     super.autonomousInit();
 
     OI.reset();
+    SmartDashboard.putNumber("Teleop Hood Setpoint", -1);
+    hood.setHoodAngle(-1);
     hood.reset();
     hood.lock(true);
     drive_train.reset();

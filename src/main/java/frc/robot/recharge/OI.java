@@ -41,17 +41,17 @@ public class OI
 
   public static boolean selectDriveMode()
   {
-    return buttonboard.getRawButtonPressed(3);
+    return buttonboard.getRawButton(3);
   }
 
   public static boolean selectClimbMode()
   {
-    return buttonboard.getRawButtonPressed(4);
+    return buttonboard.getRawButton(5);
   }
-
+  
   public static boolean selectWheelMode()
   {
-    return buttonboard.getRawButtonPressed(5);
+    return buttonboard.getRawButton(4);
   }
 
   public static boolean isLowGearRequested()

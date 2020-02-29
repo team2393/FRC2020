@@ -99,11 +99,10 @@ public class Hood extends SubsystemBase
   public void periodic()
   {
     SmartDashboard.putNumber("Hood Angle", getHoodAngle());
-
     if (desired_angle >= 0 && desired_angle <= 150)
     {
       final double correction = pid.calculate(getHoodAngle(), desired_angle);
-      hood_motor.setVoltage(MathUtil.clamp(correction, -2, 2));
+      hood_motor.setVoltage(MathUtil.clamp(correction, -1.5, 1.5));
     }
     else
       hood_motor.setVoltage(0);
