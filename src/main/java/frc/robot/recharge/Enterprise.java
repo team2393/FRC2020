@@ -58,7 +58,7 @@ public class Enterprise extends BasicRobot
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
   private final HeadingHold heading_hold = new HeadingHold(drive_train);
   /** Most recent drive mode, either drive_by_joystick or heading_hold */
-  private CommandBase drive_mode = heading_hold;
+  private CommandBase drive_mode = drive_by_joystick;
   // After align_on_target, return to current drive_mode
   private final CommandBase align_on_target = new RotateToTarget(drive_train);
   // Indicate heading_hold vs. drive_by_joystick
@@ -108,12 +108,6 @@ public class Enterprise extends BasicRobot
 
   private TeleopMode teleop_mode = TeleopMode.Drive;
 
-  private CommandBase select_teleop_wheel = new InstantCommand(() ->
-  {
-     teleop_mode = TeleopMode.Wheel;
-     extend_wheel.schedule();
-  });
-
   @Override
   public void robotInit()
   {
@@ -133,9 +127,6 @@ public class Enterprise extends BasicRobot
 
     SmartDashboard.setDefaultNumber("Hood Setpoint", -1);
     SmartDashboard.setDefaultNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
-
-    SmartDashboard.putData("Wheel Mode", select_teleop_wheel);
-
 
     // Auto options: Start with fixed options
     auto_commands.setDefaultOption("Nothing", new PrintCommand("Doing nothing"));
@@ -210,6 +201,12 @@ public class Enterprise extends BasicRobot
     if (OI.selectClimbMode())
     {
       teleop_mode = TeleopMode.Climb;
+      return;
+    }
+    else if (OI.selectWheelMode())
+    {
+      teleop_mode = TeleopMode.Wheel;
+      extend_wheel.schedule();
       return;
     }
 
@@ -307,15 +304,14 @@ public class Enterprise extends BasicRobot
     OI.force_low_speed = true;
     drive_by_joystick.schedule();
     
-    if (OI.autorotate_wheel.get())
+    if (OI.isAutorotateWheelRequested())
       rotate_wheel.schedule();
-    else if (OI.rotate_to_color.get())
+    else if (OI.isRotateToColorRequested())
       rotate_to_color.schedule();
 
     if (!rotate_to_color.isScheduled()  &&   !rotate_wheel.isScheduled())
       manual_wheel.schedule();
   }
-
 
   @Override
   public void autonomousInit()

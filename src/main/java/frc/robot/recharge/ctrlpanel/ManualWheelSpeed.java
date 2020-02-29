@@ -10,7 +10,7 @@ package frc.robot.recharge.ctrlpanel;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.recharge.OI;
 
-/** Command to turn wheel with joystick */
+/** Command to turn wheel with joystick/button */
 public class ManualWheelSpeed extends CommandBase
 {
   private final ControlWheel wheel;

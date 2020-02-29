@@ -21,22 +21,26 @@ import frc.robot.recharge.ctrlpanel.RotateWheel;
 public class ControlWheelTestRobot extends BasicRobot
 {
   private final ControlWheel wheel = new ControlWheel();
-  
-  @Override
-  public void robotInit()
-  {
-    super.robotInit();
-    OI.extend_control_wheel.whenPressed(new ExtendControlWheel(wheel));
-    OI.retract_control_wheel.whenPressed(new RetractControlWheel(wheel));
-    OI.enable_wheel.whenPressed(new ManualWheelSpeed(wheel));
-    OI.autorotate_wheel.whenPressed(new RotateWheel(wheel, 3));
-    OI.rotate_to_color.whenPressed(new RotateToColor(wheel));
-  }
-
+    
   @Override
   public void robotPeriodic()
   {
     super.robotPeriodic();
     SmartDashboard.putString("Color", wheel.getColor().name());
+  }
+  
+  @Override
+  public void teleopPeriodic()
+  {
+    if (OI.selectWheelMode())
+      new ExtendControlWheel(wheel).schedule();
+    else if (OI.selectDriveMode() || OI.selectClimbMode())
+      new RetractControlWheel(wheel).schedule();
+    
+    // TODO OI.enable_wheel.whenPressed(new ManualWheelSpeed(wheel));
+    if (OI.isAutorotateWheelRequested())
+      new RotateWheel(wheel, 3).schedule();
+    if (OI.isRotateToColorRequested())
+      new RotateToColor(wheel).schedule();
   }
 }

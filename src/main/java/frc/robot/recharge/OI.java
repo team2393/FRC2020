@@ -7,9 +7,11 @@
 
 package frc.robot.recharge;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
  * Operator Interface Definitions
@@ -19,12 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class OI
 {
   public static final XboxController joystick = new XboxController(0);
-
-  public static final JoystickButton extend_control_wheel = new JoystickButton(joystick, XboxController.Button.kBumperLeft.value);
-  public static final JoystickButton retract_control_wheel = new JoystickButton(joystick, XboxController.Button.kBumperRight.value);
-  public static final JoystickButton enable_wheel = new JoystickButton(joystick, XboxController.Button.kA.value);
-  public static final JoystickButton autorotate_wheel = new JoystickButton(joystick, XboxController.Button.kB.value);
-  public static final JoystickButton rotate_to_color = new JoystickButton(joystick, XboxController.Button.kX.value);
+  public static final Joystick buttonboard = new Joystick(1);
 
   /** Reset joystick memory */
   public static void reset()
@@ -37,16 +34,24 @@ public class OI
     // --> Read each 'pressed' state once to clear it
     for (int i=1; i<=10; ++i)
       joystick.getRawButtonPressed(i);
+
+    for (int i=1; i<=11; ++i)
+      buttonboard.getRawButtonPressed(i);
   }
 
   public static boolean selectDriveMode()
   {
-    return joystick.getRawButton(XboxController.Button.kBack.value);
+    return buttonboard.getRawButtonPressed(3);
   }
 
   public static boolean selectClimbMode()
   {
-    return joystick.getRawButton(XboxController.Button.kStart.value);
+    return buttonboard.getRawButtonPressed(4);
+  }
+
+  public static boolean selectWheelMode()
+  {
+    return buttonboard.getRawButtonPressed(5);
   }
 
   public static boolean isLowGearRequested()
@@ -132,15 +137,21 @@ public class OI
     else
       return square(joystick.getX(Hand.kRight));
   }
+
+  public static boolean isAutorotateWheelRequested()
+  {
+    return buttonboard.getRawButtonPressed(9);
+  }
+
+  public static boolean isRotateToColorRequested()
+  {
+    return buttonboard.getRawButtonPressed(10);
+  }
     
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()
   {
-    // Each trigger returns value 0..1
-    // Combine them into -1 .. 1 range
-    double value = -joystick.getTriggerAxis(Hand.kLeft) + joystick.getTriggerAxis(Hand.kRight);
-    // Slow down
-    return value/3;
+    return buttonboard.getRawButton(8) ? 0.2 : 0.0;
   }
   
   /** @return telescope speed -1 (down) to 1 (up) */
@@ -151,15 +162,25 @@ public class OI
     return joystick.getTriggerAxis(Hand.kRight) -
            joystick.getTriggerAxis(Hand.kLeft);
   }
-  
+
+  private static Timer climb_timer = new Timer();
+  private static boolean climbing = false;
+
   public static double getClimbSpeed()
   {
-    // Holding one bumber to climb, both to climb faster
-    double speed = 0.0;
-    if (joystick.getBumper(Hand.kLeft))
-      speed += 0.5;
-    if (joystick.getBumper(Hand.kRight))  
-      speed += 0.5;
-    return speed;  
+    boolean do_climb = buttonboard.getRawButton(11);
+    if (do_climb && !climbing)
+      climb_timer.start();
+    climbing = do_climb;
+
+    if (climbing)
+    {
+      // Use about 2 seconds to ramp up speed to full
+      double speed = climb_timer.get()/2;
+      // .. limit to 1   
+      return MathUtil.clamp(speed, 0, 1.0);
+    }
+    
+    return 0;
   }   
 }
