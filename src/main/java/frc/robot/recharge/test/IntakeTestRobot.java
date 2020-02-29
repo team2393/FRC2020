@@ -37,15 +37,15 @@ public class IntakeTestRobot extends BasicRobot
     SmartDashboard.putNumber("Intake Angle", intake.getAngle());   
 
     intake.configure(SmartDashboard.getNumber("kCos", 0),
-                     SmartDashboard.getNumber("P", 0.3),
+                     SmartDashboard.getNumber("P", 0),
                      SmartDashboard.getNumber("D", 0));
   }
 
   @Override
   public void teleopPeriodic()
   {
-    // 1) Hold A button to run spinner
-    intake.enableSpinner(OI.joystick.getAButton());
+    // 1) Hold A button to run spinner (already adjusted in SpinnerTestRobot)
+    intake.enableSpinner(OI.isShootHeld());
 
     if (! OI.joystick.getYButton())
     {
@@ -68,14 +68,13 @@ public class IntakeTestRobot extends BasicRobot
   {
     // 5) Tweak settings to move between two angles
     final boolean high = (System.currentTimeMillis() / 5000) % 2 == 0;
-    int setpoint = high ? 5 : 60;
+    int setpoint = high ? 30 : 50;
     intake.setIntakeAngle(setpoint);
     SmartDashboard.putNumber("Target Angle", setpoint);
-      // intake.setIntakeAngle(45);
 
     // 6) Enable the code in Intake.periodic() that
     //    has motor settle at <10 degrees after 5 seconds.
-    //    Change the two test angles to 0 & 45,
+    //    Change the two test angles to 5 & 60,
     //    period to 10 seconds,
     //    see how it works.
   }
