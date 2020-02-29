@@ -8,6 +8,7 @@
 package frc.robot.recharge.test;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
 import frc.robot.recharge.ctrlpanel.ControlWheel;
@@ -21,6 +22,9 @@ import frc.robot.recharge.ctrlpanel.RotateWheel;
 public class ControlWheelTestRobot extends BasicRobot
 {
   private final ControlWheel wheel = new ControlWheel();
+  private final CommandBase manual = new ManualWheelSpeed(wheel);
+  private final CommandBase auto = new RotateWheel(wheel, 3);
+  private final CommandBase color = new RotateToColor(wheel);
     
   @Override
   public void robotPeriodic()
@@ -37,10 +41,11 @@ public class ControlWheelTestRobot extends BasicRobot
     else if (OI.selectDriveMode() || OI.selectClimbMode())
       new RetractControlWheel(wheel).schedule();
     
-    // TODO OI.enable_wheel.whenPressed(new ManualWheelSpeed(wheel));
     if (OI.isAutorotateWheelRequested())
-      new RotateWheel(wheel, 3).schedule();
+      auto.schedule();
     if (OI.isRotateToColorRequested())
-      new RotateToColor(wheel).schedule();
+      color.schedule();
+    if (! (auto.isScheduled()  ||  color.isScheduled()))
+      manual.schedule();
   }
 }
