@@ -54,7 +54,6 @@ public class Enterprise extends BasicRobot
 
   // Commands that require the drive train, i.e. starting any of these commands
   // will cancel whatever else was running and required the drive train
-  private final CommandBase reset_drivetrain = new Reset(drive_train);
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
   private final HeadingHold heading_hold = new HeadingHold(drive_train);
   /** Most recent drive mode, either drive_by_joystick or heading_hold */
@@ -116,7 +115,6 @@ public class Enterprise extends BasicRobot
     // pcm.clearAllPCMStickyFaults();
 
     // Place some commands on dashboard
-    SmartDashboard.putData("Reset Drive", reset_drivetrain);
     SmartDashboard.putData("Auto Shift", auto_shift);
     // SmartDashboard.putData("Heading Hold", heading_hold);
     // SmartDashboard.putData("Drive by Joystick", drive_by_joystick);
@@ -161,6 +159,7 @@ public class Enterprise extends BasicRobot
   public void disabledInit()
   {
     drive_train.lock(false);
+    hood.lock(false);
   }
   
   @Override
@@ -176,8 +175,11 @@ public class Enterprise extends BasicRobot
   public void teleopInit()
   {
     super.teleopInit();
+
     drive_train.lock(true);
+    hood.lock(true);
     OI.reset();
+
     auto_shift.schedule();
     drive_mode.schedule();
     load.schedule();
@@ -320,6 +322,7 @@ public class Enterprise extends BasicRobot
 
     OI.reset();
     hood.reset();
+    hood.lock(true);
     drive_train.reset();
     drive_train.lock(true);
     
