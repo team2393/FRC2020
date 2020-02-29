@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import frc.robot.recharge.drivetrain.DriveTrain;
@@ -25,14 +24,6 @@ import frc.robot.recharge.drivetrain.DriveTrain;
 /** Tool for reading trajectory info from a file */
 public class TrajectoryReader
 {
-  /** Trajectory config & constraints to use when turning
-   *  poses & points into a trajectory
-   */
-  public static TrajectoryConfig config = new TrajectoryConfig(1.2, 1.0)
-                                          .addConstraint(new CurvatureConstraint(45.0))
-                                          .setKinematics(DriveTrain.kinematics)
-                                          ;
-
   /** Read a trajectory from a file with "Point X Y" and "End X Y Heading" commands
    * 
    *  Will read trajectory info from the current position of the file reader until
@@ -46,7 +37,7 @@ public class TrajectoryReader
   public static Trajectory readPoints(final BufferedReader file, final boolean reverse) throws Exception
   {
     // Assume we're moving forward
-    config.setReversed(reverse);
+    DriveTrain.trajectory_config.setReversed(reverse);
     // Initial position and heading
     final Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
 
@@ -95,7 +86,7 @@ public class TrajectoryReader
     if (end == null)
       throw new Exception("Trajectory lacks 'End X Y Heading'");
     
-    return TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+    return TrajectoryGenerator.generateTrajectory(start, waypoints, end, DriveTrain.trajectory_config);
   }
 
   /** Read a trajectory from a file with "Pose X Y Heading" commands
@@ -111,7 +102,7 @@ public class TrajectoryReader
   public static Trajectory readPoses(final BufferedReader file, final boolean reverse) throws Exception
   {
     // Assume we're moving forward
-    config.setReversed(reverse);
+    DriveTrain.trajectory_config.setReversed(reverse);
 
     final List<Pose2d> points = new ArrayList<>();
     points.add(new Pose2d());
@@ -146,7 +137,7 @@ public class TrajectoryReader
     if (end == null)
       throw new Exception("Trajectory lacks 'End X Y Heading'");
     
-    return TrajectoryGenerator.generateTrajectory(points, config);
+    return TrajectoryGenerator.generateTrajectory(points, DriveTrain.trajectory_config);
   }
   
   /** Read poses from a PathWeaver *.path file,
@@ -162,7 +153,7 @@ public class TrajectoryReader
   public static Trajectory readPath(final File file) throws Exception
   {
     //  Always treat trajectory as 'going forward'
-    config.setReversed(false);
+    DriveTrain.trajectory_config.setReversed(false);
 
     final List<Pose2d> points = new ArrayList<>();
     try ( final Scanner scanner = new Scanner(file) )
@@ -180,7 +171,7 @@ public class TrajectoryReader
         scanner.nextLine();
       }
     }
-    return TrajectoryGenerator.generateTrajectory(points, config);
+    return TrajectoryGenerator.generateTrajectory(points, DriveTrain.trajectory_config);
   }
 
   public static void main(String[] args) throws Exception

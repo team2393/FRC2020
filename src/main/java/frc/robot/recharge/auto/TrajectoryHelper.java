@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
+import frc.robot.recharge.drivetrain.DriveTrain;
 
 /** Helpers for dealing with Trajectory */
 public class TrajectoryHelper
@@ -123,21 +124,21 @@ public class TrajectoryHelper
           new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
           Collections.emptyList(),
           new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
-          TrajectoryReader.config);
+          DriveTrain.trajectory_config);
 
     // Trajectory that moves 1m forward, but anchored at 10
     Trajectory forward2 = TrajectoryGenerator.generateTrajectory(
           new Pose2d(10, 0, Rotation2d.fromDegrees(0)),
           Collections.emptyList(),
           new Pose2d(11, 0, Rotation2d.fromDegrees(0)),
-          TrajectoryReader.config);
+          DriveTrain.trajectory_config);
     
     // Trajectory that rotates right while moving 1m forward, anchored at 0
     Trajectory right = TrajectoryGenerator.generateTrajectory(
           new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
           Collections.emptyList(),
           new Pose2d(1, -1, Rotation2d.fromDegrees(-90)),
-          TrajectoryReader.config);
+          DriveTrain.trajectory_config);
 
     Pose2d nominal = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     Trajectory xform;

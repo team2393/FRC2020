@@ -25,11 +25,13 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.recharge.RobotMap;
+import frc.robot.recharge.auto.CurvatureConstraint;
 
 /** Drive train (them wheels)
  * 
@@ -40,7 +42,19 @@ import frc.robot.recharge.RobotMap;
  *  Angle of 90 degrees means moving along the Y axis.
  */
 public class DriveTrain extends SubsystemBase
-{
+{  
+  // Distance between left & right wheels is about 0.7m.
+  // Value actually used is from from frc-characterization
+  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.672);
+
+  /** Trajectory config & constraints.
+   *  Defines how fast this drivetrain can accelerate, run, turn.
+   */
+  public static TrajectoryConfig trajectory_config = new TrajectoryConfig(1.2, 1.0)
+                                          .addConstraint(new CurvatureConstraint(45.0))
+                                          .setKinematics(DriveTrain.kinematics)
+                                          ;
+
   // Encoder ticks per meter,
   // based on driving some distance and reading raw ticks
   private static final double TICKS_PER_METER = 512651 / Units.inchesToMeters(288);
@@ -75,10 +89,6 @@ public class DriveTrain extends SubsystemBase
   
   // Track current position based on gyro and encoders
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
-
-  // Distance between left & right wheels is about 0.7m.
-  // Value actually used is from from frc-characterization
-  public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0.672);
 
   public DriveTrain()
   {
