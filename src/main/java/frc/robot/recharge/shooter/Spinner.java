@@ -28,10 +28,10 @@ public class Spinner
    *  Voltage: 11.444091796875 RPM: 5253.412462908012
    *  Voltage: 11.6279296875 RPM: 5696.142433234421
    */
-  private double kV = 0.00200;
-
+  private double kV = 0.001900;
+  private double k0 = 0.7;
   /** P gain */
-  private final PIDController pid = new PIDController(0.005, 0, 0);
+  private final PIDController pid = new PIDController(0.001, 0, 0);
 
   public Spinner()
   {
@@ -66,8 +66,13 @@ public class Spinner
 
   public void setRPM(final double desired_rpm)
   {
-    final double feed_forward = desired_rpm*kV; 
-    final double voltage = feed_forward + pid.calculate(getRPM(), desired_rpm);
-    setVoltage(voltage);
+    if (desired_rpm < 100)
+      setVoltage(0);
+    else
+    {
+      final double feed_forward = k0 + desired_rpm*kV; 
+      final double voltage = feed_forward + pid.calculate(getRPM(), desired_rpm);
+      setVoltage(voltage);
+    }
   }
 }

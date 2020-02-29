@@ -120,8 +120,8 @@ public class DriveTrain extends SubsystemBase
     // To us, 360 means "turn one full rotation".
     heading_pid.setTolerance(0.1, 0.1);
 
-    SmartDashboard.putData("Position PID", position_pid);
-    SmartDashboard.putData("Heading PID", heading_pid);
+    // SmartDashboard.putData("Position PID", position_pid);
+    // SmartDashboard.putData("Heading PID", heading_pid);
 
     reset();
   }
@@ -333,9 +333,9 @@ public class DriveTrain extends SubsystemBase
     // SmartDashboard.putNumber("Position", getPositionMeters());
     // SmartDashboard.putNumber("Left Speed", getLeftSpeedMetersPerSecond());
     // SmartDashboard.putNumber("Right Speed", getRightSpeedMetersPerSecond());
-    SmartDashboard.putNumber("Heading", getHeadingDegrees());
+    // SmartDashboard.putNumber("Heading", getHeadingDegrees());
 
-    SmartDashboard.putNumber("Turnrate", gyro.getRate());
+    // SmartDashboard.putNumber("Turnrate", gyro.getRate());
 
 
     // SmartDashboard.putNumber("Motor Voltage", left_main.getMotorOutputVoltage());

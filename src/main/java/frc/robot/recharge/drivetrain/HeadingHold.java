@@ -23,8 +23,6 @@ public class HeadingHold extends CommandBase
   {
     this.drive_train = drive_train;
     addRequirements(drive_train);    
-
-    SmartDashboard.setDefaultNumber("Right Stick", 0.07);
   }
 
   public void setDesiredHeading(final double degrees)
@@ -44,8 +42,7 @@ public class HeadingHold extends CommandBase
     final long now = System.currentTimeMillis();
 
     // Moving stick enough to manually steer?
-    final boolean steering = Math.abs(OI.getDirection()) > SmartDashboard.getNumber("Right Stick", 0);
-    SmartDashboard.putBoolean("Steering", steering);
+    final boolean steering = Math.abs(OI.getDirection()) >  0.07;
     if (steering)
     {
       drive_train.drive(OI.getSpeed(), OI.getDirection());
