@@ -49,7 +49,12 @@ public class Hood extends SubsystemBase
     // Reset to zero on startup
     reset();
   }
-  
+
+  public void lock(final boolean lock)
+  {
+    hood_motor.setNeutralMode(lock ? NeutralMode.Brake : NeutralMode.Coast);
+  }
+
   /** Reset hood position to '150' */
   public void reset()
   {

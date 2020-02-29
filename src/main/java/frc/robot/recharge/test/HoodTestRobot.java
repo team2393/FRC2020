@@ -24,15 +24,23 @@ public class HoodTestRobot extends BasicRobot
     SmartDashboard.putData("Hood PID", hood.getPID());
   }
 
+  // 1) Move hood manually,check angle:
+  //      0 degree = horizontal, out
+  //     90 degree = vertical, up
+  //   ~150 degree = Retracted all the way, "start" position
+
   @Override
-  public void robotPeriodic()
+  public void disabledInit()
   {
-    super.robotPeriodic();
-    // 1) Move hood manually,check angle:
-    //      0 degree = horizontal, out (more than ever used in practice)
-    //     90 degree = vertical, up
-    //   ~150 degree = Retracted all the way, "start" position
-    SmartDashboard.putNumber("Hood Angle", hood.getHoodAngle());   
+    super.disabledInit();
+    hood.lock(false);
+  }
+
+  @Override
+  public void teleopInit()
+  {
+    super.teleopInit();
+    hood.lock(true);
   }
 
   @Override
@@ -42,6 +50,13 @@ public class HoodTestRobot extends BasicRobot
     //    from fully out/horizontal towards the 'start' position.
     //    If not, motor.setInverted(true) and start over at step 1
     hood.setAngleMotor(OI.getSpeed());
+  }
+
+  @Override
+  public void autonomousInit()
+  {
+    super.autonomousInit();
+    hood.lock(true);
   }
 
   @Override
