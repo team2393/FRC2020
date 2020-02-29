@@ -7,7 +7,7 @@ HueMax 90.0
 SatMin 120
 SatMax 255
 ValMin 70
-ValMax 213
+ValMax 255
 AspectMin 1.5
 AspectMax 20
 AreaMin 0
