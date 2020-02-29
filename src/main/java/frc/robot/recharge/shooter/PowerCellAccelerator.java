@@ -105,7 +105,7 @@ public class PowerCellAccelerator extends SubsystemBase
       agitator_running = true;
 
       boolean agitator_up = agitator.get();
-      if (agitator_timer.hasPeriodPassed(1))
+      if (agitator_timer.hasPeriodPassed(0.6))
         agitator.set(!agitator_up);
 
       // TODO figure out why this doesn't work
