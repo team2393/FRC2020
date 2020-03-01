@@ -160,7 +160,7 @@ public class OI
     if (buttonboard.getRawButton(1))
       return -0.5;
     else if (buttonboard.getRawButton(2))
-      return 0.5;
+      return 0.7;
     else 
       return 0;
   }
