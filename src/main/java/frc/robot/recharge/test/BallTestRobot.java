@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
 import frc.robot.recharge.shooter.Eject;
-import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 
 /** Robot code for testing ball handling
@@ -35,7 +34,6 @@ public class BallTestRobot extends BasicRobot
   {
     super.robotPeriodic();
     // 2) Check spinner RPM when A is held
-    SmartDashboard.putNumber("Eject RPM", pca.getShooterRPM());
 
     // 5) Attach prox sensor for "Ready" such that it detects
     //    when ball has been moved up to just-before the ejector
@@ -48,6 +46,13 @@ public class BallTestRobot extends BasicRobot
     SmartDashboard.putBoolean("Fired", pca.powerCellFired());
 
     SmartDashboard.putBoolean("Low Conveyor Full", pca.isLowConveyorFull());
+  }
+
+  @Override
+  public void teleopInit()
+  {
+    super.teleopInit();
+    pca.enableLoad(false);
   }
 
   @Override
@@ -65,7 +70,7 @@ public class BallTestRobot extends BasicRobot
       pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
       pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
     }
-      else
+    else
     {
       pca.moveTop(12*OI.getSpeed());
       pca.moveBottom(12*OI.getDirection());
@@ -76,8 +81,8 @@ public class BallTestRobot extends BasicRobot
   @Override
   public void autonomousInit() 
   {
+    pca.enableLoad(true);
     SequentialCommandGroup sequence = new SequentialCommandGroup();
-    sequence.addCommands(new Load(pca));
     sequence.addCommands(new Eject(pca));
     sequence.addCommands(new Eject(pca));
     sequence.addCommands(new Eject(pca));

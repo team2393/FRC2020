@@ -41,7 +41,6 @@ import frc.robot.recharge.shooter.Intake;
 import frc.robot.recharge.shooter.IntakeDown;
 import frc.robot.recharge.shooter.IntakeMid;
 import frc.robot.recharge.shooter.IntakeUp;
-import frc.robot.recharge.shooter.Load;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 import frc.robot.recharge.shooter.ShooterIdle;
 
@@ -77,7 +76,6 @@ public class Enterprise extends BasicRobot
 
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
   private final CommandBase shooter_idle = new ShooterIdle(pca);
-  private final CommandBase load = new Load(pca);
   private final CommandBase eject = new Eject(pca);
   
   private final Hood hood = new Hood();
@@ -186,7 +184,7 @@ public class Enterprise extends BasicRobot
 
     auto_shift.schedule();
     drive_mode.schedule();
-    load.schedule();
+    pca.enableLoad(true);
   }
   
   @Override
@@ -263,9 +261,6 @@ public class Enterprise extends BasicRobot
     // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
     if (OI.isShootHeld())
       eject.schedule();
-    // Otherwise we allow ongoing 'eject' to finish, then keep 'load'ing
-    else if (eject.isFinished())
-      load.schedule();
 
     // Align on target?
     if (OI.isAlignOnTargetHeld())
@@ -352,6 +347,7 @@ public class Enterprise extends BasicRobot
     hood.lock(true);
     drive_train.reset();
     drive_train.lock(true);
+    pca.enableLoad(true);
     
     // Run the selected command.
     auto_commands.getSelected().schedule();
@@ -360,8 +356,5 @@ public class Enterprise extends BasicRobot
   @Override
   public void autonomousPeriodic()
   {
-    // If nothing else is using the shooter: Load
-    if (pca.getCurrentCommand() == null)
-      load.schedule();
   }
 }

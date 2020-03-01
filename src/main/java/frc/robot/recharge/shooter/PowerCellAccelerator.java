@@ -53,7 +53,23 @@ public class PowerCellAccelerator extends SubsystemBase
   /** Minimum speed for shooting a ball as fraction of SHOOTER_RPM */
   public final static double MINIMUM_RPM_FRACTION = 0.95;
 
-  /** Should we shoot? */
+  /** Should we auto-load?
+   *  This will turn the conveyors on to get
+   *  balls to the low and 'ready' sensors
+   */
+  private boolean auto_load = true;
+
+  /** Should we feed the ejector spinner?
+   *  This will keep the top conveyor running
+   *  even if a ball is 'ready', i.e. move
+   *  the 'ready' ball on into the ejector.
+   */
+  private boolean feed_shooter = false;
+
+  /** Should we shoot?
+   *  This runs the ejector as requested
+   *  plus a little longer
+   */
   private boolean shoot = false;
   /** Timer started when 'shoot' clears to keep the ejector running */
   private final Timer keep_running_timer = new Timer();
@@ -83,6 +99,12 @@ public class PowerCellAccelerator extends SubsystemBase
     motor.setInverted(true);
   }
   
+  /** @param enable Enable loading? */
+  public void enableLoad(final boolean enable)
+  {
+    auto_load = enable;
+  }
+
   /** Move top conveyor */
   public void moveTop(final double volt)
   {
@@ -150,6 +172,11 @@ public class PowerCellAccelerator extends SubsystemBase
     return shooter.getRPM();
   }
 
+  public void feedEjector(final boolean do_it)
+  {
+    feed_shooter = do_it;
+  }
+
   /** Returns true if a power cell is being shot */
   public boolean powerCellFired()
   {
@@ -170,5 +197,22 @@ public class PowerCellAccelerator extends SubsystemBase
       timer_on = false;
     }
     SmartDashboard.putNumber("RPM", getShooterRPM());
+
+    if (auto_load)
+    {
+      // Keep horiz. belt moving until ball is in there,
+      // regardless of what the vertical conveyor and ejector are doing.
+      if (! isLowConveyorFull()  ||  ! isPowerCellReady())
+        moveBottom(CONVEYOR_VOLTAGE);
+      else
+        moveBottom(0);
+
+      // Move vertical belt to feed a ball to the shooter,
+      // or until a ball is ready for the next shot
+      if (feed_shooter   ||   ! isPowerCellReady())
+        moveTop(CONVEYOR_VOLTAGE);
+      else
+        moveTop(0);
+     }
   }
 }

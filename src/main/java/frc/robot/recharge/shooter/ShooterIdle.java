@@ -7,31 +7,18 @@
 
 package frc.robot.recharge.shooter;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /** Turn conveyors etc. off */
-public class ShooterIdle extends CommandBase
+public class ShooterIdle extends InstantCommand
 {
-  private final PowerCellAccelerator pca;
-
   public ShooterIdle(final PowerCellAccelerator pca)
   {
-    this.pca = pca;
-    addRequirements(pca);
-  }
-
-  @Override
-  public void initialize()
-  {
-    pca.eject(false);
-  }
-
-  @Override
-  public void execute()
-  {
-    // Looks like we're doing nothing, but need to actively set
-    // speeds to 0 for each period to avoid motor safety timeouts.
-    pca.moveBottom(0);
-    pca.moveTop(0);
+    super(() ->
+    {
+      pca.enableLoad(false);
+      pca.feedEjector(false);
+      pca.eject(false);
+    }, pca);
   }
 }

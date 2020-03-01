@@ -38,7 +38,9 @@ public class Eject extends CommandBase
   @Override
   public void initialize()
   {
-    // Turn on the ejector
+    // Turn on the ejector, but don't actually eject, yet
+    pca.enableLoad(true);
+    pca.feedEjector(false);
     pca.eject(true);
     state = State.SPINUP;
     wait.start();
@@ -61,19 +63,15 @@ public class Eject extends CommandBase
       }
       else
       {
-        System.out.println("EJECT: Low rpm " + rpm);
         // Not fast enough. If there's a ball ready, keep it there
-        if (pca.isPowerCellReady())
-          pca.moveTop(0);
-        else // Otherwise load a ball
-          pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+        System.out.println("EJECT: Low rpm " + rpm);
       }
     }
-
+    
     // Are we shooting? If so, move a ball out
     if (state == State.EJECT)
     {
-      pca.moveTop(PowerCellAccelerator.CONVEYOR_VOLTAGE);
+      pca.feedEjector(true);
       // Ideally, we soon detect a ball flying out
       if (pca.powerCellFired())
         state = State.SUCCESS;
@@ -81,13 +79,6 @@ public class Eject extends CommandBase
       else if (timer.hasElapsed(5.0))
         state = State.TIMEOUT;
     }
-
-    // Keep horiz. belt moving until ball is in there,
-    // regardless of what the vertical conveyor and ejector are doing.
-    if (! pca.isLowConveyorFull()  ||  ! pca.isPowerCellReady())
-       pca.moveBottom(PowerCellAccelerator.CONVEYOR_VOLTAGE);
-    else
-      pca.moveBottom(0);
   }
 
   @Override
@@ -102,14 +93,9 @@ public class Eject extends CommandBase
     System.out.println("EJECT: " + state);
     // Turn ejector off
     // (but it keeps running for a while in case we want to shoot again, soon)
+    pca.feedEjector(false);
     pca.eject(false);
     
-    // Turn conveyor off to prevent another ball from shooting out.
-    // To shoot another ball, run this command again,
-    // so it'll check the RPM, then feed another ball. 
-    pca.moveTop(0);
-    pca.moveBottom(0);
-
     System.out.println("Spinup delay: " + wait.get() + " seconds");
   }
 }
