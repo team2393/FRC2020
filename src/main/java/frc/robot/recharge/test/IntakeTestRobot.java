@@ -7,7 +7,6 @@
 
 package frc.robot.recharge.test;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;

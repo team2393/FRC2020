@@ -225,7 +225,7 @@ public class DriveTrain extends SubsystemBase
    */
   public double getHeadingDegrees()
   {
-    // TODO Math.IEEEremainder(gyro.getAngle(), 360)  ?
+    // XXXX Math.IEEEremainder(gyro.getAngle(), 360)  ?
     return -gyro.getAngle();
   }
 

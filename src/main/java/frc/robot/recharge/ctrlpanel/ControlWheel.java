@@ -58,7 +58,7 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
   @Override
   public void periodic()
   {
-    // TODO To debug, poll color which causes it to show on the dashboard
+    // XXXX To debug, poll color which causes it to show on the dashboard
     getColor();
   }
 }
