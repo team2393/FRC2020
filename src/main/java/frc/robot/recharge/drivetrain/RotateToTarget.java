@@ -21,7 +21,8 @@ public class RotateToTarget extends CommandBase
 {
   private final Timer timer = new Timer();
   private final DriveTrain drive_train;
-  private final Relay light = new Relay(0);
+
+  // TODO just one  private final Relay light = new Relay(0);
 
   private int skip = 1;
   private CameraData last = new CameraData(0, 0);
@@ -56,7 +57,7 @@ public class RotateToTarget extends CommandBase
   {
     on_target = false;
     timer.start();
-    light.set(Value.kForward);
+    // light.set(Value.kForward);
   }
 
   public void updateData()
@@ -140,6 +141,6 @@ public class RotateToTarget extends CommandBase
   public void end(boolean interrupted)
   {
     drive_train.drive(0, 0);
-    light.set(Value.kOff);
+    // light.set(Value.kOff);
   }
 }
