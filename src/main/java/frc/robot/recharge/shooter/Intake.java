@@ -56,23 +56,46 @@ public class Intake extends SubsystemBase
     // Second motor follows the one that we control
     rotator_slave.setInverted(false);
     rotator_slave.follow(rotator);
+
+    resetToStartPosition();
   }
-    
+
+  /** Offset to get 0 degree == horizontal */
+  private double offset = 18.5;
+
+  /** In theory, the absolute encoder knows the exact angle.
+   *  We only need to correct for a fixed offset angle depending
+   *  on how the encoder magnet is mounted in the encoder.
+   * 
+   *  In reality, we've seen that offset change.
+   *  Manually moving the intake all the way up against the
+   *  robot frame and then calling this will re-initialize
+   *  the offset.
+   */
+  public void resetToStartPosition()
+  {
+    // Get angle reading without offset
+    offset = 0;
+    final double test = getAngle();
+    // If the arm was all out, we'd like to get "0 degrees",
+    // i.e. the offset would be -test.
+    // Since the arm is all up, we'd like to get "75 degrees":
+    offset = 75 - test;
+    System.out.format("Intake arm offset: %.1f degrees\n", offset);
+  }
+
   /** @return Rotator arm angle, degrees. 0 for horizontal, towards 90 for 'up' */
   public double getAngle()
   {    
-    // Try frc-characterization for 'arm'.
     // An angle of zero (degrees/radians) must be 'horizontal'
     // because  ArmFeedforward  uses cos(angle) to determine impact of gravity,
     // which is at maximum for angle 0 (cos(0)=1) and vanishes at 90 deg (cos(90)=0)
-    
+
     // Encoder provides 4096 ticks per 360 degrees
-    final double encoder_angle = 360.0 / 4096;
-    // Gears & chain result in actual arm moving slower than the motor output 
+    final double encoder_angle = 360.0 / 4096; 
+    // Gears & chain result in actual arm moving slower than the motor output
     final double gearing = 12.0 / 30.0;
 
-    // Offset to get 0 degree == horizontal
-    final double offset = 18.5;
     return offset - rotator.getSelectedSensorPosition() * encoder_angle * gearing;
   }
 

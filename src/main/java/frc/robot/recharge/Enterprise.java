@@ -344,6 +344,7 @@ public class Enterprise extends BasicRobot
     hood.setHoodAngle(-1);
     hood.reset();
     hood.lock(true);
+    intake.resetToStartPosition();
     drive_train.reset();
     drive_train.lock(true);
     pca.enableLoad(true);
