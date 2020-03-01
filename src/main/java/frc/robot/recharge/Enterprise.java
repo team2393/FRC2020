@@ -92,6 +92,11 @@ public class Enterprise extends BasicRobot
 
   // private final LEDStrip led_strip = new LEDStrip();
 
+  // Settings for different scenarios
+  private final CommandBase near_settings = new ApplySettings("near.txt");
+  private final CommandBase mid_settings = new ApplySettings("mid.txt");
+  private final CommandBase far_settings = new ApplySettings("far.txt");
+    
   private final SendableChooser<Command> auto_commands = new SendableChooser<>();
 
   // Teleop modes
@@ -146,16 +151,11 @@ public class Enterprise extends BasicRobot
     }
     SmartDashboard.putData("Autonomous", auto_commands);
 
-    // Allow selecting settings for different scenarios
-
-    // Settings for different scenarios
-    final CommandBase default_settings;
-    SmartDashboard.putData("Near Settings", new ApplySettings("near.txt"));
-    SmartDashboard.putData("Far Settings", default_settings = new ApplySettings("far.txt"));
+    // Allow selecting settings (more via buttons in robotPeriodic)
     SmartDashboard.putData("Viewable Settings", new ApplySettings("viewable.txt"));
-    default_settings.schedule();
+    far_settings.schedule();
   }
-
+  
   @Override
   public void disabledInit()
   {
@@ -167,9 +167,17 @@ public class Enterprise extends BasicRobot
   public void robotPeriodic()
   {
     super.robotPeriodic();
-
+    
     PowerCellAccelerator.SHOOTER_RPM = SmartDashboard.getNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
     SmartDashboard.putString("Teleop Mode", teleop_mode.toString());
+    
+    // Allow selecting settings for different scenarios
+    if (OI.selectNear())
+      near_settings.schedule();
+    else if (OI.selectMid())
+      mid_settings.schedule();
+    else if (OI.selectFar())
+      far_settings.schedule();
   }
   
   @Override

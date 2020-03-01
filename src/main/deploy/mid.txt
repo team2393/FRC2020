@@ -1,0 +1,4 @@
+# Settings when target is at mid distance
+# Format is  NAME SPACE VALUE
+Hood 145
+Shooter RPM 5000

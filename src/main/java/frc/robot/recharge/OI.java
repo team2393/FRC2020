@@ -35,8 +35,23 @@ public class OI
     for (int i=1; i<=10; ++i)
       joystick.getRawButtonPressed(i);
 
-    for (int i=1; i<=11; ++i)
+    for (int i=1; i<=20; ++i)
       buttonboard.getRawButtonPressed(i);
+  }
+
+  public static boolean selectNear()
+  {
+    return buttonboard.getRawButtonPressed(13); // TODO Check button
+  }
+
+  public static boolean selectMid()
+  {
+    return buttonboard.getRawButtonPressed(14); // TODO Check button
+  }
+
+  public static boolean selectFar()
+  {
+    return buttonboard.getRawButtonPressed(15); // TODO Check button
   }
 
   public static boolean selectDriveMode()
