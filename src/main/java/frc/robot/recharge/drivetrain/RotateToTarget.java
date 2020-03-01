@@ -7,32 +7,39 @@
 
 package frc.robot.recharge.drivetrain;
 
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.udp.CameraData;
+import frc.robot.recharge.udp.CameraLight;
 import frc.robot.recharge.udp.UDPReceiverThread;
 
 /** Rotate to target based on camera info */
 public class RotateToTarget extends CommandBase 
 {
+  /** Relay for turning camera light on/off.
+   *  Since only this command uses the light,
+   *  create it with the first instance.
+   */
+  private static CameraLight light = null;
+  
   private final Timer timer = new Timer();
   private final DriveTrain drive_train;
-
-  // TODO just one  private final Relay light = new Relay(0);
-
+  
+  
   private int skip = 1;
   private CameraData last = new CameraData(0, 0);
-
+  
   public UDPReceiverThread udp;
-
+  
   private boolean on_target;
   
   public RotateToTarget(final DriveTrain drive_train)
   {
+    if (light == null)
+      light = new CameraLight();
+    
     try
     {
       udp = new UDPReceiverThread(5801);
@@ -57,7 +64,7 @@ public class RotateToTarget extends CommandBase
   {
     on_target = false;
     timer.start();
-    // light.set(Value.kForward);
+    light.set(true);
   }
 
   public void updateData()
@@ -141,6 +148,6 @@ public class RotateToTarget extends CommandBase
   public void end(boolean interrupted)
   {
     drive_train.drive(0, 0);
-    // light.set(Value.kOff);
+    light.set(false);
   }
 }
