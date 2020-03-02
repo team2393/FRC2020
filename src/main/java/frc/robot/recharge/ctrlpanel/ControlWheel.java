@@ -42,12 +42,12 @@ public class ControlWheel extends SubsystemBase implements ColorDetector
 
   public void slow()
   {
-    spin(0.01);
+    spin(0.1);
   }
 
   public void fast()
   {
-    spin(0.1);
+    spin(0.3);
   }
 
   public Segment_Color getColor()

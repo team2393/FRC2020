@@ -14,5 +14,6 @@ AreaMin 0
 AreaMax 7000
 FullnessMin 5
 FullnessMax 40
+Teleop Hood Setpoint 150
 Shooter RPM 5000
 Camera Target Mode  true
