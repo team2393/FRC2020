@@ -41,17 +41,17 @@ public class OI
 
   public static boolean selectNear()
   {
-    return buttonboard.getRawButtonPressed(13); // TODO Check button
+    return buttonboard.getRawButtonPressed(12);
   }
 
   public static boolean selectMid()
   {
-    return buttonboard.getRawButtonPressed(14); // TODO Check button
+    return buttonboard.getRawButtonPressed(13);
   }
 
   public static boolean selectFar()
   {
-    return buttonboard.getRawButtonPressed(15); // TODO Check button
+    return buttonboard.getRawButtonPressed(14);
   }
 
   public static boolean selectDriveMode()
