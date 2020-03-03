@@ -51,7 +51,7 @@ public class PowerCellAccelerator extends SubsystemBase
   public static double SHOOTER_RPM = 5000;
 
   /** Minimum speed for shooting a ball as fraction of SHOOTER_RPM */
-  public final static double MINIMUM_RPM_FRACTION = 0.95;
+  public final static double MINIMUM_RPM_FRACTION = 0.99;
 
   /** Should we auto-load?
    *  This will turn the conveyors on to get

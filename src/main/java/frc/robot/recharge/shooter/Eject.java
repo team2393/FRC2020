@@ -64,7 +64,7 @@ public class Eject extends CommandBase
       else
       {
         // Not fast enough. If there's a ball ready, keep it there
-        System.out.println("EJECT: Low rpm " + rpm);
+        // System.out.println("EJECT: Low rpm " + rpm);
       }
     }
     
@@ -74,8 +74,11 @@ public class Eject extends CommandBase
       pca.feedEjector(true);
       // Ideally, we soon detect a ball flying out
       if (pca.powerCellFired())
+       {
+        System.out.println("Shot at " + pca.getShooterRPM() + " RPMs");
         state = State.SUCCESS;
-      // In reality, we might not, so stop after a few seconds
+       }
+        // In reality, we might not, so stop after a few seconds
       else if (timer.hasElapsed(5.0))
         state = State.TIMEOUT;
     }

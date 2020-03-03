@@ -71,7 +71,8 @@ public class OI
 
   public static boolean isLowGearRequested()
   {
-    return joystick.getTriggerAxis(Hand.kRight) > .5;
+    return false;
+  //   return joystick.getTriggerAxis(Hand.kRight) > .5;
   }
 
   public static boolean isHighGearRequested()
@@ -173,9 +174,9 @@ public class OI
   public static double getTelescopeSpeed()
   {
     if (buttonboard.getRawButton(1))
-      return -0.5;
+      return -0.7;
     else if (buttonboard.getRawButton(2))
-      return 0.7;
+      return 0.9;
     else 
       return 0;
   }
@@ -185,19 +186,21 @@ public class OI
 
   public static double getClimbSpeed()
   {
-    boolean do_climb = buttonboard.getRawButton(11);
-    if (do_climb && !climbing)
-      climb_timer.start();
-    climbing = do_climb;
+    // boolean do_climb = buttonboard.getRawButton(11);
+    // if (do_climb && !climbing)
+    //   climb_timer.start();
+    // climbing = do_climb;
 
-    if (climbing)
-    {
-      // Use about 2 seconds to ramp up speed to full
-      double speed = climb_timer.get()/2;
-      // .. limit to 1   
-      return MathUtil.clamp(speed, 0, 1.0);
-    }
+    // if (climbing)
+    // {
+    //   // Use about 2 seconds to ramp up speed to full
+    //   double speed = climb_timer.get()/2;
+    //   // .. limit to 1   
+    //   return MathUtil.clamp(speed, 0, 1.0);
+    // }
     
-    return 0;
+    
+    return joystick.getTriggerAxis(Hand.kRight);    
+    // return 0;
   }   
 }

@@ -31,7 +31,7 @@ public class Spinner
   private double kV = 0.00105;
   private double k0 = 0.58;
   /** P gain */
-  private final PIDController pid = new PIDController(0.001, 0, 0);
+  private final PIDController pid = new PIDController(0.0035, 0, 0);
 
   public Spinner()
   {
@@ -40,7 +40,7 @@ public class Spinner
     motor.setNeutralMode(NeutralMode.Coast);
     motor.setInverted(true);
     motor.setSelectedSensorPosition(0);
-    motor.configOpenloopRamp(0.5);
+    // motor.configOpenloopRamp(0.5);
   }  
   
   public void configure(double kV, double P)
@@ -49,17 +49,15 @@ public class Spinner
     pid.setP(P);
   }
 
-  double max_current = 0.0;
-
   public void setVoltage(final double volt) 
   {
     motor.setVoltage(volt);
-    final double current = motor.getStatorCurrent();  
-    if (current > max_current)
-    {
-      max_current = current;
-      System.out.println("Max spinner current: " + max_current);
-    }
+    // final double current = motor.getStatorCurrent();  
+    // if (current > 250)
+    // {
+    //   motor.setVoltage(0);
+    //   System.out.println("Overcurrent at " + motor.getStatorCurrent() + " stopping motor" );
+    // }
   }  
 
   public double getAngle()

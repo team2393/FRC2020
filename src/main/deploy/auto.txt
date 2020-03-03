@@ -31,7 +31,7 @@ Shoot
 IntakeDown
 ReversePoses
 Pose -1 -0.6 57 
-Pose -1.5 -1.5 27
+Pose -1.5 -1.0 27
 Pose -2.6 -1.8 0
 End -4 -1.8 0
 IntakeMid
