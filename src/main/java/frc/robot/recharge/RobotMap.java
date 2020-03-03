@@ -15,16 +15,16 @@ public class RobotMap
   // Power Distribution Panel
   //
   // 40 Amp connectors
-  // Drive motor                   Drive motor
-  // Drive motor                   Drive motor
-  // Hood                          Shooter
-  // Telescope                     Colorspin  
+  // 0 Drive motor                 15 Drive motor
+  // 1 Drive motor                 14 Drive motor
+  // 2 Hood                        13 Shooter
+  // 3 Telescope                   12 Colorspin  
   //
   // Below 40 Amp ports
-  // Intake Arm                    Intake Arm
-  // Intake Roller                 Conveyor Back
-  // Climb                         Conveyor Horizontal
-  // Color LED                     Camera LED
+  // 4 Intake Arm                  11 Intake Arm
+  // 5 Intake Roller               10 Conveyor Back
+  // 6 Climb                        9 Conveyor Horizontal
+  // 7 Color LED                    8 Camera LED
   //
   // PDP controller port -> RoboRIO
   // PDP PCM port -> PCM, compressor, solenoids
