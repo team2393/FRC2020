@@ -53,7 +53,6 @@ public class Enterprise extends BasicRobot
   // Commands that require the drive train, i.e. starting any of these commands
   // will cancel whatever else was running and required the drive train
   private final CommandBase drive_by_joystick = new DriveByJoystick(drive_train);
-  private final HeadingHold heading_hold = new HeadingHold(drive_train);
   /** Most recent drive mode, either drive_by_joystick or heading_hold */
   private CommandBase drive_mode = drive_by_joystick;
   // After align_on_target, return to current drive_mode
@@ -71,7 +70,6 @@ public class Enterprise extends BasicRobot
   private final Intake intake = new Intake();
   private final CommandBase intake_up = new IntakeUp(intake);
   private final CommandBase intake_down = new IntakeDown(intake);
-  private final CommandBase intake_mid = new IntakeMid(intake);
 
   private final PowerCellAccelerator pca = new PowerCellAccelerator();
   private final CommandBase shooter_idle = new ShooterIdle(pca);
@@ -124,7 +122,6 @@ public class Enterprise extends BasicRobot
     
     // SmartDashboard.putData("Intake Up", intake_up);
     // SmartDashboard.putData("Intake Down", intake_down);
-    // SmartDashboard.putData("Intake Mid", intake_mid);
 
     SmartDashboard.putData("Setup Mode", new InstantCommand(()-> teleop_mode = TeleopMode.SetUp));
 
@@ -238,32 +235,12 @@ public class Enterprise extends BasicRobot
     
     // Toggle between drive_by_joystick and heading_hold
     OI.force_low_speed = false;
-    if (OI.isToggleHeadingholdPressed())
-    {
-      if (drive_mode == heading_hold)
-      { // Switching to 'rough' mode
-        rumble.schedule(0.5);
-        drive_mode = drive_by_joystick;
-      }
-      else
-      { // Switching to 'smooth' mode
-        rumble.schedule(0.1);
-        drive_mode = heading_hold;
-      }
-      drive_mode.schedule();
-    }
 
-    if (OI.isIntakeDownRequested())
-      intake_down.schedule();
-    else if (OI.isIntakeUpRequested())
-    {
-      // First, get to 'mid' angle.
-      // If already there, go 'up'
-      if (intake.getAngle() < 15)
-        intake_mid.schedule();
-      else
+    if (OI.isIntakeTogglePressed())
+      if (intake.getAngle() >= 20)
+        intake_down.schedule();
+      else  
         intake_up.schedule();
-    }
 
     // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
     if (OI.isShootHeld())

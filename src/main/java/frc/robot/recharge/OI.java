@@ -119,27 +119,15 @@ public class OI
     else
       return square(getSpeedFactor() * joystick.getX(Hand.kRight));
   }
-
-  public static final boolean isToggleHeadingholdPressed()
-  {
-      return joystick.getXButtonPressed();
-  }
-
+  
   public static final boolean isAlignOnTargetHeld()
   {
-      return joystick.getYButton();
+    return joystick.getYButton();
   }
-
-  public static boolean isIntakeDownRequested()
+  public static final boolean isIntakeTogglePressed()
   {
-    return joystick.getTriggerAxis(Hand.kLeft) > 0.5;
+    return joystick.getXButton();
   }
-
-  public static boolean isIntakeUpRequested()
-  {
-    return joystick.getBumperPressed(Hand.kLeft);
-  }
-
   public static final boolean isShootHeld()
   {
     return joystick.getAButton();

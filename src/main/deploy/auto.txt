@@ -14,10 +14,15 @@ End 0 0 0
 
 
 # -----------------------------------------------------
-Auto Wait Shoot
+Auto Shoot Move Back
 Hood 140
-Wait 2
 Shoot
+Wait 0.1
+Shoot
+Wait 0.1
+Shoot
+ReversePoses
+End -0.5 0 0
 
 
 # -----------------------------------------------------

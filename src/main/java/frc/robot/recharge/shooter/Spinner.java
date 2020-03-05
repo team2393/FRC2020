@@ -29,10 +29,10 @@ public class Spinner
    *  Voltage: 11.444091796875 RPM: 5253.412462908012
    *  Voltage: 11.6279296875 RPM: 5696.142433234421
    */
-  private double kV = 0.00105;
-  private double k0 = 0.58;
+  private double kV = 0.00188;
+  private double k0 = 0.76;
   /** P gain */
-  private final PIDController pid = new PIDController(0.0035, 0, 0);
+  private final PIDController pid = new PIDController(0.0025, 0, 0);
 
   public Spinner()
   {

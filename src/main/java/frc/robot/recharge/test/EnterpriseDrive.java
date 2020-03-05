@@ -88,20 +88,8 @@ public class EnterpriseDrive extends BasicRobot
     
     // Toggle between drive_by_joystick and heading_hold
     OI.force_low_speed = false;
-    if (OI.isToggleHeadingholdPressed())
-    {
-      if (drive_mode == heading_hold)
-      { // Switching to 'rough' mode
-        rumble.schedule(0.5);
-        drive_mode = drive_by_joystick;
-      }
-      else
-      { // Switching to 'smooth' mode
-        rumble.schedule(0.1);
-        drive_mode = heading_hold;
-      }
-      drive_mode.schedule();
-    }
+    drive_mode.schedule();
+    
  }
 
   @Override

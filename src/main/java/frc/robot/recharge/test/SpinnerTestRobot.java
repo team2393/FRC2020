@@ -24,8 +24,8 @@ public class SpinnerTestRobot extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.setDefaultNumber("kV", 0.00105);
-    SmartDashboard.setDefaultNumber("P", 0.0035);
+    SmartDashboard.setDefaultNumber("kV", 0.00188);
+    SmartDashboard.setDefaultNumber("P", 0.0);
   }
 
   @Override
@@ -66,11 +66,11 @@ public class SpinnerTestRobot extends BasicRobot
     //      voltage = 0.0;
     // }
 
-    // // Tune PID, then pick some reasonable RPM values between which to toggle
+    // Tune PID, then pick some reasonable RPM values between which to toggle
     spinner.configure(SmartDashboard.getNumber("kV", 0),
                       SmartDashboard.getNumber("P", 0));
 
     final boolean high = (System.currentTimeMillis() / 3000) % 2 == 0;
-    spinner.setRPM(high ? 5000 : 6000);
+    spinner.setRPM(high ? 3000 : 5000);
   }
 }
