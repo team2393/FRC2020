@@ -37,6 +37,7 @@ public class Intake extends SubsystemBase
   private final PIDController angle_pid = new PIDController(0.3, 0, 0);
 
   private boolean run_spinner = false;
+  private boolean unjam = false;
 
   /** Desired arm/rotator angle. Negative to disable PID */
   private double desired_angle = -1;
@@ -140,9 +141,16 @@ public class Intake extends SubsystemBase
   @Override
   public void periodic()
   {
-    // Spin intake rollers at good speed
-    spinner.setVoltage(run_spinner ? -11.0 : 0.0);
-
+    if (unjam)
+    {
+      spinner.setVoltage(11);
+    }
+    else
+    {
+      // Spin intake rollers at good speed
+      spinner.setVoltage(run_spinner ? -11.0 : 0.0);
+    }
+    
     if (desired_angle >= 0)
     {
       // If the desired angle is low (put arm out),
@@ -157,5 +165,10 @@ public class Intake extends SubsystemBase
         rotator.setVoltage(MathUtil.clamp((preset + correction), -3, 3));
       }
     }
+  }
+
+  public void unjam(boolean unjam) 
+  {
+    this.unjam = unjam;
   }
 }
