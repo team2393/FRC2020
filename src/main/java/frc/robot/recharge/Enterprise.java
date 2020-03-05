@@ -165,6 +165,8 @@ public class Enterprise extends BasicRobot
   {
     super.robotPeriodic();
     
+    pca.unjam(OI.getUnjam());
+
     PowerCellAccelerator.SHOOTER_RPM = SmartDashboard.getNumber("Shooter RPM", PowerCellAccelerator.SHOOTER_RPM);
     SmartDashboard.putString("Teleop Mode", teleop_mode.toString());
     
@@ -186,7 +188,7 @@ public class Enterprise extends BasicRobot
     hood.lock(true);
     OI.reset();
 
-    auto_shift.schedule();
+    // auto_shift.schedule();
     drive_mode.schedule();
     pca.enableLoad(true);
   }

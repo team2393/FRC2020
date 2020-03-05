@@ -57,7 +57,7 @@ public class Eject extends CommandBase
       if (rpm >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
-        System.out.println("EJECT: " + state);
+        System.out.println("EJECT: " + state + " at " + rpm + " RPMS");
         timer.start();
         wait.stop();
       }

@@ -53,6 +53,9 @@ public class PowerCellAccelerator extends SubsystemBase
   /** Minimum speed for shooting a ball as fraction of SHOOTER_RPM */
   public final static double MINIMUM_RPM_FRACTION = 0.99;
 
+  private boolean unjammer = false;
+
+
   /** Should we auto-load?
    *  This will turn the conveyors on to get
    *  balls to the low and 'ready' sensors
@@ -103,6 +106,11 @@ public class PowerCellAccelerator extends SubsystemBase
   public void enableLoad(final boolean enable)
   {
     auto_load = enable;
+  }
+
+  public void unjam(boolean unjamming_enabled)
+  {
+    unjammer = unjamming_enabled;
   }
 
   /** Move top conveyor */
@@ -186,6 +194,16 @@ public class PowerCellAccelerator extends SubsystemBase
   @Override
   public void periodic()
   {
+    if (unjammer)
+    {
+      shooter.setVoltage(0);
+      shoot = false;
+      timer_on = false;
+      moveBottom(-CONVEYOR_VOLTAGE);
+      moveTop(-CONVEYOR_VOLTAGE);
+      return;
+    }
+
     // Run ejector if we're asked to do it,
     // or for 2 more seconds after the last shot
     // so it remains running through a series of shots

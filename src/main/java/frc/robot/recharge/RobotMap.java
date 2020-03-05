@@ -31,7 +31,7 @@ public class RobotMap
   //
   // PDP VRM port ->
   // VRM 12V, 2A
-  // 1) Radio
+  // 1) Radiop
   // 2) must not be used
   //
   // VRM 12V, 500mA

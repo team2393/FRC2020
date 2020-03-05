@@ -69,6 +69,10 @@ public class OI
     return buttonboard.getRawButton(4);
   }
 
+  public static boolean getUnjam()
+  {
+    return buttonboard.getRawButton(11);
+  }
   public static boolean isLowGearRequested()
   {
     return false;
