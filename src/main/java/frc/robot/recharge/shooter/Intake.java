@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase
   {
     PowerCellAccelerator.commonSettings(spinner, NeutralMode.Coast);
     // Spin up/down with delay to please the battery
-    spinner.configOpenloopRamp(0.6);
+    // spinner.configOpenloopRamp(0.6);
 
     PowerCellAccelerator.commonSettings(rotator, NeutralMode.Brake);
     PowerCellAccelerator.commonSettings(rotator_slave, NeutralMode.Brake);
@@ -148,7 +148,7 @@ public class Intake extends SubsystemBase
     else
     {
       // Spin intake rollers at good speed
-      spinner.setVoltage(run_spinner ? -11.0 : 0.0);
+      spinner.setVoltage(run_spinner ? -12.0 : 0.0);
     }
     
     if (desired_angle >= 0)
