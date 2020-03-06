@@ -79,7 +79,6 @@ public class PowerCellAccelerator extends SubsystemBase
 
   /** Timer for moving agitator up and down */
   private final Timer agitator_timer = new Timer();
-  private boolean agitator_running = false;
 
   /** Is the timer running? */
   private boolean timer_on = false;
@@ -124,21 +123,25 @@ public class PowerCellAccelerator extends SubsystemBase
   {
     if (volt == 0)
     {
-      agitator_running = false;
       agitator.set(false);
+      // 'start' resets the timer so get() will return 0 seconds
+      agitator_timer.start();
     }
     else
     {
-      if (! agitator_running)
-        agitator_timer.start();
-
-      agitator_running = true;
-
       boolean agitator_up = agitator.get();
-      if (!agitator_up && agitator_timer.hasPeriodPassed(1))
+      if (!agitator_up && agitator_timer.hasElapsed(1.0))
+      {
+        // Was down for 1 second: Move up, reset timer
         agitator.set(true);
-      else if (agitator_up && agitator_timer.hasPeriodPassed(0.2))
+        agitator_timer.start();
+      }
+      else if (agitator_up && agitator_timer.hasElapsed(0.2))
+      {
+        // Was up for 0.2 secs: Move down, reset timer
         agitator.set(false);
+        agitator_timer.start();
+      }
     }
     conveyor_bottom.setVoltage(volt);
   }
