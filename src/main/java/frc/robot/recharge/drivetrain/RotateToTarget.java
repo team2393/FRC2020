@@ -65,6 +65,7 @@ public class RotateToTarget extends CommandBase
     on_target = false;
     timer.start();
     light.set(true);
+    System.out.println("RotateToTarget");
   }
 
   public void updateData()
@@ -141,6 +142,8 @@ public class RotateToTarget extends CommandBase
       System.err.println("RotateToTarget gives up (timeout)");
       return true;
     }
+    if (on_target)
+      System.out.println("On target");
     return on_target;
   }
 
