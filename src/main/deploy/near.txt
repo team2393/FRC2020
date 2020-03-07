@@ -2,5 +2,5 @@
 # Format is  NAME SPACE VALUE
 # Can also use 'tab' instead of 'space',
 # but don't do that.
-Teleop Hood Setpoint 115
-Shooter RPM 2000
+Teleop Hood Setpoint 0
+Shooter RPM 5500
