@@ -73,10 +73,10 @@ public class OI
   {
     return buttonboard.getRawButton(11);
   }
+  
   public static boolean isLowGearRequested()
   {
-    return false;
-  //   return joystick.getTriggerAxis(Hand.kRight) > .5;
+    return joystick.getTriggerAxis(Hand.kRight) > .5;
   }
 
   public static boolean isHighGearRequested()
