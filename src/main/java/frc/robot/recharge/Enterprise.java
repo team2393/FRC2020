@@ -227,6 +227,8 @@ public class Enterprise extends BasicRobot
     // Disable climb control
     climb_idle.schedule();
 
+    pca.enableLoad(true);
+    
     if (! auto_shift.isScheduled())
     {
       // Manual shifting

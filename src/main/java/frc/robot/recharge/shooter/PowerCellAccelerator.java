@@ -235,5 +235,10 @@ public class PowerCellAccelerator extends SubsystemBase
       else
         moveTop(0);
      }
+     else
+     {
+       moveTop(0);
+       moveBottom(0);
+     }
   }
 }
