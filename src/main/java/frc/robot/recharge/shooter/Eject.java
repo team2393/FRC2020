@@ -26,8 +26,8 @@ public class Eject extends CommandBase
     TIMEOUT    // Give up, no ball seen flying out
   };
   private State state = State.SUCCESS;
-  private final Timer timer = new Timer();
-  private final Timer wait = new Timer();
+  private final Timer spinup_timer = new Timer();
+  private final Timer timeout_timer = new Timer();
 
   public Eject(final PowerCellAccelerator pca)
   {
@@ -43,7 +43,7 @@ public class Eject extends CommandBase
     pca.feedEjector(false);
     pca.eject(true);
     state = State.SPINUP;
-    wait.start();
+    spinup_timer.start();
     System.out.println("EJECT: " + state);
   }
 
@@ -57,9 +57,9 @@ public class Eject extends CommandBase
       if (rpm >= PowerCellAccelerator.MINIMUM_RPM_FRACTION * PowerCellAccelerator.SHOOTER_RPM)
       {
         state = State.EJECT;
-        System.out.println("EJECT: " + state + " at " + rpm + " RPMS");
-        timer.start();
-        wait.stop();
+        spinup_timer.stop();
+        System.out.println("EJECT: " + state + " at " + rpm + " RPMS after spinup of " + spinup_timer.get() + " seconds");
+        timeout_timer.start();
       }
       else
       {
@@ -79,7 +79,7 @@ public class Eject extends CommandBase
         state = State.SUCCESS;
        }
         // In reality, we might not, so stop after a few seconds
-      else if (timer.hasElapsed(5.0))
+      else if (timeout_timer.hasElapsed(5.0))
         state = State.TIMEOUT;
     }
   }
@@ -98,7 +98,5 @@ public class Eject extends CommandBase
     // (but it keeps running for a while in case we want to shoot again, soon)
     pca.feedEjector(false);
     pca.eject(false);
-    
-    System.out.println("Spinup delay: " + wait.get() + " seconds");
   }
 }
