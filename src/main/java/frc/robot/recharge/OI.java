@@ -155,7 +155,12 @@ public class OI
   {
     return buttonboard.getRawButtonPressed(10);
   }
-    
+
+  public static boolean prepareShooter()
+  {
+    return buttonboard.getRawButton(10);
+  }
+
   /** @return Manual fortune wheel speed */
   public static double getWheelSpeed()
   {

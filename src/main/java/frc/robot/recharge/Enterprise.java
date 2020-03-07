@@ -228,7 +228,9 @@ public class Enterprise extends BasicRobot
     climb_idle.schedule();
 
     pca.enableLoad(true);
-    
+   
+    pca.eject(OI.prepareShooter());
+
     if (! auto_shift.isScheduled())
     {
       // Manual shifting
