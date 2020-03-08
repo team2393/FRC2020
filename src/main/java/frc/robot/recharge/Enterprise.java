@@ -156,6 +156,7 @@ public class Enterprise extends BasicRobot
   @Override
   public void disabledInit()
   {
+    super.disabledInit();
     drive_train.lock(false);
     hood.lock(false);
   }
