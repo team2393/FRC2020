@@ -34,6 +34,6 @@ public class CameraData
   @Override
   public String toString() 
   {
-    return ("Direction: " + direction + " Distance: " + distance);
+    return (millisec + ": Direction: " + direction + " Distance: " + distance);
   }
 }
