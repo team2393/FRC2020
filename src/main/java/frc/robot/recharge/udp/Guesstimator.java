@@ -37,7 +37,7 @@ public class Guesstimator
    *  @param v1 Value of first point
    *  @param t2 Time when second data point was taken
    *  @param v2 Value of second point
-   *  @param t Time when we want to estimate the value
+   *  @param t Time for which we want to estimate the value
    *  @return Estimated value
    */
   private double extrapolate(double t1, double v1, double t2, double v2, double t)
@@ -46,15 +46,13 @@ public class Guesstimator
     // i.e. x axis is 'time', and y axis for value
 
     // 1) Compute slope
-    double slope = (v2 - v1) / (t2 - t1);
+    final double slope = (v2 - v1) / (t2 - t1);
 
     // 2) Compute value axis intersection, either via
     //    v1 = v0 + slope * t1  or
     //    v2 = v0 + slope * t2
-
-    double v0 = v1 - slope * t1;
-    v0 = v2 - slope * t2;
-
+    final double v0 = v1 - slope * t1;
+    
     // Now get value at requested time
     return v0 + slope * t;
   }
@@ -82,7 +80,7 @@ public class Guesstimator
     // Draw line through the old points, then get value 'now'
     if (oldest.millisec == last.millisec)
     {
-      // This would result in division-by-zero when conputing the slope..
+      // This would result in division-by-zero when computing the slope..
       System.out.println("Guesstimator: Time is not progressing");
       return new CameraData(now, 0, 0);
     }
@@ -90,8 +88,8 @@ public class Guesstimator
                                          last.millisec, last.direction,
                                          now);
     final double distance = extrapolate(oldest.millisec, oldest.distance,
-                                       last.millisec, last.distance,
-                                       now);
+                                        last.millisec, last.distance,
+                                        now);
     return new CameraData(now, (int) direction, (int) distance);
   }
 

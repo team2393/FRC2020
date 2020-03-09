@@ -23,7 +23,7 @@ import java.util.Arrays;
  *  For small buffers it would be OK to simply move all array items 'down':
  *    items[0] = second item
  *    items[1] = 3rd item
- *  ...
+ *    ...
  *  
  *  But this is inefficient for larger arrays, since _all_ array elements
  *  need to be moved whenever a new value is added.
