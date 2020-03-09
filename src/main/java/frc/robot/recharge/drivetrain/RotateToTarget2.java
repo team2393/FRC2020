@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.udp.CameraData;
 import frc.robot.recharge.udp.CameraLight;
@@ -34,7 +35,7 @@ public class RotateToTarget2 extends CommandBase
   
   private boolean on_target;
   
-  public RotateToTarget2(final BiConsumer<Double, Double> driver)
+  public RotateToTarget2(final BiConsumer<Double, Double> driver, Subsystem... requirements)
   {
     if (light == null)
       light = new CameraLight();
@@ -49,6 +50,7 @@ public class RotateToTarget2 extends CommandBase
     }
 
     this.driver = driver;
+    addRequirements(requirements);
 
     SmartDashboard.setDefaultNumber("TargetRotMin", 0.005);
     SmartDashboard.setDefaultNumber("TargetRotGain", 0.001);
