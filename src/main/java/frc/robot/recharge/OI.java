@@ -150,6 +150,12 @@ public class OI
   {
     return buttonboard.getRawButtonPressed(9);
   }
+  
+  public static boolean toggleHood()
+  {
+    // TODO return buttonboard.getRawButton(button)
+    return false;
+  }   
 
   public static boolean isRotateToColorRequested()
   {
@@ -158,6 +164,7 @@ public class OI
 
   public static boolean prepareShooter()
   {
+    // TODO replace button with on/off switch
     return buttonboard.getRawButton(10);
   }
 
@@ -199,5 +206,5 @@ public class OI
     
     return joystick.getTriggerAxis(Hand.kRight);    
     // return 0;
-  }   
+  }
 }

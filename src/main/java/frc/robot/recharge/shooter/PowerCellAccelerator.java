@@ -42,7 +42,7 @@ public class PowerCellAccelerator extends SubsystemBase
 
   //Solenoids
   private final Solenoid agitator = new Solenoid(RobotMap.INTAKE_AGITATOR);
-
+  private final Solenoid hood_position = new Solenoid(RobotMap.HOOD_ADJUST);
 
   /** Normal voltage for moving conveyors */
   public final static double CONVEYOR_VOLTAGE = 11.0;
@@ -105,6 +105,16 @@ public class PowerCellAccelerator extends SubsystemBase
   public void enableLoad(final boolean enable)
   {
     auto_load = enable;
+  }
+
+  public void setHood(final boolean hood_up)
+  {
+    hood_position.set(hood_up);
+  }
+
+  public boolean getHood()
+  {
+    return hood_position.get();
   }
 
   public void unjam(boolean unjamming_enabled)

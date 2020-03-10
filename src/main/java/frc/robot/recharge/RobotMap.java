@@ -86,4 +86,6 @@ public class RobotMap
   public static final int INTAKE_AGITATOR = 5;
   public static final int GEAR_SOLENOID = 6;
   public static final int CONTROL_PANEL_SOLENOID = 7;
+  //TODO add hood solenoid
+  public static final int HOOD_ADJUST = 0;
 }

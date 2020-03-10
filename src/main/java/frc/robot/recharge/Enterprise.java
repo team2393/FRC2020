@@ -32,13 +32,11 @@ import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveTrain;
-import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
 import frc.robot.recharge.shooter.IntakeDown;
-import frc.robot.recharge.shooter.IntakeMid;
 import frc.robot.recharge.shooter.IntakeUp;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 import frc.robot.recharge.shooter.ShooterIdle;
@@ -229,7 +227,11 @@ public class Enterprise extends BasicRobot
     climb_idle.schedule();
 
     pca.enableLoad(true);
-   
+    
+    // TODO Toggle hood solenoid with buttonboard
+    // if (OI.toggleHood())
+    //   pca.setHood(!pca.getHood());
+
     pca.eject(OI.prepareShooter());
 
     if (! auto_shift.isScheduled())
