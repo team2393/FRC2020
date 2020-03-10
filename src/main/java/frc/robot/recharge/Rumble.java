@@ -27,6 +27,7 @@ public class Rumble extends CommandBase
   @Override
   public void initialize()
   {
+    timer.reset();
     timer.start();
     OI.joystick.setRumble(RumbleType.kLeftRumble, 1);
     OI.joystick.setRumble(RumbleType.kRightRumble, 1);

@@ -70,6 +70,7 @@ public class TurnToHeading extends CommandBase
   public void initialize()
   {
     pid.reset(drive_train.getHeadingDegrees());
+    timer.reset();
     timer.start();
   }
 

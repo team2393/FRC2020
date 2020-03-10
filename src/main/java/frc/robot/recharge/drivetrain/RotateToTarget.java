@@ -63,6 +63,7 @@ public class RotateToTarget extends CommandBase
   public void initialize()
   {
     on_target = false;
+    timer.reset();
     timer.start();
     light.set(true);
     System.out.println("RotateToTarget");

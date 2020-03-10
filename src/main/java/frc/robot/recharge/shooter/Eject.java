@@ -43,7 +43,9 @@ public class Eject extends CommandBase
     pca.feedEjector(false);
     pca.eject(true);
     state = State.SPINUP;
+    spinup_timer.reset();
     spinup_timer.start();
+    timeout_timer.reset();
     System.out.println("EJECT: " + state);
   }
 

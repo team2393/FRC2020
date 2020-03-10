@@ -50,6 +50,7 @@ public class SpinnerTestRobot extends BasicRobot
   {
     super.autonomousInit();
     voltage = 0.0;
+    timer.reset();
     timer.start();
   }
 

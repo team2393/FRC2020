@@ -8,10 +8,8 @@
 package frc.robot.recharge;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
  * Operator Interface Definitions
@@ -178,26 +176,8 @@ public class OI
       return 0;
   }
 
-  private static Timer climb_timer = new Timer();
-  private static boolean climbing = false;
-
   public static double getClimbSpeed()
   {
-    // boolean do_climb = buttonboard.getRawButton(11);
-    // if (do_climb && !climbing)
-    //   climb_timer.start();
-    // climbing = do_climb;
-
-    // if (climbing)
-    // {
-    //   // Use about 2 seconds to ramp up speed to full
-    //   double speed = climb_timer.get()/2;
-    //   // .. limit to 1   
-    //   return MathUtil.clamp(speed, 0, 1.0);
-    // }
-    
-    
     return joystick.getTriggerAxis(Hand.kRight);    
-    // return 0;
   }   
 }

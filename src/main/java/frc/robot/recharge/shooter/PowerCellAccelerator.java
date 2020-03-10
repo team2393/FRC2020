@@ -87,6 +87,7 @@ public class PowerCellAccelerator extends SubsystemBase
   {
     commonSettings(conveyor_top, NeutralMode.Brake);
     commonSettings(conveyor_bottom, NeutralMode.Brake);
+    agitator_timer.reset();
     agitator_timer.start();
   }
   
@@ -124,7 +125,7 @@ public class PowerCellAccelerator extends SubsystemBase
     if (volt == 0)
     {
       agitator.set(false);
-      // 'start' resets the timer so get() will return 0 seconds
+      agitator_timer.reset();
       agitator_timer.start();
     }
     else
@@ -134,12 +135,14 @@ public class PowerCellAccelerator extends SubsystemBase
       {
         // Was down for 1 second: Move up, reset timer
         agitator.set(true);
+        agitator_timer.reset();
         agitator_timer.start();
       }
       else if (agitator_up && agitator_timer.hasElapsed(0.2))
       {
         // Was up for 0.2 secs: Move down, reset timer
         agitator.set(false);
+        agitator_timer.reset();
         agitator_timer.start();
       }
     }
@@ -171,6 +174,7 @@ public class PowerCellAccelerator extends SubsystemBase
     // start timer so it keeps running for a little longer
     if (shoot == true  &&  on_off == false)
     {
+      keep_running_timer.reset();
       keep_running_timer.start();
       timer_on = true;
     }

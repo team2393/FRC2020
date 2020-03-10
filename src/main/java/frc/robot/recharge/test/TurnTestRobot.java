@@ -49,6 +49,7 @@ public class TurnTestRobot extends BasicRobot
   {
     super.autonomousInit();
     drive_train.reset();
+    timer.reset();
     timer.start();
     turn1.schedule();
     one = true;
