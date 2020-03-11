@@ -154,7 +154,7 @@ public class OI
   public static boolean toggleHood()
   {
     // TODO return buttonboard.getRawButtonPressed(button)
-    return false;
+    return joystick.getXButtonPressed();
   }   
 
   public static boolean isRotateToColorRequested()

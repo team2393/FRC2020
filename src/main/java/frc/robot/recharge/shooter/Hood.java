@@ -31,7 +31,7 @@ public class Hood extends SubsystemBase
   }
   
   /** @return Hood position */
-  public boolean getHoodPosiotion()
+  public boolean getHoodPosition()
   {
     return hood.get();
   }
@@ -45,6 +45,6 @@ public class Hood extends SubsystemBase
   @Override
   public void periodic()
   {
-    SmartDashboard.putBoolean("Hood Up", getHoodPosiotion());
+    SmartDashboard.putBoolean("Hood Up", getHoodPosition());
   }
 }

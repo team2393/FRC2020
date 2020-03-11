@@ -28,7 +28,15 @@ public class SolenoidHoodTestRobot extends BasicRobot
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
+    SmartDashboard.putData("Hood Up", hood_up);
+    SmartDashboard.putData("Hood Down", hood_down);
+  }
+
+  @Override
+  public void robotPeriodic() 
+  {
+     super.robotPeriodic();
+     SmartDashboard.putBoolean("Hood State", (hood.getHoodPosition()));
   }
 
   @Override
@@ -36,22 +44,17 @@ public class SolenoidHoodTestRobot extends BasicRobot
   {
     super.disabledInit();
     hood.set(false);
-
-    SmartDashboard.putData(hood_up);
-    SmartDashboard.putData(hood_down);
   }
 
   @Override
   public void teleopPeriodic()
   {
     // Hood solenoid is on as long as X button is held
-    if (OI.isIntakeTogglePressed())
-      if (hood.getHoodPosiotion())
+    if (OI.toggleHood())
+      if (!hood.getHoodPosition())
         hood_up.schedule();
       else
         hood_down.schedule();
-
-    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
   }
 
   @Override
@@ -71,13 +74,13 @@ public class SolenoidHoodTestRobot extends BasicRobot
       timer.reset();
       timer.start();
     
-      if (hood.getHoodPosiotion())
+      if (hood.getHoodPosition())
         hood_down.schedule();
       else
         hood_up.schedule();
     }
 
-    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
+    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosition()));
 
   }
 }
