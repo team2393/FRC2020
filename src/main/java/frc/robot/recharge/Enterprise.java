@@ -32,13 +32,11 @@ import frc.robot.recharge.ctrlpanel.RotateWheel;
 import frc.robot.recharge.drivetrain.AutoShift;
 import frc.robot.recharge.drivetrain.DriveByJoystick;
 import frc.robot.recharge.drivetrain.DriveTrain;
-import frc.robot.recharge.drivetrain.HeadingHold;
 import frc.robot.recharge.drivetrain.RotateToTarget;
 import frc.robot.recharge.shooter.Eject;
 import frc.robot.recharge.shooter.Hood;
 import frc.robot.recharge.shooter.Intake;
 import frc.robot.recharge.shooter.IntakeDown;
-import frc.robot.recharge.shooter.IntakeMid;
 import frc.robot.recharge.shooter.IntakeUp;
 import frc.robot.recharge.shooter.PowerCellAccelerator;
 import frc.robot.recharge.shooter.ShooterIdle;
@@ -76,6 +74,9 @@ public class Enterprise extends BasicRobot
   private final CommandBase eject = new Eject(pca);
   
   private final Hood hood = new Hood();
+
+  private final CommandBase hood_up = new InstantCommand(() -> hood.set(true));
+  private final CommandBase hood_down = new InstantCommand(() -> hood.set(false));
 
   private final ControlWheel fortune = new ControlWheel();
   private final CommandBase extend_wheel = new ExtendControlWheel(fortune);
@@ -158,7 +159,7 @@ public class Enterprise extends BasicRobot
   {
     super.disabledInit();
     drive_train.lock(false);
-    hood.lock(false);
+    hood.set(false);
   }
   
   @Override
@@ -187,7 +188,6 @@ public class Enterprise extends BasicRobot
     super.teleopInit();
 
     drive_train.lock(true);
-    hood.lock(true);
     OI.reset();
 
     // auto_shift.schedule();
@@ -198,9 +198,6 @@ public class Enterprise extends BasicRobot
   @Override
   public void teleopPeriodic()
   {
-      // Control hood angle via manual entry on dashboard or ApplySettings()
-      hood.setHoodAngle(SmartDashboard.getNumber("Teleop Hood Setpoint", -1));
-
     if (teleop_mode == TeleopMode.Drive)
       teleop_drive();
     else if (teleop_mode == TeleopMode.Climb)
@@ -229,7 +226,14 @@ public class Enterprise extends BasicRobot
     climb_idle.schedule();
 
     pca.enableLoad(true);
-   
+    
+    // TODO Toggle hood solenoid with buttonboard
+    if (OI.toggleHood())
+      if (hood.getHoodPosition())
+        hood_up.schedule();
+      else
+        hood_down.schedule();
+
     pca.eject(OI.prepareShooter());
 
     if (! auto_shift.isScheduled())
@@ -334,9 +338,7 @@ public class Enterprise extends BasicRobot
 
     OI.reset();
     SmartDashboard.putNumber("Teleop Hood Setpoint", -1);
-    hood.setHoodAngle(-1);
-    hood.reset();
-    hood.lock(true);
+    hood.set(false);
     intake.resetToStartPosition();
     drive_train.reset();
     drive_train.lock(true);

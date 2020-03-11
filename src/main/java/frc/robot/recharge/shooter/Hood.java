@@ -7,14 +7,9 @@
 
 package frc.robot.recharge.shooter;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.recharge.RobotMap;
 
 /** Power cell handling: Ejector hood
@@ -28,83 +23,28 @@ import frc.robot.recharge.RobotMap;
 public class Hood extends SubsystemBase
 {
   // Motor, must have encoder (angle)
-  private final WPI_TalonFX hood_motor = new WPI_TalonFX(RobotMap.HOOD_MOTOR);
-  
-  // PID
-  private final PIDController pid = new PIDController(0.35, 0, 0.001);
-
-  /** Desired angle. Negative to disable PID */
-  private double desired_angle = -1;
+  private final Solenoid hood = new Solenoid(RobotMap.HOOD_ADJUST);
 
   public Hood()
   {
-    PowerCellAccelerator.commonSettings(hood_motor, NeutralMode.Brake);
-    hood_motor.configOpenloopRamp(0.25);
-
-    // Encoder for position (angle)
-    hood_motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-    hood_motor.setInverted(false);
-
-    // Reset to zero on startup
-    reset();
-  }
-
-  public void lock(final boolean lock)
-  {
-    hood_motor.setNeutralMode(lock ? NeutralMode.Brake : NeutralMode.Coast);
-  }
-
-  /** Reset hood position to '150' */
-  public void reset()
-  {
-    hood_motor.setSelectedSensorPosition(0);
+    hood.set(false);
   }
   
-  /** @return Hood angle, degrees. 0 for horizontal, towards 90 for 'up' */
-  public double getHoodAngle()
+  /** @return Hood position */
+  public boolean getHoodPosition()
   {
-    // Falcon encoder sends 2048 ticks per revolution, plus 1:10 gear box
-    final double encoder_angle = 36.0 / 2048.0;
-    // Gears & chain results in hood moving slower than motor
-    final double gearing = 18.0/42.0;
-
-    // An angle of zero (degrees/radians) should be 'horizontal'
-    //   90 deg = 'up'
-    // ~150 deg = start position, fully retracted
-    final double offset = 150.0;
-    return offset + hood_motor.getSelectedSensorPosition() * encoder_angle * gearing;
+    return hood.get();
   }
 
-  /** @param speed Directly set motor speed for testing */
-  public void setAngleMotor(final double speed)
+  /** @param position Set hood up or down */
+  public void set(final boolean hood_up)
   {
-    // Disable automated control
-    desired_angle = -1;
-    hood_motor.set(speed);
-  }
-
-  public PIDController getPID()
-  {
-    return pid;
-  }
-
-  /** @param angle Set angle for PID-controlled angle rotator, negative to disable */
-  public void setHoodAngle(final double angle)
-  {
-    desired_angle = angle;
+    hood.set(hood_up);
   }
 
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Hood Angle", getHoodAngle());
-    if (desired_angle >= 0 && desired_angle <= 150)
-    {
-      final double correction = pid.calculate(getHoodAngle(), desired_angle);
-      hood_motor.setVoltage(MathUtil.clamp(correction, -1.5, 1.5));
-    }
-    else
-      hood_motor.setVoltage(0);
+    SmartDashboard.putBoolean("Hood Up", getHoodPosition());
   }
 }

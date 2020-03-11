@@ -43,7 +43,6 @@ public class PowerCellAccelerator extends SubsystemBase
   //Solenoids
   private final Solenoid agitator = new Solenoid(RobotMap.INTAKE_AGITATOR);
 
-
   /** Normal voltage for moving conveyors */
   public final static double CONVEYOR_VOLTAGE = 11.0;
 
