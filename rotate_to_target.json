@@ -1,0 +1,98 @@
+{
+  "tabPane": [
+    {
+      "title": "RotationTest",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": false,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Rotate To Target",
+              "Layout/Number of columns": 1,
+              "Layout/Number of rows": 5,
+              "Layout/Label position": "LEFT",
+              "_children": {
+                "0,3": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/TargetRotGain",
+                  "_title": "/SmartDashboard/TargetRotGain"
+                },
+                "0,4": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/TargetRotMax",
+                  "_title": "/SmartDashboard/TargetRotMax"
+                },
+                "0,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/TargetRotMin",
+                  "_title": "/SmartDashboard/TargetRotMin"
+                },
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Distance",
+                  "_title": "/SmartDashboard/Distance"
+                },
+                "0,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Direction",
+                  "_title": "/SmartDashboard/Direction"
+                }
+              }
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Direction",
+              "_title": "Direction",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/Direction": true
+            }
+          },
+          "6,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://Processed",
+              "_title": "Processed",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#808080FF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": 54.79999923706055,
+    "y": 189.60000610351562,
+    "width": 1428.4000244140625,
+    "height": 628.4000244140625
+  }
+}
