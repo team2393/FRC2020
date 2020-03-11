@@ -11,18 +11,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class HoodUp extends InstantCommand
 {
-  private final Hood hood;
-
   public HoodUp(Hood hood) 
   {
-    this.hood = hood;
-    addRequirements(hood);
-  }
-
-  @Override
-  public void initialize() 
-  {  
-    super.initialize();
-    hood.set(true);
+    super(() -> hood.set(true), hood);
   }
 }
