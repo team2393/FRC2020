@@ -7,10 +7,9 @@
 
 package frc.robot.recharge.test;
 
-import edu.wpi.first.wpilibj.Servo;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.drivetrain.DriveTrain;
-import frc.robot.recharge.drivetrain.RotateToTarget2;
+import frc.robot.recharge.drivetrain.RotateToTarget;
 
 /** Robot code for testing camera and rotate-to-target */
 public class RotateToTargetTestRobot extends BasicRobot
@@ -18,12 +17,7 @@ public class RotateToTargetTestRobot extends BasicRobot
   // Real robot uses drivetrain, demo setup uses servo
   private final DriveTrain drive_train = new DriveTrain();
 
-  private final RotateToTarget2 rotate_to_target = new RotateToTarget2( (speed, rotation) ->
-  {
-    // 'rotation' is in speed controller terms of -1...1
-    // Servo uses 0..1  
-    drive_train.drive(speed, rotation);
-  });
+  private final RotateToTarget rotate_to_target = new RotateToTarget(drive_train);
   
   @Override
   public void robotInit()
