@@ -7,39 +7,51 @@
 
 package frc.robot.recharge.test;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.BasicRobot;
 import frc.robot.recharge.OI;
-import frc.robot.recharge.RobotMap;
+import frc.robot.recharge.shooter.Hood;
 
 /** Robot code for testing hood solenoid */
 public class SolenoidHoodTestRobot extends BasicRobot
 {
-  private final Solenoid hood_solenoid = new Solenoid(RobotMap.HOOD_ADJUST);
+  private final Hood hood = new Hood();
+
+  private final CommandBase hood_up = new InstantCommand(() -> hood.set(true));
+  private final CommandBase hood_down = new InstantCommand(() -> hood.set(false));
   private final Timer timer =  new Timer();
 
   @Override
   public void robotInit()
   {
     super.robotInit();
-    SmartDashboard.putBoolean("Hood Up", (hood_solenoid.get()));
+    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
   }
 
   @Override
   public void disabledInit()
   {
     super.disabledInit();
-    hood_solenoid.set(false);
+    hood.set(false);
+
+    SmartDashboard.putData(hood_up);
+    SmartDashboard.putData(hood_down);
   }
 
   @Override
   public void teleopPeriodic()
   {
     // Hood solenoid is on as long as X button is held
-    hood_solenoid.set(OI.isIntakeTogglePressed());  
-    SmartDashboard.putBoolean("Hood Up", (hood_solenoid.get()));
+    if (OI.isIntakeTogglePressed())
+      if (hood.getHoodPosiotion())
+        hood_up.schedule();
+      else
+        hood_down.schedule();
+
+    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
   }
 
   @Override
@@ -58,10 +70,14 @@ public class SolenoidHoodTestRobot extends BasicRobot
     {
       timer.reset();
       timer.start();
-      
-      hood_solenoid.set(!hood_solenoid.get());
+    
+      if (hood.getHoodPosiotion())
+        hood_down.schedule();
+      else
+        hood_up.schedule();
     }
-    SmartDashboard.putBoolean("Hood Up", (hood_solenoid.get()));
+
+    SmartDashboard.putBoolean("Hood Up", (hood.getHoodPosiotion()));
 
   }
 }

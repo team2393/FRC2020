@@ -153,7 +153,7 @@ public class OI
   
   public static boolean toggleHood()
   {
-    // TODO return buttonboard.getRawButton(button)
+    // TODO return buttonboard.getRawButtonPressed(button)
     return false;
   }   
 

@@ -7,30 +7,22 @@
 
 package frc.robot.recharge.shooter;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class HoodAngle extends CommandBase
-{  
+public class HoodUp extends InstantCommand
+{
   private final Hood hood;
 
-  private double angle;
-
-  public HoodAngle(Hood hood, double angle) 
+  public HoodUp(Hood hood) 
   {
-    this.angle = angle;
     this.hood = hood;
     addRequirements(hood);
   }
 
   @Override
   public void initialize() 
-  {
-    hood.setHoodAngle(angle);
-  }
-
-  @Override
-  public boolean isFinished() 
-  {
-    return true;
+  {  
+    super.initialize();
+    hood.set(true);
   }
 }

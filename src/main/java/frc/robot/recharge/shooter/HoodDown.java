@@ -7,36 +7,22 @@
 
 package frc.robot.recharge.shooter;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.recharge.OI;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class HoodAdjust extends CommandBase 
+public class HoodDown extends InstantCommand
 {
   private final Hood hood;
 
-  public HoodAdjust(Hood hood) 
+  public HoodDown(Hood hood) 
   {
     this.hood = hood;
     addRequirements(hood);
   }
 
   @Override
-  public void execute() 
-  {
-    System.out.println("Hood angle: " + hood.getHoodAngle());
-    hood.setAngleMotor(OI.getHoodSpeed());
-  }
-
-  @Override
-  public void end(boolean interrupted) 
-  {
-    hood.setAngleMotor(0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished()
-  {
-    return false;
+  public void initialize() 
+  {  
+    super.initialize();
+    hood.set(false);
   }
 }
