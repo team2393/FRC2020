@@ -54,7 +54,7 @@ public class RobotMap
   public final static int RIGHT_MOTOR_SLAVE = 1;  
   
   // Shooter Motors
-  public final static int HOOD_MOTOR = 5;
+  public final static int SHOOTER_SLAVE_MOTOR = 5;
   public final static int SHOOTER_MOTOR = 6;
 
   // Telescope-Climb Motor

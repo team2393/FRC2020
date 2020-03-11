@@ -7,7 +7,6 @@
 
 package frc.robot.recharge.shooter;
 
-import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -18,7 +17,8 @@ import frc.robot.recharge.RobotMap;
 public class Spinner
 {
   private final WPI_TalonFX motor = new WPI_TalonFX(RobotMap.SHOOTER_MOTOR);
-  // private final WPI_TalonFX follower = new WPI_TalonFX(RobotMap.HOOD_MOTOR); //TODO rename hood motor
+  private final WPI_TalonFX follower = new WPI_TalonFX(RobotMap.SHOOTER_SLAVE_MOTOR);
+
   /** Encoder ticks for one turn of the wheel */
   private final static double TICK_PER_REVOLUTION = 3310 * 220/360;
   
@@ -43,12 +43,12 @@ public class Spinner
     motor.setSelectedSensorPosition(0);
     // motor.configOpenloopRamp(0.5);
     
-    //TODO add second shooter motor
-    // follower.configFactoryDefault();
-    // follower.clearStickyFaults();
-    // follower.setNeutralMode(NeutralMode.Coast);
-    // follower.setInverted(false);
-    // follower.follow(motor);
+    // Add second shooter motor
+    follower.configFactoryDefault();
+    follower.clearStickyFaults();
+    follower.setNeutralMode(NeutralMode.Coast);
+    follower.setInverted(true);
+    follower.follow(motor);
   }  
   
   public void configure(double kV, double P)
