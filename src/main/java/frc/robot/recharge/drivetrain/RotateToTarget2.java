@@ -52,9 +52,9 @@ public class RotateToTarget2 extends CommandBase
     this.driver = driver;
     addRequirements(requirements);
 
-    SmartDashboard.setDefaultNumber("TargetRotMin", 0.005);
-    SmartDashboard.setDefaultNumber("TargetRotGain", 0.001);
-    SmartDashboard.setDefaultNumber("TargetRotMax", 1.000);
+    SmartDashboard.setDefaultNumber("TargetRotMin", 0.08);
+    SmartDashboard.setDefaultNumber("TargetRotGain", 0.00325);
+    SmartDashboard.setDefaultNumber("TargetRotMax", 0.500);
     SmartDashboard.setDefaultNumber("Desired Direction", 0);
     SmartDashboard.setDefaultNumber("Desired Distance", -500);
   }
