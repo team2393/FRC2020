@@ -55,7 +55,7 @@ public class Enterprise extends BasicRobot
   private CommandBase drive_mode = drive_by_joystick;
   // After align_on_target, return to current drive_mode
   private final CommandBase align_on_target = new RotateToTarget(drive_train);
-  // Indicate heading_hold vs. drive_by_joystick
+  
   private final Rumble rumble = new Rumble();
   
   // Shift commands can run concurrently with other commands that require the
@@ -256,7 +256,14 @@ public class Enterprise extends BasicRobot
 
     // Holding the 'shoot' button starts or re-starts the command to shoot one ball.
     if (OI.isShootHeld())
+    {
       eject.schedule();
+      // Rumble while shooting and there are still balls.
+      // Provides almost kind of quasi-haptic feedback of kickback
+      // from balls leaving robot.
+      if (pca.isPowerCellReady()  ||  pca.isLowConveyorFull())
+        rumble.schedule();
+    }
 
     // Align on target?
     if (OI.isAlignOnTargetHeld())
